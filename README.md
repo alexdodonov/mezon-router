@@ -1,8 +1,8 @@
 # Routing [![Build Status](https://travis-ci.com/alexdodonov/mezon-router.svg?branch=master)](https://travis-ci.com/alexdodonov/mezon-router) [![codecov](https://codecov.io/gh/alexdodonov/mezon-router/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdodonov/mezon-router)
-##Intro##
+## Intro
 Mezon provides simple routing class for your needs.
 
-##Simple routes##
+## Simple routes
 
 Router allows you to map URLs on your php code and call when ever it needs to be calld.
 
@@ -67,7 +67,7 @@ function        sitemap()
 $Router->addRoute( 'sitemap' , 'sitemap' );
 ```
 
-##One handler for all routes##
+## One handler for all routes
 
 You can specify one processor for all routes like this:
 
@@ -92,7 +92,7 @@ $Router->add_route( '/index/' , function(){} );
 
 route /contacts/ will be processed by it's own handler, and all other routes (even /index/) will be processed by the '*' handler.
 
-##Route variables##
+## Route variables
 
 And now a little bit more complex routes:
 
@@ -110,7 +110,7 @@ s - any string
 
 All this variables are passed as second function parameter wich is named in the example above - $Variales. All variables are passed as an associative array.
 
-##Request types and first steps to the REST API##
+## Request types and first steps to the REST API
 
 You can bind handlers to different request types as shown bellow:
 
