@@ -23,7 +23,7 @@
 	"prefer-stable": true,
 	"autoload": {
 		"psr-4": {
-			"Mezon\\": ""
+			"Mezon\\Router\\": ""
 		}
 	}
 }
