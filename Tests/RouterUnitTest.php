@@ -70,6 +70,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testOneComponentRouterClassMethod()
     {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
 
         $router->addRoute('/index/', [
@@ -87,6 +88,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testOneComponentRouterLambda()
     {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
 
         $router->addRoute('/index/', function () {
@@ -103,6 +105,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testOneComponentRouterStatic()
     {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
         $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
 
