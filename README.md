@@ -2,6 +2,16 @@
 ## Intro
 Mezon provides simple routing class for your needs.
 
+## Installation
+
+Just print in console
+
+```
+composer require mezon/router
+```
+
+And that's all )
+
 ## Simple routes
 
 Router allows you to map URLs on your php code and call when ever it needs to be calld.
