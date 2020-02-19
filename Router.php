@@ -1,7 +1,6 @@
 <?php
 namespace Mezon\Router;
 
-// TODO refresh Router documentation
 // - installation
 // - add in mezon/mezon documentation
 // TODO compare speed with klein

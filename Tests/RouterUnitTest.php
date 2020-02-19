@@ -1,11 +1,12 @@
 <?php
 
 /**
- * Mockup router class.
+ * Mockup router class
  */
 class MockRouter extends \Mezon\Router\Router
 {
 
+    // TODO can we remove this class?
     public $errorVar = 0;
 
     /**
@@ -21,9 +22,20 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
+     * Default setup
+     *
+     * {@inheritdoc}
+     * @see \PHPUnit\Framework\TestCase::setUp()
+     */
+    public function setUp(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+    }
+
+    /**
      * Function simply returns string.
      */
-    public function helloWorldOutput()
+    public function helloWorldOutput(): string
     {
         return 'Hello world!';
     }
@@ -31,7 +43,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Method for checking id list.
      */
-    public function ilTest($route, $params)
+    public function ilTest($route, $params): string
     {
         return $params['ids'];
     }
@@ -39,7 +51,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Function simply returns string.
      */
-    static public function staticHelloWorldOutput()
+    static public function staticHelloWorldOutput(): string
     {
         return 'Hello static world!';
     }
@@ -47,7 +59,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing action #1.
      */
-    public function actionA1()
+    public function actionA1(): string
     {
         return 'action #1';
     }
@@ -55,12 +67,12 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing action #2.
      */
-    public function actionA2()
+    public function actionA2(): string
     {
         return 'action #2';
     }
 
-    public function actionDoubleWord()
+    public function actionDoubleWord(): string
     {
         return 'action double word';
     }
@@ -68,9 +80,8 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing one component router.
      */
-    public function testOneComponentRouterClassMethod()
+    public function testOneComponentRouterClassMethod(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
 
         $router->addRoute('/index/', [
@@ -80,15 +91,14 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         $content = $router->callRoute('/index/');
 
-        $this->assertEquals('Hello world!', $content, 'Invalid index route');
+        $this->assertEquals('Hello world!', $content);
     }
 
     /**
      * Testing one component router.
      */
-    public function testOneComponentRouterLambda()
+    public function testOneComponentRouterLambda(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
 
         $router->addRoute('/index/', function () {
@@ -97,27 +107,26 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         $content = $router->callRoute('/index/');
 
-        $this->assertEquals('Hello world!', $content, 'Invalid index route');
+        $this->assertEquals('Hello world!', $content);
     }
 
     /**
      * Testing one component router.
      */
-    public function testOneComponentRouterStatic()
+    public function testOneComponentRouterStatic(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
         $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
 
         $content = $router->callRoute('/index/');
 
-        $this->assertEquals('Hello static world!', $content, 'Invalid index route');
+        $this->assertEquals('Hello static world!', $content);
     }
 
     /**
      * Testing unexisting route behaviour.
      */
-    public function testUnexistingRoute()
+    public function testUnexistingRoute(): void
     {
         $exception = '';
         $router = new \Mezon\Router\Router();
@@ -140,7 +149,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing action fetching method.
      */
-    public function testClassActions()
+    public function testClassActions(): void
     {
         $router = new \Mezon\Router\Router();
         $router->fetchActions($this);
@@ -158,7 +167,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Method tests POST actions
      */
-    public function testPostClassAction()
+    public function testPostClassAction(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
@@ -169,27 +178,9 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing one processor for all routes.
-     */
-    public function testSingleAllProcessor()
-    {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        $content = $router->callRoute('/some-route/');
-
-        $this->assertEquals('Hello world!', $content, 'Invalid index route');
-    }
-
-    /**
      * Testing one processor for all routes overlap.
      */
-    public function testSingleAllProcessorOverlapUnexisting()
+    public function testSingleAllProcessorOverlapUnexisting(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('*', [
@@ -200,13 +191,13 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         $content = $router->callRoute('/some-route/');
 
-        $this->assertEquals('Hello world!', $content, 'Invalid index route');
+        $this->assertEquals('Hello world!', $content);
     }
 
     /**
      * Testing one processor for all routes overlap.
      */
-    public function testSingleAllProcessorOverlapExisting()
+    public function testSingleAllProcessorOverlapExisting(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('*', [
@@ -217,13 +208,13 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         $content = $router->callRoute('/index/');
 
-        $this->assertEquals('Hello world!', $content, 'Invalid index route');
+        $this->assertEquals('Hello world!', $content);
     }
 
     /**
      * Testing one processor for all routes overlap.
      */
-    public function testSingleAllProcessorExisting()
+    public function testSingleAllProcessorExisting(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
@@ -234,13 +225,13 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         $content = $router->callRoute('/index/');
 
-        $this->assertEquals('Hello static world!', $content, 'Invalid index route');
+        $this->assertEquals('Hello static world!', $content);
     }
 
     /**
      * Testing one processor for all routes overlap.
      */
-    public function testSingleAllProcessorUnexisting()
+    public function testSingleAllProcessorUnexisting(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
@@ -251,13 +242,13 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         $content = $router->callRoute('/some-route/');
 
-        $this->assertEquals('Hello world!', $content, 'Invalid index route');
+        $this->assertEquals('Hello world!', $content);
     }
 
     /**
      * Testing invalid data types behaviour.
      */
-    public function testInvalidType()
+    public function testInvalidType(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[unexisting-type:i]/item/', [
@@ -276,15 +267,13 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing invalid data types behaviour.
      */
-    public function testValidInvalidTypes()
+    public function testValidInvalidTypes(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute(
-            '/catalog/[i:cat_id]/item/[unexisting-type-trace:item_id]/',
-            [
-                $this,
-                'helloWorldOutput'
-            ]);
+        $router->addRoute('/catalog/[i:cat_id]/item/[unexisting-type-trace:item_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
 
         try {
             $router->callRoute('/catalog/1024/item/2048/');
@@ -297,7 +286,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing valid data types behaviour.
      */
-    public function testValidTypes()
+    public function testValidTypes(): void
     {
         $exception = '';
         $router = new \Mezon\Router\Router();
@@ -320,7 +309,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing valid integer data types behaviour.
      */
-    public function testValidIntegerParams()
+    public function testValidIntegerParams(): void
     {
         $exception = '';
         $router = new \Mezon\Router\Router();
@@ -343,7 +332,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing valid alnum data types behaviour.
      */
-    public function testValidAlnumParams()
+    public function testValidAlnumParams(): void
     {
         $exception = '';
         $router = new \Mezon\Router\Router();
@@ -366,7 +355,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing invalid integer data types behaviour.
      */
-    public function testInValidIntegerParams()
+    public function testInValidIntegerParams(): void
     {
         $exception = '';
         $router = new \Mezon\Router\Router();
@@ -389,7 +378,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing invalid alnum data types behaviour.
      */
-    public function testInValidAlnumParams()
+    public function testInValidAlnumParams(): void
     {
         $exception = '';
         $router = new \Mezon\Router\Router();
@@ -412,7 +401,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing parameter extractor.
      */
-    public function testValidExtractedParameter()
+    public function testValidExtractedParameter(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[a:cat_id]/', function ($route, $parameters) {
@@ -427,14 +416,12 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing parameter extractor.
      */
-    public function testValidExtractedParameters()
+    public function testValidExtractedParameters(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute(
-            '/catalog/[a:cat_id]/[i:item_id]',
-            function ($route, $parameters) {
-                return $parameters['cat_id'] . $parameters['item_id'];
-            });
+        $router->addRoute('/catalog/[a:cat_id]/[i:item_id]', function ($route, $parameters) {
+            return $parameters['cat_id'] . $parameters['item_id'];
+        });
 
         $result = $router->callRoute('/catalog/foo/1024/');
 
@@ -444,7 +431,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing parameter extractor.
      */
-    public function testValidRouteParameter()
+    public function testValidRouteParameter(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/', function ($route) {
@@ -466,7 +453,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing static routes for POST requests.
      */
-    public function testPostRequestForExistingStaticRoute()
+    public function testPostRequestForExistingStaticRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
@@ -483,7 +470,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing dynamic routes for POST requests.
      */
-    public function testPostRequestForExistingDynamicRoute()
+    public function testPostRequestForExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
@@ -500,7 +487,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing static routes for POST requests.
      */
-    public function testPostRequestForUnExistingStaticRoute()
+    public function testPostRequestForUnExistingStaticRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
@@ -525,7 +512,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing dynamic routes for POST requests.
      */
-    public function testPostRequestForUnExistingDynamicRoute()
+    public function testPostRequestForUnExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
@@ -550,7 +537,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing static routes for PUT requests.
      */
-    public function testPutRequestForExistingStaticRoute()
+    public function testPutRequestForExistingStaticRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'PUT';
 
@@ -567,7 +554,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing dynamic routes for PUT requests.
      */
-    public function testPutRequestForExistingDynamicRoute()
+    public function testPutRequestForExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'PUT';
 
@@ -584,7 +571,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing static routes for PUT requests.
      */
-    public function testPutRequestForUnExistingStaticRoute()
+    public function testPutRequestForUnExistingStaticRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'PUT';
 
@@ -609,7 +596,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing dynamic routes for PUT requests.
      */
-    public function testPutRequestForUnExistingDynamicRoute()
+    public function testPutRequestForUnExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'PUT';
 
@@ -634,7 +621,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing static routes for DELETE requests.
      */
-    public function testDeleteRequestForExistingStaticRoute()
+    public function testDeleteRequestForExistingStaticRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
 
@@ -651,7 +638,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing dynamic routes for DELETE requests.
      */
-    public function testDeleteRequestForExistingDynamicRoute()
+    public function testDeleteRequestForExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
 
@@ -668,7 +655,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing static routes for DELETE requests.
      */
-    public function testDeleteRequestForUnExistingStaticRoute()
+    public function testDeleteRequestForUnExistingStaticRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
 
@@ -693,7 +680,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing dynamic routes for DELETE requests.
      */
-    public function testDeleteRequestForUnExistingDynamicRoute()
+    public function testDeleteRequestForUnExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
 
@@ -718,7 +705,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing case when both GET and POST processors exists.
      */
-    public function testGetPostPostDeleteRouteConcurrency()
+    public function testGetPostPostDeleteRouteConcurrency(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/', function () {
@@ -754,7 +741,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing 'clear' method.
      */
-    public function testClearMethod()
+    public function testClearMethod(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/', function () {
@@ -811,7 +798,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Test validate custom error handlers.
      */
-    public function testSetErrorHandler()
+    public function testSetErrorHandler(): void
     {
         $router = new MockRouter();
         $current = $router->setNoProcessorFoundErrorHandler([
@@ -830,7 +817,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing command special chars.
      */
-    public function testCommandSpecialChars()
+    public function testCommandSpecialChars(): void
     {
         $router = new \Mezon\Router\Router();
 
@@ -838,7 +825,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
             return 'GET';
         }, 'GET');
 
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $result = $router->callRoute('/.-@/');
         $this->assertEquals($result, 'GET', 'Invalid selected route');
     }
@@ -846,7 +832,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing strings.
      */
-    public function testStringSpecialChars()
+    public function testStringSpecialChars(): void
     {
         $router = new \Mezon\Router\Router();
 
@@ -854,7 +840,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
             return 'GET';
         }, 'GET');
 
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $result = $router->callRoute('/, ;:/');
         $this->assertEquals($result, 'GET', 'Invalid selected route');
     }
@@ -862,7 +847,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing invalid id list data types behaviour.
      */
-    public function testInValidIdListParams()
+    public function testInValidIdListParams(): void
     {
         $exception = '';
         $router = new \Mezon\Router\Router();
@@ -885,7 +870,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing valid id list data types behaviour.
      */
-    public function testValidIdListParams()
+    public function testValidIdListParams(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[il:ids]/', [
@@ -901,7 +886,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing valid id list data types behaviour.
      */
-    public function testStringParamSecurity()
+    public function testStringParamSecurity(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[s:foo]/', function ($route, $parameters) {
@@ -916,7 +901,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing float value.
      */
-    public function testFloatI()
+    public function testFloatI(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
@@ -931,7 +916,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing negative float value.
      */
-    public function testNegativeFloatI()
+    public function testNegativeFloatI(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
@@ -946,7 +931,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing positive float value.
      */
-    public function testPositiveFloatI()
+    public function testPositiveFloatI(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
@@ -961,7 +946,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing negative integer value
      */
-    public function testNegativeIntegerI()
+    public function testNegativeIntegerI(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
@@ -976,7 +961,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing positive integer value
      */
-    public function testPositiveIntegerI()
+    public function testPositiveIntegerI(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
@@ -989,12 +974,10 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing array routes.
+     * Testing array routes
      */
-    public function testArrayRoutes()
+    public function testArrayRoutes(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/item/', function ($route) {
             return $route;
@@ -1009,11 +992,10 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing empty array routes.
+     * Testing empty array routes
      */
-    public function testEmptyArrayRoutes()
+    public function testEmptyArrayRoutes(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/catalog/item/';
 
         $router = new \Mezon\Router\Router();
@@ -1029,11 +1011,10 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing empty array routes.
+     * Testing empty array routes
      */
-    public function testIndexRoute()
+    public function testIndexRoute(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/';
 
         $router = new \Mezon\Router\Router();
@@ -1051,7 +1032,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing saving of the route parameters
      */
-    public function testSavingParameters()
+    public function testSavingParameters(): void
     {
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
@@ -1066,7 +1047,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing empty array routes
      */
-    public function testMultipleRequestTypes()
+    public function testMultipleRequestTypes(): void
     {
         // setup
         $_SERVER['REQUEST_URI'] = '/';
@@ -1079,7 +1060,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
             'POST'
         ]);
 
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router->callRoute([
             0 => ''
         ]);
@@ -1095,12 +1075,13 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing getParam for unexisting param
      */
-    public function testGettingUnexistingParameter()
+    public function testGettingUnexistingParameter(): void
     {
         // setup
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function () {});
+        $router->addRoute('/catalog/[i:foo]/', function () {
+            // do nothing
+        });
 
         $router->callRoute('/catalog/1/');
 
@@ -1113,12 +1094,13 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing getParam for existing param
      */
-    public function testGettingExistingParameter()
+    public function testGettingExistingParameter(): void
     {
         // setup
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function () {});
+        $router->addRoute('/catalog/[i:foo]/', function () {
+            // do nothing
+        });
 
         $router->callRoute('/catalog/1/');
 
@@ -1126,18 +1108,19 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
         $foo = $router->getParam('foo');
 
         // assertions
-        $this->assertEquals(1,$foo);
+        $this->assertEquals(1, $foo);
     }
 
     /**
      * Testing hasParam method
      */
-    public function testValidatingParameter()
+    public function testValidatingParameter(): void
     {
         // setup
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function () {});
+        $router->addRoute('/catalog/[i:foo]/', function () {
+            // do nothing
+        });
 
         $router->callRoute('/catalog/1/');
 

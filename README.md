@@ -28,7 +28,7 @@ class           MySite
     */
     public function actionIndex()
     {
-        return( 'This is the main page of our simple site' );
+        return 'This is the main page of our simple site';
     }
 
     /**
@@ -36,7 +36,7 @@ class           MySite
     */
     public function actionContacts()
     {
-        return( 'This is the "Contacts" page' );
+        return 'This is the "Contacts" page';
     }
 
     /**
@@ -44,7 +44,12 @@ class           MySite
     */
     public function someOtherPage()
     {
-        return( 'Some other page of our site' );
+        return 'Some other page of our site';
+    }
+    
+    public static function someStaticMethod()
+    {
+        return 'Result of static method';
     }
 }
 ```
@@ -52,8 +57,8 @@ class           MySite
 And this code
 
 ```PHP
-$Router = new Router();
-$Router->fetchActions( $MySite = new MySite() );
+$router = new \Mezon\Router\Router();
+$router->fetchActions( $mySite = new MySite() );
 ```
 
 will create router object and loads information about it's actions and create routes. Strictly it will create two routes, because the class MySite has only two methods wich start wth 'action[Suffix]'. Method 'someOtherPage' will not be converted into route automatically.
@@ -61,7 +66,15 @@ will create router object and loads information about it's actions and create ro
 But we can still use this method as a route handler:
 
 ```PHP
-$Router->addRoute( 'some-any-other-route' , array( $MySite , 'someOtherPage' ) );
+$router->addRoute( '/some-any-other-route/' , [ $mySite , 'someOtherPage' ] );
+```
+
+And you also can use stati methods:
+
+```PHP
+$router->addRoute( '/static-route/' , [ 'MySite' , 'someStaticMethod' ] );
+// or in this way
+$router->addRoute( '/static-route/' , 'MySite::someStaticMethod' );
 ```
 
 We just need to create it explicitly.
@@ -74,7 +87,7 @@ function        sitemap()
     return( 'Some fake sitemap' );
 }
 
-$Router->addRoute( 'sitemap' , 'sitemap' );
+$router->addRoute( '/sitemap/' , 'sitemap' );
 ```
 
 ## One handler for all routes
@@ -82,22 +95,22 @@ $Router->addRoute( 'sitemap' , 'sitemap' );
 You can specify one processor for all routes like this:
 
 ```PHP
-$Router->addRoute( '*' , function(){} );
+$router->addRoute( '/*/' , function(){} );
 ```
 
 Note that routing search will stops if the '*' handler will be found. For example:
 
 ```PHP
-$Router->addRoute( '*' , function(){} );
-$Router->addRoute( '/index/' , function(){} );
+$router->addRoute( '/*/' , function(){} );
+$router->addRoute( '/index/' , function(){} );
 ```
 
 In this example route /index/ will never be reached. All request will be passed to the '*' handler. But in this example:
 
 ```PHP
-$Router->add_route( '/contacts/' , function(){} );
-$Router->add_route( '*' , function(){} );
-$Router->add_route( '/index/' , function(){} );
+$router->addRoute( '/contacts/' , function(){} );
+$router->addRoute( '/*/' , function(){} );
+$router->addRoute( '/index/' , function(){} );
 ```
 
 route /contacts/ will be processed by it's own handler, and all other routes (even /index/) will be processed by the '*' handler.
@@ -107,8 +120,8 @@ route /contacts/ will be processed by it's own handler, and all other routes (ev
 And now a little bit more complex routes:
 
 ```PHP
-$Router->add_route( '/catalogue/[i:cat_id]/' , function( $Route , $Variables ){} );
-$Router->add_route( '/catalogue/[a:cat_name]/' , function( $Route , $Variables ){} );
+$router->addRoute( '/catalogue/[i:cat_id]/' , function( $route , $variables ){} );
+$router->addRoute( '/catalogue/[a:cat_name]/' , function( $route , $variables ){} );
 ```
 
 Here:
@@ -125,8 +138,8 @@ All this variables are passed as second function parameter wich is named in the 
 You can bind handlers to different request types as shown bellow:
 
 ```PHP
-$Router->add_route( '/contacts/' , function(){} , 'POST' ); // this handler will be called for POST requests
-$Router->add_route( '/contacts/' , function(){} , 'GET' );  // this handler will be called for GET requests
-$Router->add_route( '/contacts/' , function(){} , 'PUT' );  // this handler will be called for PUT requests
-$Router->add_route( '/contacts/' , function(){} , 'DELETE' );  // this handler will be called for DELETE requests
+$router->addRoute( '/contacts/' , function(){} , 'POST' ); // this handler will be called for POST requests
+$router->addRoute( '/contacts/' , function(){} , 'GET' );  // this handler will be called for GET requests
+$router->addRoute( '/contacts/' , function(){} , 'PUT' );  // this handler will be called for PUT requests
+$router->addRoute( '/contacts/' , function(){} , 'DELETE' );  // this handler will be called for DELETE requests
 ```
