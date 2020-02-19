@@ -1,6 +1,6 @@
 <?php
 
-class UtilsUnitTest extends \PHPUnit\Framework\TestCase
+class RouterUtilsUnitTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
