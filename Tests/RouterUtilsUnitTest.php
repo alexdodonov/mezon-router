@@ -20,7 +20,7 @@ class RouterUtilsUnitTest extends \PHPUnit\Framework\TestCase
                     $this,
                     'getCallableDescriptionDataProvider'
                 ],
-                'UtilsUnitTest::getCallableDescriptionDataProvider'
+                get_class($this) . '::getCallableDescriptionDataProvider'
             ],
             [
                 [
