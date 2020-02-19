@@ -1,8 +1,6 @@
 <?php
 namespace Mezon\Router;
 
-// - installation
-// - add in mezon/mezon documentation
 // TODO compare speed with klein
 // TODO compare speed with Symphony router
 // TODO [create|edit:action]
