@@ -475,6 +475,6 @@ class Router
     {
         $allRoutes = array_merge($this->deleteRoutes, $this->putRoutes, $this->postRoutes, $this->getRoutes);
 
-        return (isset($allRoutes[$route]));
+        return isset($allRoutes[$route]);
     }
 }

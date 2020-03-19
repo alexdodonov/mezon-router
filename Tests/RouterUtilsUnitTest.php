@@ -44,4 +44,16 @@ class RouterUtilsUnitTest extends \PHPUnit\Framework\TestCase
         // test body and assertions
         $this->assertEquals($result, \Mezon\Router\Utils::getCallableDescription($callable));
     }
+
+    /**
+     * Testing convertMethodNameToRoute
+     */
+    public function testMethodNameToRouteConversion(): void
+    {
+        // test body
+        $result = \Mezon\Router\Utils::convertMethodNameToRoute('actionSomeRouter');
+
+        // assertions
+        $this->assertEquals('some-router', $result);
+    }
 }

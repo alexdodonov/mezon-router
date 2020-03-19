@@ -1,23 +1,5 @@
 <?php
 
-/**
- * Mockup router class
- */
-class MockRouter extends \Mezon\Router\Router
-{
-
-    // TODO can we remove this class?
-    public $errorVar = 0;
-
-    /**
-     * Mock error handler.
-     */
-    public function setErrorVar()
-    {
-        $this->errorVar = 7;
-    }
-}
-
 class RouterUnitTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -46,14 +28,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     public function ilTest($route, $params): string
     {
         return $params['ids'];
-    }
-
-    /**
-     * Function simply returns string.
-     */
-    static public function staticHelloWorldOutput(): string
-    {
-        return 'Hello static world!';
     }
 
     /**
@@ -111,19 +85,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing one component router.
-     */
-    public function testOneComponentRouterStatic(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
-
-        $content = $router->callRoute('/index/');
-
-        $this->assertEquals('Hello static world!', $content);
-    }
-
-    /**
      * Testing unexisting route behaviour.
      */
     public function testUnexistingRoute(): void
@@ -175,74 +136,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
         $router->fetchActions($this);
         $content = $router->callRoute('/a1/');
         $this->assertEquals('action #1', $content, 'Invalid a1 route');
-    }
-
-    /**
-     * Testing one processor for all routes overlap.
-     */
-    public function testSingleAllProcessorOverlapUnexisting(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-        $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
-
-        $content = $router->callRoute('/some-route/');
-
-        $this->assertEquals('Hello world!', $content);
-    }
-
-    /**
-     * Testing one processor for all routes overlap.
-     */
-    public function testSingleAllProcessorOverlapExisting(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-        $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
-
-        $content = $router->callRoute('/index/');
-
-        $this->assertEquals('Hello world!', $content);
-    }
-
-    /**
-     * Testing one processor for all routes overlap.
-     */
-    public function testSingleAllProcessorExisting(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        $content = $router->callRoute('/index/');
-
-        $this->assertEquals('Hello static world!', $content);
-    }
-
-    /**
-     * Testing one processor for all routes overlap.
-     */
-    public function testSingleAllProcessorUnexisting(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', 'RouterUnitTest::staticHelloWorldOutput');
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        $content = $router->callRoute('/some-route/');
-
-        $this->assertEquals('Hello world!', $content);
     }
 
     /**
@@ -419,9 +312,11 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     public function testValidExtractedParameters(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[a:cat_id]/[i:item_id]', function ($route, $parameters) {
-            return $parameters['cat_id'] . $parameters['item_id'];
-        });
+        $router->addRoute(
+            '/catalog/[a:cat_id]/[i:item_id]',
+            function ($route, $parameters) {
+                return $parameters['cat_id'] . $parameters['item_id'];
+            });
 
         $result = $router->callRoute('/catalog/foo/1024/');
 
@@ -796,22 +691,25 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Method increments assertion count
+     */
+    protected function errorHandler(): void
+    {
+        $this->addToAssertionCount(1);
+    }
+
+    /**
      * Test validate custom error handlers.
      */
     public function testSetErrorHandler(): void
     {
-        $router = new MockRouter();
-        $current = $router->setNoProcessorFoundErrorHandler([
-            $router,
-            'setErrorVar'
-        ]);
+        $router = new \Mezon\Router\Router();
+        $router->setNoProcessorFoundErrorHandler(function () {
+            $this->errorHandler();
+        });
 
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $router->callRoute('/unexisting/');
-
-        $router->setNoProcessorFoundErrorHandler($current);
-
-        $this->assertEquals($router->errorVar, 7, 'Handler was not set');
     }
 
     /**
