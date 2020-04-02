@@ -135,6 +135,11 @@ class Router
             }
         } else {
             $routes = &$this->_getRoutesForMethod($requestMethod);
+            // this 'if' is for backward compatibility
+            // remove it on 02-04-2021
+            if (is_array($callback) && is_array($callback[1])) {
+                $callback = $callback[1];
+            }
             $routes[$route] = $callback;
         }
     }
@@ -168,7 +173,9 @@ class Router
 
                     throw (new \Exception("'$callableDescription' does not exists"));
                 } else {
+                    // @codeCoverageIgnoreStart
                     $callableDescription = \Mezon\Router\Utils::getCallableDescription($processor);
+                    // @codeCoverageIgnoreEnd
 
                     throw (new \Exception("'$callableDescription' must be callable entity"));
                 }

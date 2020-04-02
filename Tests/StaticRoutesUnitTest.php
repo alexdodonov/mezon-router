@@ -140,13 +140,64 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing routeExists
      */
-    public function testRouteExists():void{
+    public function testRouteExists(): void
+    {
         // setup
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/searching-route/', function(){});
+        $router->addRoute('/searching-route/', function () {});
 
         // test body and assertions
         $this->assertTrue($router->routeExists('/searching-route/'));
         $this->assertFalse($router->routeExists('not-searching-route'));
+    }
+
+    /**
+     * Testing exception throwing if the method was not found
+     */
+    public function testUnknownMethodException(): void
+    {
+        // setup
+        $_GET['r'] = 'unexisting-route-method';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/unexisting-route-method/', [
+            $this,
+            'unexistingMethod'
+        ]);
+
+        // assertions
+        $this->expectException(\Exception::class);
+
+        // test body
+        $router->callRoute('/unexisting-route-method/');
+    }
+
+    /**
+     * Method returns some testing string
+     *
+     * @return string
+     */
+    public function subArray(): string
+    {
+        return 'subArrayResult';
+    }
+
+    /**
+     * Testing sub array in route description
+     */
+    public function testSubArrayCompatibility(): void
+    {
+        // setup and test body
+        $_GET['r'] = 'sub-array';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/sub-array/', [
+            $this,
+            [
+                $this,
+                'subArray'
+            ]
+        ]);
+
+        // assertions
+        $this->assertEquals('subArrayResult', $router->callRoute('/sub-array/'));
     }
 }
