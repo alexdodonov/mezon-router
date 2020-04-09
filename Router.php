@@ -137,7 +137,7 @@ class Router
             $routes = &$this->_getRoutesForMethod($requestMethod);
             // this 'if' is for backward compatibility
             // remove it on 02-04-2021
-            if (is_array($callback) && is_array($callback[1])) {
+            if (is_array($callback) && isset($callback[1]) && is_array($callback[1])) {
                 $callback = $callback[1];
             }
             $routes[$route] = $callback;
@@ -162,22 +162,20 @@ class Router
                     return $processor($route, []);
                 }
 
-                $functionName = $processor[1];
+                $functionName = $processor[1] ?? null;
 
                 if (is_callable($processor) &&
                     (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName))) {
                     // passing route path and parameters
                     return call_user_func($processor, $route, []);
-                } elseif (method_exists($processor[0], $functionName) === false) {
-                    $callableDescription = \Mezon\Router\Utils::getCallableDescription($processor);
-
-                    throw (new \Exception("'$callableDescription' does not exists"));
                 } else {
-                    // @codeCoverageIgnoreStart
                     $callableDescription = \Mezon\Router\Utils::getCallableDescription($processor);
-                    // @codeCoverageIgnoreEnd
 
-                    throw (new \Exception("'$callableDescription' must be callable entity"));
+                    if (isset($processor[0]) && method_exists($processor[0], $functionName) === false) {
+                        throw (new \Exception("'$callableDescription' does not exists"));
+                    } else {
+                        throw (new \Exception("'$callableDescription' must be callable entity"));
+                    }
                 }
             }
         }

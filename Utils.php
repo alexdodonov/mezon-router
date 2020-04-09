@@ -76,13 +76,15 @@ class Utils
     {
         if (is_string($processor)) {
             return $processor;
-        } elseif (is_object($processor[0])) {
+        } elseif (isset($processor[0]) && isset($processor[1]) && is_object($processor[0])) {
             return get_class($processor[0]) . '::' . $processor[1];
-        } else {
+        } elseif (isset($processor[0]) && isset($processor[1]) && is_string($processor[0])) {
             return $processor[0] . '::' . $processor[1];
+        } else {
+            return serialize($processor);
         }
     }
-    
+
     /**
      * Method detects if the $string is a parameter or a static component of the route
      *

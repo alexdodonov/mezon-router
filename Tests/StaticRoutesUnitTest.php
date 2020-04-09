@@ -200,4 +200,21 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         // assertions
         $this->assertEquals('subArrayResult', $router->callRoute('/sub-array/'));
     }
+
+    /**
+     * Testing completely not callable trash
+     */
+    public function testNotCallableTrash(): void
+    {
+        // setup
+        $_GET['r'] = 'trash';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/trash/', []);
+
+        // assertions
+        $this->expectException(\Exception::class);
+
+        // test body
+        $router->callRoute('/trash/');
+    }
 }
