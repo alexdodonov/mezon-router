@@ -53,9 +53,9 @@ class Router
     /**
      * Method wich handles invalid route error
      *
-     * @var array
+     * @var callable
      */
-    private $invalidRouteErrorHandler = [];
+    private $invalidRouteErrorHandler;
 
     /**
      * Parsed parameters of the calling router
@@ -77,7 +77,7 @@ class Router
     /**
      * Constructor
      */
-    function __construct()
+    public function __construct()
     {
         $_SERVER['REQUEST_METHOD'] = $this->getRequestMethod();
 
@@ -242,7 +242,7 @@ class Router
     private function _matchParameterAndComponent(&$component, string $parameter)
     {
         $parameterData = explode(':', trim($parameter, '[]'));
-        $return = false;
+        $return = '';
 
         switch ($parameterData[0]) {
             case ('i'):
@@ -294,7 +294,7 @@ class Router
                 $parameterName = $this->_matchParameterAndComponent($cleanRoute[$i], $cleanPattern[$i]);
 
                 // it's a parameter
-                if ($parameterName !== false) {
+                if ($parameterName !== '') {
                     // parameter was matched, store it!
                     $paremeters[$parameterName] = $cleanRoute[$i];
                 } else {
@@ -318,7 +318,7 @@ class Router
      *            Callable router's processor
      * @param string $route
      *            Route
-     * @return string Result of the router'scall or false if any error occured
+     * @return string|bool Result of the router'scall or false if any error occured
      */
     private function _findDynamicRouteProcessor(array &$processors, string $route)
     {
