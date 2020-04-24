@@ -990,40 +990,21 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing getParam for existing param
+     * Testing exception throwing for unexisting request method
      */
-    public function testGettingExistingParameter(): void
+    public function testExceptionForUnexistingRequestMethod(): void
     {
         // setup
+        $_SERVER['REQUEST_METHOD'] = 'OPTION';
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function () {
             // do nothing
         });
-
-        $router->callRoute('/catalog/1/');
-
-        // test body
-        $foo = $router->getParam('foo');
 
         // assertions
-        $this->assertEquals(1, $foo);
-    }
+        $this->expectException(Exception::class);
 
-    /**
-     * Testing hasParam method
-     */
-    public function testValidatingParameter(): void
-    {
-        // setup
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function () {
-            // do nothing
-        });
-
+        // test body
         $router->callRoute('/catalog/1/');
-
-        // test body and assertions
-        $this->assertTrue($router->hasParam('foo'));
-        $this->assertFalse($router->hasParam('unexisting'));
     }
 }
