@@ -217,4 +217,172 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         // test body
         $router->callRoute('/trash/');
     }
+
+    /**
+     * Testing array routes
+     */
+    public function testArrayRoutes(): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/item/', function ($route) {
+            return $route;
+        }, 'GET');
+
+        $result = $router->callRoute([
+            'catalog',
+            'item'
+        ]);
+
+        $this->assertEquals($result, '/catalog/item/', 'Invalid extracted route');
+    }
+
+    /**
+     * Testing empty array routes
+     */
+    public function testEmptyArrayRoutes(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/catalog/item/';
+
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/item/', function ($route) {
+            return $route;
+        }, 'GET');
+
+        $result = $router->callRoute([
+            0 => ''
+        ]);
+
+        $this->assertEquals($result, '/catalog/item/', 'Invalid extracted route');
+    }
+
+    /**
+     * Testing empty array routes
+     */
+    public function testIndexRoute(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/';
+
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/index/', function ($route) {
+            return $route;
+        }, 'GET');
+
+        $result = $router->callRoute([
+            0 => ''
+        ]);
+
+        $this->assertEquals($result, '/index/', 'Invalid extracted route');
+    }
+
+    /**
+     * Testing empty array routes
+     */
+    public function testMultipleRequestTypes(): void
+    {
+        // setup
+        $_SERVER['REQUEST_URI'] = '/';
+
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/index/', function ($route) {
+            return $route;
+        }, [
+            'GET',
+            'POST'
+        ]);
+
+        $router->callRoute([
+            0 => ''
+        ]);
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $result = $router->callRoute([
+            0 => ''
+        ]);
+
+        $this->assertEquals($result, '/index/', 'Invalid extracted route');
+    }
+
+    /**
+     * Testing static routes for DELETE requests.
+     */
+    public function testDeleteRequestForUnExistingStaticRoute(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'DELETE';
+
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "The processor was not found for the route /catalog/";
+
+        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+    }
+
+    /**
+     * Testing static routes for DELETE requests.
+     */
+    public function testDeleteRequestForExistingStaticRoute(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'DELETE';
+
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/', function ($route) {
+            return $route;
+        }, 'DELETE');
+
+        $result = $router->callRoute('/catalog/');
+
+        $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
+    }
+
+    /**
+     * Testing static routes for PUT requests.
+     */
+    public function testPutRequestForUnExistingStaticRoute(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'PUT';
+
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "The processor was not found for the route /catalog/";
+
+        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+    }
+
+    /**
+     * Testing static routes for PUT requests.
+     */
+    public function testPutRequestForExistingStaticRoute(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'PUT';
+
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/', function ($route) {
+            return $route;
+        }, 'PUT');
+
+        $result = $router->callRoute('/catalog/');
+
+        $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
+    }
 }
