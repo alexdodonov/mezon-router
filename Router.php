@@ -279,7 +279,7 @@ class Router
      *            Cleaned route splitted in parts
      * @param array $cleanPattern
      *            Route pattern
-     * @return array Array of route's parameters
+     * @return array|bool Array of route's parameters
      */
     private function _matchRouteAndPattern(array $cleanRoute, array $cleanPattern)
     {
