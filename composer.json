@@ -11,7 +11,8 @@
 		}
 	],
 	"require": {
-		"php": ">=7.2.0"
+		"php": ">=7.2.0",
+		"phpunit/phpunit": "^9.1"
 	},
 	"support": {
 		"email": "alexey@dodonov.pro",
