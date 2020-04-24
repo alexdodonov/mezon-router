@@ -1,4 +1,4 @@
-# Routing [![Build Status](https://travis-ci.com/alexdodonov/mezon-router.svg?branch=master)](https://travis-ci.com/alexdodonov/mezon-router) [![codecov](https://codecov.io/gh/alexdodonov/mezon-router/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdodonov/mezon-router)
+# Routing [![Build Status](https://travis-ci.com/alexdodonov/mezon-router.svg?branch=master)](https://travis-ci.com/alexdodonov/mezon-router) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/?branch=master) [![codecov](https://codecov.io/gh/alexdodonov/mezon-router/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdodonov/mezon-router)
 ## Intro
 Mezon provides simple routing class for your needs.
 
