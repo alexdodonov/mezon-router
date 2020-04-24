@@ -12,6 +12,14 @@ composer require mezon/router
 
 And that's all )
 
+## Reasons to use
+
+The mezon/router is more than 25 times faster then klein/klein router (in some cases).
+
+![results](doc/router.png)
+
+[Here you can see details](doc/router.md)
+
 ## Simple routes
 
 Router allows you to map URLs on your php code and call when ever it needs to be calld.

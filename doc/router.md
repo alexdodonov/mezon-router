@@ -1,4 +1,4 @@
-Hi, all. Recently I have decided to measure speed of my [router](https://github.com/alexdodonov/mezon-router)
+Recently I have decided to measure speed of my [router](https://github.com/alexdodonov/mezon-router)
 
 And results were quite interesting.
 
