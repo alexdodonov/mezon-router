@@ -385,4 +385,46 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
     }
+
+    /**
+     * Testing static routes for POST requests.
+     */
+    public function testPostRequestForUnExistingStaticRoute(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "The processor was not found for the route /catalog/";
+
+        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+    }
+
+    /**
+     * Testing static routes for POST requests.
+     */
+    public function testPostRequestForExistingStaticRoute(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/', function ($route) {
+            return $route;
+        }, 'POST');
+
+        $result = $router->callRoute('/catalog/');
+
+        $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
+    }
 }

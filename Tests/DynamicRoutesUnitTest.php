@@ -271,88 +271,337 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('1', $result, 'Float data violation');
     }
-    
+
     /**
      * Testing dynamic routes for DELETE requests.
      */
     public function testDeleteRequestForUnExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
-        
+
         $exception = '';
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:cat_id]', [
             $this,
             'helloWorldOutput'
         ]);
-        
+
         try {
             $router->callRoute('/catalog/1024/');
         } catch (Exception $e) {
             $exception = $e->getMessage();
         }
-        
+
         $msg = "The processor was not found for the route /catalog/1024/";
-        
+
         $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
     }
-    
+
     /**
      * Testing dynamic routes for DELETE requests.
      */
     public function testDeleteRequestForExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
-        
+
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:cat_id]', function ($route) {
             return $route;
         }, 'DELETE');
-            
-            $result = $router->callRoute('/catalog/1024/');
-            
-            $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
+
+        $result = $router->callRoute('/catalog/1024/');
+
+        $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
     }
-    
+
     /**
      * Testing dynamic routes for PUT requests.
      */
     public function testPutRequestForUnExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'PUT';
-        
+
         $exception = '';
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:cat_id]', [
             $this,
             'helloWorldOutput'
         ]);
-        
+
         try {
             $router->callRoute('/catalog/1024/');
         } catch (Exception $e) {
             $exception = $e->getMessage();
         }
-        
+
         $msg = "The processor was not found for the route /catalog/1024/";
-        
+
         $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
     }
-    
+
     /**
      * Testing dynamic routes for PUT requests.
      */
     public function testPutRequestForExistingDynamicRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'PUT';
-        
+
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:cat_id]', function ($route) {
             return $route;
         }, 'PUT');
-            
-            $result = $router->callRoute('/catalog/1024/');
-            
-            $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
+
+        $result = $router->callRoute('/catalog/1024/');
+
+        $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
+    }
+
+    /**
+     * Testing dynamic routes for POST requests.
+     */
+    public function testPostRequestForUnExistingDynamicRoute(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:cat_id]', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/1024/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "The processor was not found for the route /catalog/1024/";
+
+        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+    }
+
+    /**
+     * Testing dynamic routes for POST requests.
+     */
+    public function testPostRequestForExistingDynamicRoute(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:cat_id]', function ($route) {
+            return $route;
+        }, 'POST');
+
+        $result = $router->callRoute('/catalog/1024/');
+
+        $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
+    }
+
+    /**
+     * Testing invalid data types behaviour.
+     */
+    public function testInvalidType(): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[unexisting-type:i]/item/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/1024/item/');
+            $this->assertFalse(true, 'Exception expected');
+        } catch (Exception $e) {
+            $this->assertFalse(false, '');
+        }
+    }
+
+    /**
+     * Testing invalid data types behaviour.
+     */
+    public function testValidInvalidTypes(): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:cat_id]/item/[unexisting-type-trace:item_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/1024/item/2048/');
+            $this->assertFalse(true, 'Exception expected');
+        } catch (Exception $e) {
+            $this->assertFalse(false, '');
+        }
+    }
+
+    /**
+     * Testing valid data types behaviour.
+     */
+    public function testValidTypes(): void
+    {
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:cat_id]/item/[i:item_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/1024/item/2048/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "Illegal parameter type";
+
+        $this->assertFalse(strpos($exception, $msg), 'Valid type expected');
+    }
+
+    /**
+     * Testing valid integer data types behaviour.
+     */
+    public function testValidIntegerParams(): void
+    {
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:cat_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/1024/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "Illegal parameter type";
+
+        $this->assertFalse(strpos($exception, $msg), 'Valid type expected');
+    }
+
+    /**
+     * Testing valid alnum data types behaviour.
+     */
+    public function testValidAlnumParams(): void
+    {
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[a:cat_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/foo/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "Illegal parameter type";
+
+        $this->assertFalse(strpos($exception, $msg), 'Valid type expected');
+    }
+
+    /**
+     * Testing invalid integer data types behaviour.
+     */
+    public function testInValidIntegerParams(): void
+    {
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:cat_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/a1024/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "The processor was not found for the route /catalog/a1024/";
+
+        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+    }
+
+    /**
+     * Testing invalid alnum data types behaviour.
+     */
+    public function testInValidAlnumParams(): void
+    {
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[a:cat_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/catalog/~foo/');
+        } catch (Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "The processor was not found for the route /catalog/~foo/";
+
+        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+    }
+
+    /**
+     * Testing parameter extractor.
+     */
+    public function testValidExtractedParameter(): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[a:cat_id]/', function ($route, $parameters) {
+            return $parameters['cat_id'];
+        });
+
+        $result = $router->callRoute('/catalog/foo/');
+
+        $this->assertEquals($result, 'foo', 'Invalid extracted parameter');
+    }
+
+    /**
+     * Testing parameter extractor.
+     */
+    public function testValidExtractedParameters(): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute(
+            '/catalog/[a:cat_id]/[i:item_id]',
+            function ($route, $parameters) {
+                return $parameters['cat_id'] . $parameters['item_id'];
+            });
+
+        $result = $router->callRoute('/catalog/foo/1024/');
+
+        $this->assertEquals($result, 'foo1024', 'Invalid extracted parameter');
+    }
+
+    /**
+     * Testing parameter extractor.
+     */
+    public function testValidRouteParameter(): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/', function ($route) {
+            return $route;
+        });
+        $router->addRoute('/catalog/[i:cat_id]', function ($route) {
+            return $route;
+        });
+
+        $result = $router->callRoute('/catalog/');
+
+        $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
+
+        $result = $router->callRoute('/catalog/1024/');
+
+        $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
     }
 }
