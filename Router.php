@@ -340,7 +340,7 @@ class Router
      *
      * @param string $route
      *            Route
-     * @return string Result of the route call
+     * @return string|bool Result of the route call
      */
     private function _tryDynamicRoutes(string $route)
     {
