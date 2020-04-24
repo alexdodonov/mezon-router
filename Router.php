@@ -288,8 +288,9 @@ class Router
         }
 
         $paremeters = [];
+        $patternsCount = count($cleanPattern);
 
-        for ($i = 0; $i < count($cleanPattern); $i ++) {
+        for ($i = 0; $i < $patternsCount; $i ++) {
             if (\Mezon\Router\Utils::isParameter($cleanPattern[$i])) {
                 $parameterName = $this->_matchParameterAndComponent($cleanRoute[$i], $cleanPattern[$i]);
 
