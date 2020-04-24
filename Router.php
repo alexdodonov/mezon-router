@@ -410,7 +410,7 @@ class Router
     /**
      * Processing specified router
      *
-     * @param string $route
+     * @param mixed $route
      *            Route
      */
     public function callRoute($route)
