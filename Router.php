@@ -122,7 +122,7 @@ class Router
      *            Route
      * @param mixed $callback
      *            Collback wich will be processing route call.
-     * @param string $requestMethod
+     * @param string|array $requestMethod
      *            Request type
      */
     public function addRoute(string $route, $callback, $requestMethod = 'GET'): void
