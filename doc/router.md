@@ -97,7 +97,7 @@ for ($i = 0; $i < $iterationCount2; $i ++) {
   $routerTest2->dispatch(null,null,true,\Klein\Klein::*DISPATCH_CAPTURE_AND_RETURN*);
 }
 
-$endTime2 = *microtime(true);
+$endTime2 = microtime(true);
 ```
 
 I have got the following results:
