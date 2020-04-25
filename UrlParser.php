@@ -104,7 +104,6 @@ class UrlParser
     private function _matchParameterAndComponent(&$component, string $parameter)
     {
         $parameterData = explode(':', trim($parameter, '[]'));
-        $return = '';
 
         if (isset($this->types[$parameterData[0]])) {
             if ($this->types[$parameterData[0]]($component)) {
@@ -115,8 +114,6 @@ class UrlParser
         } else {
             throw (new \Exception('Unknown parameter type : ' . $parameterData[0]));
         }
-
-        return $return;
     }
 
     /**
