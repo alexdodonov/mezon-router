@@ -167,54 +167,45 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing 'clear' method.
+     * Data provider
+     *
+     * @return array
      */
-    public function testClearMethod(): void
+    public function clearMethodTestDataProvider(): array
+    {
+        return [
+            [
+                'POST'
+            ],
+            [
+                'GET'
+            ],
+            [
+                'PUT'
+            ],
+            [
+                'DELETE'
+            ]
+        ];
+    }
+
+    /**
+     * Testing 'clear' method
+     *
+     * @param string $method
+     *            request method
+     * @dataProvider clearMethodTestDataProvider
+     */
+    public function testClearMethod(string $method): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', function () {
-            return 'POST';
-        }, 'POST');
-        $router->addRoute('/catalog/', function () {
-            return 'GET';
-        }, 'GET');
-        $router->addRoute('/catalog/', function () {
-            return 'PUT';
-        }, 'PUT');
-        $router->addRoute('/catalog/', function () {
-            return 'DELETE';
-        }, 'DELETE');
+        $router->addRoute('/catalog/', function () use ($method) {
+            return $method;
+        }, $method);
         $router->clear();
 
         try {
-            $_SERVER['REQUEST_METHOD'] = 'POST';
-            $router->callRoute('/catalog/');
-            $flag = 'not cleared';
-        } catch (Exception $e) {
-            $flag = 'cleared';
-        }
-        $this->assertEquals($flag, 'cleared', 'Data was not cleared');
-
-        try {
-            $_SERVER['REQUEST_METHOD'] = 'GET';
-            $router->callRoute('/catalog/');
-            $flag = 'not cleared';
-        } catch (Exception $e) {
-            $flag = 'cleared';
-        }
-        $this->assertEquals($flag, 'cleared', 'Data was not cleared');
-
-        try {
-            $_SERVER['REQUEST_METHOD'] = 'PUT';
-            $router->callRoute('/catalog/');
-            $flag = 'not cleared';
-        } catch (Exception $e) {
-            $flag = 'cleared';
-        }
-        $this->assertEquals($flag, 'cleared', 'Data was not cleared');
-
-        try {
-            $_SERVER['REQUEST_METHOD'] = 'DELETE';
+            $_SERVER['REQUEST_METHOD'] = $method;
             $router->callRoute('/catalog/');
             $flag = 'not cleared';
         } catch (Exception $e) {

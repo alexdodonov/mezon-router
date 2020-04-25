@@ -222,6 +222,20 @@ class UrlParser
     }
 
     /**
+     * Does the handler fits to route
+     *
+     * @param string $i
+     *            handler
+     * @param string $route
+     *            route
+     * @return bool true if the handler fits tto route
+     */
+    private function routeFits(string $i, string $route): bool
+    {
+        return $i == $route || $i == '/*/';
+    }
+
+    /**
      * Method searches route processor
      *
      * @param mixed $processors
@@ -234,7 +248,7 @@ class UrlParser
     {
         foreach ($processors as $i => $processor) {
             // exact router or 'all router'
-            if ($i == $route || $i == '/*/') {
+            if ($this->routeFits($i, $route)) {
                 if ($this->isFunction($processor)) {
                     return $processor($route, []);
                 }
