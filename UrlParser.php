@@ -5,11 +5,92 @@ class UrlParser
 {
 
     /**
+     * Supported types of URL parameters
+     *
+     * @var array
+     */
+    private $types = [];
+
+    /**
      * Parsed parameters of the calling router
      *
      * @var array
      */
     protected $parameters = [];
+
+    /**
+     * Method handles integer type
+     *
+     * @param string $value
+     *            value to be parsed
+     * @return bool was the value parsed
+     */
+    public static function intHandler(string &$value): bool
+    {
+        if (is_numeric($value)) {
+            $value = $value + 0;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Method handles command type
+     *
+     * @param string $value
+     *            value to be parsed
+     * @return bool was the value parsed
+     */
+    public static function commandHandler(string &$value): bool
+    {
+        if (preg_match('/^([a-z0-9A-Z_\/\-\.\@]+)$/', $value)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Method handles list of integers type
+     *
+     * @param string $value
+     *            value to be parsed
+     * @return bool was the value parsed
+     */
+    public static function intListHandler(string &$value): bool
+    {
+        if (preg_match('/^([0-9,]+)$/', $value)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Method handles string type
+     *
+     * @param string $value
+     *            value to be parsed
+     * @return bool was the value parsed
+     */
+    public static function stringHandler(string &$value): bool
+    {
+        $value = htmlspecialchars($value, ENT_QUOTES);
+
+        return true;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->types['i'] = '\Mezon\Router\UrlParser::intHandler';
+        $this->types['a'] = '\Mezon\Router\UrlParser::commandHandler';
+        $this->types['il'] = '\Mezon\Router\UrlParser::intListHandler';
+        $this->types['s'] = '\Mezon\Router\UrlParser::stringHandler';
+    }
 
     /**
      * Matching parameter and component
@@ -25,29 +106,14 @@ class UrlParser
         $parameterData = explode(':', trim($parameter, '[]'));
         $return = '';
 
-        switch ($parameterData[0]) {
-            case ('i'):
-                if (is_numeric($component)) {
-                    $component = $component + 0;
-                    $return = $parameterData[1];
-                }
-                break;
-            case ('a'):
-                if (preg_match('/^([a-z0-9A-Z_\/\-\.\@]+)$/', $component)) {
-                    $return = $parameterData[1];
-                }
-                break;
-            case ('il'):
-                if (preg_match('/^([0-9,]+)$/', $component)) {
-                    $return = $parameterData[1];
-                }
-                break;
-            case ('s'):
-                $component = htmlspecialchars($component, ENT_QUOTES);
-                $return = $parameterData[1];
-                break;
-            default:
-                throw (new \Exception('Illegal parameter type/value : ' . $parameterData[0]));
+        if (isset($this->types[$parameterData[0]])) {
+            if ($this->types[$parameterData[0]]($component)) {
+                return $parameterData[1];
+            } else {
+                return '';
+            }
+        } else {
+            throw (new \Exception('Unknown parameter type : ' . $parameterData[0]));
         }
 
         return $return;
@@ -116,7 +182,48 @@ class UrlParser
 
         return false;
     }
-    
+
+    /**
+     * Checking that method exists
+     *
+     * @param object|array $processor
+     *            callback object
+     * @param ?string $functionName
+     *            callback method
+     * @return bool true if method does not exists
+     */
+    private function methodDoesNotExists($processor, ?string $functionName): bool
+    {
+        return isset($processor[0]) && method_exists($processor[0], $functionName) === false;
+    }
+
+    /**
+     * Checking that handler can be called
+     *
+     * @param object|array $processor
+     *            callback object
+     * @param ?string $functionName
+     *            callback method
+     * @return bool
+     */
+    private function canBeCalled($processor, ?string $functionName): bool
+    {
+        return is_callable($processor) &&
+            (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName));
+    }
+
+    /**
+     * Checking that processor can be called as function
+     *
+     * @param mixed $processor
+     *            route processor
+     * @return bool true if the $processor can be called as function
+     */
+    private function isFunction($processor): bool
+    {
+        return is_callable($processor) && is_array($processor) === false;
+    }
+
     /**
      * Method searches route processor
      *
@@ -131,25 +238,24 @@ class UrlParser
         foreach ($processors as $i => $processor) {
             // exact router or 'all router'
             if ($i == $route || $i == '/*/') {
-                if (is_callable($processor) && is_array($processor) === false) {
+                if ($this->isFunction($processor)) {
                     return $processor($route, []);
                 }
 
                 $functionName = $processor[1] ?? null;
 
-                if (is_callable($processor) &&
-                    (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName))) {
-                        // passing route path and parameters
-                        return call_user_func($processor, $route, []);
-                    } else {
-                        $callableDescription = \Mezon\Router\Utils::getCallableDescription($processor);
+                if ($this->canBeCalled($processor, $functionName)) {
+                    // passing route path and parameters
+                    return call_user_func($processor, $route, []);
+                } else {
+                    $callableDescription = \Mezon\Router\Utils::getCallableDescription($processor);
 
-                        if (isset($processor[0]) && method_exists($processor[0], $functionName) === false) {
-                            throw (new \Exception("'$callableDescription' does not exists"));
-                        } else {
-                            throw (new \Exception("'$callableDescription' must be callable entity"));
-                        }
+                    if ($this->methodDoesNotExists($processor, $functionName)) {
+                        throw (new \Exception("'$callableDescription' does not exists"));
+                    } else {
+                        throw (new \Exception("'$callableDescription' must be callable entity"));
                     }
+                }
             }
         }
 
