@@ -1,9 +1,8 @@
 <?php
 namespace Mezon\Router;
 
-// TODO compare speed with Symphony router
-// TODO [create|edit:action]
-// TODO /date/[i:year]-[i:month]-[i:day]
+// TODO add custom types
+// TODO PSR-7 compliant
 
 /**
  * Class Router

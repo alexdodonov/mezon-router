@@ -124,3 +124,5 @@ mezon/router now is:
 - **10.0 points** on scrutinizer-ci.com
 
 Repo on github.com: https://github.com/alexdodonov/mezon-router
+
+# I'll be very glad if you'll press "STAR" button )
