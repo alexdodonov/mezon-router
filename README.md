@@ -151,3 +151,5 @@ $router->addRoute( '/contacts/' , function(){} , 'GET' );  // this handler will 
 $router->addRoute( '/contacts/' , function(){} , 'PUT' );  // this handler will be called for PUT requests
 $router->addRoute( '/contacts/' , function(){} , 'DELETE' );  // this handler will be called for DELETE requests
 ```
+
+# I'll be very glad if you'll press "STAR" button )
