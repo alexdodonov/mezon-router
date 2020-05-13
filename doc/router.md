@@ -102,9 +102,9 @@ $endTime2 = microtime(true);
 
 I have got the following results:
 
-![table](table-klein.png)
+![table](images/table-klein.png)
 
-![results](graph-klein.png)
+![results](images/graph-klein.png)
 
 As you can see - Mezon router is up to 25 times faster than Klein router.
 

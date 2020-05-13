@@ -27,11 +27,11 @@ $request = Illuminate\Http\Request::createFromGlobals();
 $app['router']->dispatch($request);
 ```
 
-Results are quite astonishing!
+Results are quite astonishing (the bigger numbers means better)!
 
-![table](table-laravel.png)
+![table](images/table-laravel.png)
 
-![graph](graph-laravel.png)
+![graph](images/graph-laravel.png)
 
 As you can see - Mezon router is 30 to 50 times faster than Laravel!!!
 
