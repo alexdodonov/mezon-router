@@ -110,9 +110,9 @@ $endTime2 = microtime(true);
 
 And the results are (the bigger numbers means better):
 
-![table](table-symfony.png)
+![table](images/table-symfony.png)
 
-![graph](graph-symfony.png)
+![graph](images/graph-symfony.png)
 
 As you can see - Mezon router is 7 to 15 times faster than Symfony router.
 
