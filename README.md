@@ -14,11 +14,22 @@ And that's all )
 
 ## Reasons to use
 
-The mezon/router is more than 25 times faster then klein/klein router (in some cases).
+The mezon/router is 
 
-![results](doc/router.png)
+- more than 25 times faster then klein/klein router;
+- 7 to 15 times faster then Symfony router;
+- 30 to 50 times faster then Laravel router;
+- more then 1,5 times faster then nikic/fast-toute;
 
-[Here you can see details](doc/router.md)
+![results](doc/images/graph-fast-route.png)
+
+[mezon and klein comparison](doc/router.md)
+
+[mezon and symfony comparison](doc/router-symfony.md)
+
+[mezon and laravel comparison](doc/router-laravel.md)
+
+[mezon and fast-route comparison](doc/fast-route.md)
 
 ## Simple routes
 
