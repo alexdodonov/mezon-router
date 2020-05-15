@@ -21,7 +21,7 @@ The mezon/router is
 - 30 to 50 times faster then Laravel router;
 - more then 1,5 times faster then nikic/fast-toute;
 
-![results](doc/images/graph-fast-route.png)
+![results](doc/images/graph-yii2.png)
 
 [mezon and klein comparison](doc/router.md)
 
@@ -30,6 +30,8 @@ The mezon/router is
 [mezon and laravel comparison](doc/router-laravel.md)
 
 [mezon and fast-route comparison](doc/fast-route.md)
+
+[mezon and yii2 router comparison](doc/yii2.md)
 
 ## Simple routes
 
