@@ -96,7 +96,7 @@ In this table you can see amount of dispatched routes per second. So this means 
 
 ![graph](images/graph-yii2.png)
 
-As you can see - mezon/touter is about 1,5 times faster than nikic/fast-route.
+As you can see - mezon/touter is from 24 to 43 times faster than Yii2 router.
 
 # What is mezon/router?
 
