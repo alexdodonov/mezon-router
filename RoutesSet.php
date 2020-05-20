@@ -1,7 +1,7 @@
 <?php
 namespace Mezon\Router;
 
-class RoutesSet
+trait RoutesSet
 {
 
     /**

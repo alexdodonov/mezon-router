@@ -20,26 +20,16 @@ namespace Mezon\Router;
 class Router
 {
 
+    use \Mezon\Router\RoutesSet;
+
+    use \Mezon\Router\UrlParser;
+
     /**
      * Method wich handles invalid route error
      *
      * @var callable
      */
     private $invalidRouteErrorHandler;
-
-    /**
-     * Set of routes
-     *
-     * @var \Mezon\Router\RoutesSet
-     */
-    private $routesSet = null;
-
-    /**
-     * URL parser
-     *
-     * @var \Mezon\Router\UrlParser
-     */
-    private $urlParser = null;
 
     /**
      * Method returns request method
@@ -63,8 +53,7 @@ class Router
             'noProcessorFoundErrorHandler'
         ];
 
-        $this->routesSet = new RoutesSet();
-        $this->urlParser = new UrlParser();
+        $this->initDefaultTypes();
     }
 
     /**
@@ -80,8 +69,8 @@ class Router
         foreach ($methods as $method) {
             if (strpos($method, 'action') === 0) {
                 $route = \Mezon\Router\Utils::convertMethodNameToRoute($method);
-                $this->routesSet->addGetRoute($route, $object, $method);
-                $this->routesSet->addPostRoute($route, $object, $method);
+                $this->addGetRoute($route, $object, $method);
+                $this->addPostRoute($route, $object, $method);
             }
         }
     }
@@ -108,7 +97,7 @@ class Router
                 $this->addRoute($route, $callback, $r);
             }
         } else {
-            $routes = &$this->routesSet->getRoutesForMethod($requestMethod);
+            $routes = &$this->getRoutesForMethod($requestMethod);
             // this 'if' is for backward compatibility
             // remove it on 02-04-2021
             if (is_array($callback) && isset($callback[1]) && is_array($callback[1])) {
@@ -127,7 +116,7 @@ class Router
     public function noProcessorFoundErrorHandler(string $route)
     {
         throw (new \Exception(
-            'The processor was not found for the route ' . $route . ' in ' . $this->routesSet->getAllRoutesTrace()));
+            'The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace()));
     }
 
     /**
@@ -154,63 +143,16 @@ class Router
     public function callRoute($route)
     {
         $route = \Mezon\Router\Utils::prepareRoute($route);
+        $requestMethod = $this->getRequestMethod();
 
-        if (($result = $this->urlParser->findStaticRouteProcessor(
-            $this->routesSet->getRoutesForMethod($this->getRequestMethod()),
-            $route)) !== false) {
+        if (($result = $this->findStaticRouteProcessor($this->getRoutesForMethod($requestMethod), $route)) !== false) {
             return $result;
         }
 
-        if (($result = $this->urlParser->findDynamicRouteProcessor(
-            $this->routesSet->getRoutesForMethod($this->getRequestMethod()),
-            $route)) !== false) {
+        if (($result = $this->findDynamicRouteProcessor($this->getRoutesForMethod($requestMethod), $route)) !== false) {
             return $result;
         }
 
         call_user_func($this->invalidRouteErrorHandler, $route);
-    }
-
-    /**
-     * Method clears router data.
-     */
-    public function clear()
-    {
-        $this->routesSet->clear();
-    }
-
-    /**
-     * Method returns route parameter
-     *
-     * @param string $name
-     *            Route parameter
-     * @return string Route parameter
-     */
-    public function getParam(string $name): string
-    {
-        return $this->urlParser->getParam($name);
-    }
-
-    /**
-     * Does parameter exists
-     *
-     * @param string $name
-     *            Param name
-     * @return bool True if the parameter exists
-     */
-    public function hasParam(string $name): bool
-    {
-        return $this->urlParser->hasParam($name);
-    }
-
-    /**
-     * Method returns true if the router exists
-     *
-     * @param string $route
-     *            checking route
-     * @return bool true if the router exists, false otherwise
-     */
-    public function routeExists(string $route): bool
-    {
-        return $this->routesSet->routeExists($route);
     }
 }

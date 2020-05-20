@@ -1,7 +1,7 @@
 <?php
 namespace Mezon\Router;
 
-class UrlParser
+trait UrlParser
 {
 
     /**
@@ -82,9 +82,9 @@ class UrlParser
     }
 
     /**
-     * Constructor
+     * Init types
      */
-    public function __construct()
+    protected function initDefaultTypes()
     {
         $this->types['i'] = '\Mezon\Router\UrlParser::intHandler';
         $this->types['a'] = '\Mezon\Router\UrlParser::commandHandler';
