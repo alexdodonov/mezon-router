@@ -33,6 +33,8 @@ The mezon/router is
 
 [mezon and yii2 router comparison](doc/yii2.md)
 
+# I'll be very glad if you'll press "STAR" button )
+
 ## Simple routes
 
 Router allows you to map URLs on your php code and call when ever it needs to be calld.
@@ -165,4 +167,12 @@ $router->addRoute( '/contacts/' , function(){} , 'PUT' );  // this handler will 
 $router->addRoute( '/contacts/' , function(){} , 'DELETE' );  // this handler will be called for DELETE requests
 ```
 
-# I'll be very glad if you'll press "STAR" button )
+# Learn more
+
+More information can be found here:
+
+[Twitter](https://twitter.com/mezonphp)
+
+[dev.to](https://dev.to/alexdodonov)
+
+[Slack](https://join.slack.com/t/mezon-workspace/shared_invite/zt-enf67n8z-N8PdYD1kMAwi4FpsS24twA)
