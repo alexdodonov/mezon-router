@@ -167,7 +167,7 @@ class Router
      * Method returns call back by it's router
      * 
      * @param array|string $route route
-     * @return array|callable route callback
+     * @return array|callable|bool route callback
      */
     public function getCallback($route){
         $route = \Mezon\Router\Utils::prepareRoute($route);

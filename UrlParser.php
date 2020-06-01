@@ -274,7 +274,7 @@ trait UrlParser
     /**
      * Method executes route handler
      *
-     * @param array|callable $processor
+     * @param mixed $processor
      * @param string $route
      * @return mixed route handler execution result
      */
