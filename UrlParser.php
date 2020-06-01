@@ -163,7 +163,7 @@ trait UrlParser
      *            Callable router's processor
      * @param string $route
      *            Route
-     * @return array|callable route's handler
+     * @return array|callable|bool route's handler or false in case the handler was not found
      */
     protected function getDynamicRouteProcessor(array &$processors, string $route)
     {
@@ -207,7 +207,7 @@ trait UrlParser
     /**
      * Checking that method exists
      *
-     * @param object|array $processor
+     * @param mixed $processor
      *            callback object
      * @param ?string $functionName
      *            callback method
@@ -221,7 +221,7 @@ trait UrlParser
     /**
      * Checking that handler can be called
      *
-     * @param object|array $processor
+     * @param object|array|callable $processor
      *            callback object
      * @param ?string $functionName
      *            callback method
@@ -307,7 +307,7 @@ trait UrlParser
      *            Callable router's processor
      * @param string $route
      *            Route
-     * @return array|callable route handler
+     * @return array|callable|bool route handler
      */
     protected function getStaticRouteProcessor(&$processors, string $route)
     {
