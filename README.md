@@ -40,11 +40,11 @@ The mezon/router is
 
 ## Simple routes
 
-Router allows you to map URLs on your php code and call when ever it needs to be calld.
+Router allows you to map URLs on your php code and call when ever it needs to be called.
 
 Router supports simple routes like in the example above - example.com/contacts/
 
-Each Application object implicity creates routes for it's 'action[action-name]' methods, where 'action-name' will be stored as a route. Here is small (as usual)) ) example:
+Each Application object implicitly creates routes for it's 'action[action-name]' methods, where 'action-name' will be stored as a route. Here is small (as usual)) ) example:
 
 ```PHP
 class           MySite
@@ -87,15 +87,21 @@ $router = new \Mezon\Router\Router();
 $router->fetchActions( $mySite = new MySite() );
 ```
 
-will create router object and loads information about it's actions and create routes. Strictly it will create two routes, because the class MySite has only two methods wich start wth 'action[Suffix]'. Method 'someOtherPage' will not be converted into route automatically.
+will create router object and loads information about it's actions and create routes. Strictly it will create two routes, because the class MySite has only two methods wich start with 'action[Suffix]'. Method 'someOtherPage' will not be converted into route automatically.
 
-But we can still use this method as a route handler:
+Then just call to run callback by URL:
+
+```php
+$router->callRoute('/other-page/');
+```
+
+You can manually specify callbacks for every URL in your application:
 
 ```PHP
 $router->addRoute( '/some-any-other-route/' , [ $mySite , 'someOtherPage' ] );
 ```
 
-And you also can use stati methods:
+And you also can use static methods:
 
 ```PHP
 $router->addRoute( '/static-route/' , [ 'MySite' , 'someStaticMethod' ] );
@@ -114,6 +120,14 @@ function        sitemap()
 }
 
 $router->addRoute( '/sitemap/' , 'sitemap' );
+```
+
+And you can find callback without launching it:
+
+```php
+$router->addRoute( '/static-route/' , 'MySite::someStaticMethod' );
+$callback = $router->getCallback('/static-route/');
+var_dump($callback());
 ```
 
 ## One handler for all routes
@@ -157,7 +171,7 @@ a - any [a-z0-9A-Z_\/\-\.\@]+ string
 il - comma separated list of integer ids
 s - any string
 
-All this variables are passed as second function parameter wich is named in the example above - $Variales. All variables are passed as an associative array.
+All this variables are passed as second function parameter wich is named in the example above - $variales. All variables are passed as an associative array.
 
 ## Request types and first steps to the REST API
 
@@ -168,6 +182,7 @@ $router->addRoute( '/contacts/' , function(){} , 'POST' ); // this handler will 
 $router->addRoute( '/contacts/' , function(){} , 'GET' );  // this handler will be called for GET requests
 $router->addRoute( '/contacts/' , function(){} , 'PUT' );  // this handler will be called for PUT requests
 $router->addRoute( '/contacts/' , function(){} , 'DELETE' );  // this handler will be called for DELETE requests
+$router->addRoute( '/contacts/' , function(){} , 'OPTION' );  // this handler will be called for OPTION requests
 ```
 
 # Learn more

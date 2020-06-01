@@ -163,6 +163,30 @@ trait UrlParser
      *            Callable router's processor
      * @param string $route
      *            Route
+     * @return array|callable route's handler
+     */
+    protected function getDynamicRouteProcessor(array &$processors, string $route)
+    {
+        $cleanRoute = explode('/', trim($route, '/'));
+
+        foreach ($processors as $i => $processor) {
+            $cleanPattern = explode('/', trim($i, '/'));
+
+            if ($this->_matchRouteAndPattern($cleanRoute, $cleanPattern) !== false) {
+                return $processor;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Method searches dynamic route processor
+     *
+     * @param array $processors
+     *            Callable router's processor
+     * @param string $route
+     *            Route
      * @return string|bool Result of the router'scall or false if any error occured
      */
     public function findDynamicRouteProcessor(array &$processors, string $route)
@@ -222,17 +246,80 @@ trait UrlParser
     }
 
     /**
-     * Does the handler fits to route
+     * Method returns either universal hanler if it fits or normal handler
      *
-     * @param string $i
-     *            handler
+     * @param array $processors
+     *            list of routes and handlers
      * @param string $route
-     *            route
-     * @return bool true if the handler fits tto route
+     *            calling route
+     * @return mixed processor
      */
-    private function routeFits(string $i, string $route): bool
+    protected function getExactRouteHandlerOrUniversal(&$processors, string $route)
     {
-        return $i == $route || $i == '/*/';
+        if ($this->universalRouteWasAdded) {
+            $allRoutes = array_keys($processors);
+
+            if (array_search('*', $allRoutes) <= array_search($route, $allRoutes)) {
+                $processor = $processors['*'];
+            } else {
+                $processor = $processors[$route];
+            }
+        } else {
+            $processor = $processors[$route];
+        }
+
+        return $processor;
+    }
+
+    /**
+     * Method executes route handler
+     *
+     * @param array|callable $processor
+     * @param string $route
+     * @return mixed route handler execution result
+     */
+    protected function executeHandler($processor, string $route)
+    {
+        if ($this->isFunction($processor)) {
+            return $processor($route, []);
+        }
+
+        $functionName = $processor[1] ?? null;
+
+        if ($this->canBeCalled($processor, $functionName)) {
+            // passing route path and parameters
+            return call_user_func($processor, $route, []);
+        } else {
+            $callableDescription = \Mezon\Router\Utils::getCallableDescription($processor);
+
+            if ($this->methodDoesNotExists($processor, $functionName)) {
+                throw (new \Exception("'$callableDescription' does not exists"));
+            } else {
+                throw (new \Exception("'$callableDescription' must be callable entity"));
+            }
+        }
+    }
+
+    /**
+     * Method returns route handler
+     *
+     * @param mixed $processors
+     *            Callable router's processor
+     * @param string $route
+     *            Route
+     * @return array|callable route handler
+     */
+    protected function getStaticRouteProcessor(&$processors, string $route)
+    {
+        if (isset($processors[$route])) {
+            $processor = $this->getExactRouteHandlerOrUniversal($processors, $route);
+        } elseif (isset($processors['*'])) {
+            $processor = $processors['*'];
+        } else {
+            return false;
+        }
+
+        return $processor;
     }
 
     /**
@@ -246,31 +333,13 @@ trait UrlParser
      */
     public function findStaticRouteProcessor(&$processors, string $route)
     {
-        foreach ($processors as $i => $processor) {
-            // exact router or 'all router'
-            if ($this->routeFits($i, $route)) {
-                if ($this->isFunction($processor)) {
-                    return $processor($route, []);
-                }
+        $processor = $this->getStaticRouteProcessor($processors, $route);
 
-                $functionName = $processor[1] ?? null;
-
-                if ($this->canBeCalled($processor, $functionName)) {
-                    // passing route path and parameters
-                    return call_user_func($processor, $route, []);
-                } else {
-                    $callableDescription = \Mezon\Router\Utils::getCallableDescription($processor);
-
-                    if ($this->methodDoesNotExists($processor, $functionName)) {
-                        throw (new \Exception("'$callableDescription' does not exists"));
-                    } else {
-                        throw (new \Exception("'$callableDescription' must be callable entity"));
-                    }
-                }
-            }
+        if ($processor === false) {
+            return false;
         }
 
-        return false;
+        return $this->executeHandler($processor, $route);
     }
 
     /**

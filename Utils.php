@@ -55,14 +55,14 @@ class Utils
         }
 
         if ($route == '/') {
-            $route = '/index/';
+            $route = 'index';
         }
 
         if (is_array($route)) {
             $route = implode('/', $route);
         }
 
-        return '/' . trim($route, '/') . '/';
+        return trim($route, '/');
     }
 
     /**

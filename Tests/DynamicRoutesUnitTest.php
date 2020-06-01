@@ -64,7 +64,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $router->callRoute('/catalog/-1/');
 
-        $this->assertEquals($router->getParam('foo'), '-1', 'Float data violation');
+        $this->assertEquals($router->getParam('foo'), '-1');
     }
 
     /**
@@ -141,6 +141,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testFloatI(): void
     {
+        // TODO loop all possible types in data provider
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
             return $parameters['foo'];
@@ -148,7 +149,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/1.1/');
 
-        $this->assertEquals($result, '1.1', 'Float data violation');
+        $this->assertEquals($result, '1.1');
     }
 
     /**
@@ -163,7 +164,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/-1.1/');
 
-        $this->assertEquals($result, '-1.1', 'Float data violation');
+        $this->assertEquals($result, '-1.1');
     }
 
     /**
@@ -178,7 +179,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/+1.1/');
 
-        $this->assertEquals($result, '+1.1', 'Float data violation');
+        $this->assertEquals($result, '+1.1');
     }
 
     /**
@@ -193,7 +194,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/-1/');
 
-        $this->assertEquals('-1', $result, 'Float data violation');
+        $this->assertEquals('-1', $result);
     }
 
     /**
@@ -208,7 +209,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/1/');
 
-        $this->assertEquals('1', $result, 'Float data violation');
+        $this->assertEquals('1', $result);
     }
 
     /**
@@ -225,7 +226,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/1024/');
 
-        $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/1024', 'Invalid extracted route');
     }
 
     /**
@@ -242,7 +243,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/1024/');
 
-        $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/1024', 'Invalid extracted route');
     }
 
     /**
@@ -259,7 +260,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/1024/');
 
-        $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/1024', 'Invalid extracted route');
     }
 
     /**
@@ -320,7 +321,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $msg = "Illegal parameter type";
 
-        $this->assertFalse(strpos($exception, $msg), 'Valid type expected');
+        $this->assertFalse(strpos($exception, $msg));
     }
 
     /**
@@ -343,7 +344,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $msg = "Illegal parameter type";
 
-        $this->assertFalse(strpos($exception, $msg), 'Valid type expected');
+        $this->assertFalse(strpos($exception, $msg));
     }
 
     /**
@@ -366,7 +367,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $msg = "Illegal parameter type";
 
-        $this->assertFalse(strpos($exception, $msg), 'Valid type expected');
+        $this->assertFalse(strpos($exception, $msg));
     }
 
     /**
@@ -387,7 +388,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/a1024/";
+        $msg = "The processor was not found for the route catalog/a1024";
 
         $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
     }
@@ -410,7 +411,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/~foo/";
+        $msg = "The processor was not found for the route catalog/~foo";
 
         $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
     }
@@ -442,7 +443,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
                 return $parameters['cat_id'] . $parameters['item_id'];
             });
 
-        $result = $router->callRoute('/catalog/foo/1024/');
+        $result = $router->callRoute('catalog/foo/1024');
 
         $this->assertEquals($result, 'foo1024', 'Invalid extracted parameter');
     }
@@ -453,19 +454,19 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
     public function testValidRouteParameter(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', function ($route) {
+        $router->addRoute('/catalog/all/', function ($route) {
             return $route;
         });
         $router->addRoute('/catalog/[i:cat_id]', function ($route) {
             return $route;
         });
 
-        $result = $router->callRoute('/catalog/');
+        $result = $router->callRoute('/catalog/all/');
 
-        $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/all', 'Invalid extracted route');
 
         $result = $router->callRoute('/catalog/1024/');
 
-        $this->assertEquals($result, '/catalog/1024/', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/1024', 'Invalid extracted route');
     }
 }

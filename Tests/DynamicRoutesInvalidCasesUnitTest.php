@@ -39,7 +39,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
     public function testExceptionForUnexistingRequestMethod(): void
     {
         // setup
-        $_SERVER['REQUEST_METHOD'] = 'OPTION';
+        $_SERVER['REQUEST_METHOD'] = 'HEAD';
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:foo]/', function () {
             // do nothing
@@ -70,9 +70,9 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/12345./";
+        $msg = "The processor was not found for the route catalog/12345.";
 
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+        $this->assertNotFalse(strpos($exception, $msg));
     }
 
     /**
@@ -90,14 +90,14 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         ]);
 
         try {
-            $router->callRoute('/catalog/1024/');
+            $router->callRoute('/catalog/1025/');
         } catch (Exception $e) {
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/1024/";
+        $msg = "The processor was not found for the route catalog/1025";
 
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+        $this->assertNotFalse(strpos($exception, $msg));
     }
 
     /**
@@ -120,9 +120,9 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/1024/";
+        $msg = "The processor was not found for the route catalog/1024";
 
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+        $this->assertNotFalse(strpos($exception, $msg));
     }
 
     /**
@@ -134,7 +134,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         $exception = '';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]', [
+        $router->addRoute('/catalog/[i:item_id]', [
             $this,
             'helloWorldOutput'
         ]);
@@ -145,8 +145,27 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/1024/";
+        $msg = "The processor was not found for the route catalog/1024";
 
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+        $this->assertNotFalse(strpos($exception, $msg));
+    }
+
+    /**
+     * Testing that
+     */
+    public function testNotMatchingRoutes():void{
+        // setup
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:some_id]', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        // assertions
+        $this->expectException(\Exception::class);
+
+        // test body
+        $router->callRoute('/catalog/1/a/');
     }
 }

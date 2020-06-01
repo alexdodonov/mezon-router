@@ -3,6 +3,19 @@
 class RouterUnitTest extends \PHPUnit\Framework\TestCase
 {
 
+    const DELETE_REQUEST_METHOD = 'DELETE';
+
+    /**
+     * Function sets $_SERVER['REQUEST_METHOD']
+     *
+     * @param string $requestMethod
+     *            request method
+     */
+    public static function setRequestMethod(string $requestMethod): void
+    {
+        $_SERVER['REQUEST_METHOD'] = $requestMethod;
+    }
+
     /**
      * Default setup
      *
@@ -11,7 +24,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function setUp(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
+        RouterUnitTest::setRequestMethod('GET');
     }
 
     /**
@@ -48,14 +61,15 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testOneComponentRouterClassMethod(): void
     {
+        // TODO join this test with the next one via data provider
         $router = new \Mezon\Router\Router();
 
-        $router->addRoute('/index/', [
+        $router->addRoute('/one-component-class-method/', [
             $this,
             'helloWorldOutput'
         ]);
 
-        $content = $router->callRoute('/index/');
+        $content = $router->callRoute('/one-component-class-method/');
 
         $this->assertEquals('Hello world!', $content);
     }
@@ -67,11 +81,11 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     {
         $router = new \Mezon\Router\Router();
 
-        $router->addRoute('/index/', function () {
+        $router->addRoute('/one-comonent-lambda/', function () {
             return 'Hello world!';
         });
 
-        $content = $router->callRoute('/index/');
+        $content = $router->callRoute('/one-comonent-lambda/');
 
         $this->assertEquals('Hello world!', $content);
     }
@@ -83,7 +97,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     {
         $exception = '';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', [
+        $router->addRoute('/existing-route/', [
             $this,
             'helloWorldOutput'
         ]);
@@ -104,6 +118,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testClassActions(): void
     {
+        // TODO join this test with the next one via data provider
         $router = new \Mezon\Router\Router();
         $router->fetchActions($this);
 
@@ -122,7 +137,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testPostClassAction(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        RouterUnitTest::setRequestMethod('POST');
 
         $router = new \Mezon\Router\Router();
         $router->fetchActions($this);
@@ -131,39 +146,40 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing case when both GET and POST processors exists.
+     * Testing case when all processors exist
      */
-    public function testGetPostPostDeleteRouteConcurrency(): void
+    public function testRequestMethodsConcurrency(): void
     {
+        $route = '/catalog/';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', function () {
+        $router->addRoute($route, function () {
             return 'POST';
         }, 'POST');
-        $router->addRoute('/catalog/', function () {
+        $router->addRoute($route, function () {
             return 'GET';
         }, 'GET');
-        $router->addRoute('/catalog/', function () {
+        $router->addRoute($route, function () {
             return 'PUT';
         }, 'PUT');
-        $router->addRoute('/catalog/', function () {
-            return 'DELETE';
-        }, 'DELETE');
+        $router->addRoute($route, function () {
+            return RouterUnitTest::DELETE_REQUEST_METHOD;
+        }, RouterUnitTest::DELETE_REQUEST_METHOD);
 
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $result = $router->callRoute('/catalog/');
+        RouterUnitTest::setRequestMethod('POST');
+        $result = $router->callRoute($route);
         $this->assertEquals($result, 'POST');
 
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $result = $router->callRoute('/catalog/');
+        RouterUnitTest::setRequestMethod('GET');
+        $result = $router->callRoute($route);
         $this->assertEquals($result, 'GET');
 
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $result = $router->callRoute('/catalog/');
+        RouterUnitTest::setRequestMethod('PUT');
+        $result = $router->callRoute($route);
         $this->assertEquals($result, 'PUT');
 
-        $_SERVER['REQUEST_METHOD'] = 'DELETE';
-        $result = $router->callRoute('/catalog/');
-        $this->assertEquals($result, 'DELETE');
+        RouterUnitTest::setRequestMethod(RouterUnitTest::DELETE_REQUEST_METHOD);
+        $result = $router->callRoute($route);
+        $this->assertEquals($result, RouterUnitTest::DELETE_REQUEST_METHOD);
     }
 
     /**
@@ -184,7 +200,10 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
                 'PUT'
             ],
             [
-                'DELETE'
+                RouterUnitTest::DELETE_REQUEST_METHOD
+            ],
+            [
+                'OPTION'
             ]
         ];
     }
@@ -199,14 +218,14 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     public function testClearMethod(string $method): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', function () use ($method) {
+        $router->addRoute('/route-to-clear/', function () use ($method) {
             return $method;
         }, $method);
         $router->clear();
 
         try {
-            $_SERVER['REQUEST_METHOD'] = $method;
-            $router->callRoute('/catalog/');
+            RouterUnitTest::setRequestMethod($method);
+            $router->callRoute('/route-to-clear/');
             $flag = 'not cleared';
         } catch (Exception $e) {
             $flag = 'cleared';
@@ -232,7 +251,68 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
             $this->errorHandler();
         });
 
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        RouterUnitTest::setRequestMethod('POST');
         $router->callRoute('/unexisting/');
+    }
+
+    /**
+     * Data provider for the
+     *
+     * @return array testing dataset
+     */
+    public function getCallbackDataProvider(): array
+    {
+        return [
+            [
+                'some-static-route',
+                'some-static-route'
+            ],
+            [
+                'some/non-static/route/[i:id]',
+                'some/non-static/route/1'
+            ]
+        ];
+    }
+
+    /**
+     * Testing getting callback
+     *
+     * @param string $route
+     *            route
+     * @param string $url
+     *            concrete URL
+     * @dataProvider getCallbackDataProvider
+     */
+    public function testGetCallback(string $route, string $url): void
+    {
+        // setup
+        $router = new \Mezon\Router\Router();
+        $router->addRoute($route, function () {
+            return 'route result';
+        });
+
+        // test body
+        $callback = $router->getCallback($url);
+
+        // assertions
+        $this->assertEquals('route result', $callback());
+    }
+
+    /**
+     * Testing case with unexisting callback
+     */
+    public function testGetCallbackWithUnexistingRoute(): void
+    {
+        // setup
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('existing-route', function () {
+            return 'existing route result';
+        });
+
+        // assertions
+        $this->expectException(\Exception::class);
+
+        // test body
+        $router->getCallback('unexisting-route');
     }
 }

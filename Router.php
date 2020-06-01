@@ -1,7 +1,6 @@
 <?php
 namespace Mezon\Router;
 
-// TODO add hash for static routes
 // TODO add custom types
 // TODO PSR-7 compliant
 // TODO add non-static routes optimizations like here https://medium.com/@nicolas.grekas/making-symfonys-router-77-7x-faster-1-2-958e3754f0e1
@@ -93,7 +92,11 @@ class Router
      */
     public function addRoute(string $route, $callback, $requestMethod = 'GET'): void
     {
-        $route = '/' . trim($route, '/') . '/';
+        $route = trim($route, '/');
+
+        if ($route == '*') {
+            $this->universalRouteWasAdded = true;
+        }
 
         if (is_array($requestMethod)) {
             foreach ($requestMethod as $r) {
@@ -147,15 +150,38 @@ class Router
     {
         $route = \Mezon\Router\Utils::prepareRoute($route);
         $requestMethod = $this->getRequestMethod();
+        $routesForMethod = $this->getRoutesForMethod($requestMethod);
 
-        if (($result = $this->findStaticRouteProcessor($this->getRoutesForMethod($requestMethod), $route)) !== false) {
+        if (($result = $this->findStaticRouteProcessor($routesForMethod, $route)) !== false) {
             return $result;
         }
 
-        if (($result = $this->findDynamicRouteProcessor($this->getRoutesForMethod($requestMethod), $route)) !== false) {
+        if (($result = $this->findDynamicRouteProcessor($routesForMethod, $route)) !== false) {
             return $result;
         }
 
         call_user_func($this->invalidRouteErrorHandler, $route);
     }
+
+    /**
+     * Method returns call back by it's router
+     * 
+     * @param array|string $route route
+     * @return array|callable route callback
+     */
+    public function getCallback($route){
+        $route = \Mezon\Router\Utils::prepareRoute($route);
+        $requestMethod = $this->getRequestMethod();
+        $routesForMethod = $this->getRoutesForMethod($requestMethod);
+
+        if (($result = $this->getStaticRouteProcessor($routesForMethod, $route)) !== false) {
+            return $result;
+        }
+
+        if (($result = $this->getDynamicRouteProcessor($routesForMethod, $route)) !== false) {
+            return $result;
+        }
+
+        call_user_func($this->invalidRouteErrorHandler, $route);//@codeCoverageIgnoreStart
+    }//@codeCoverageIgnoreEnd
 }

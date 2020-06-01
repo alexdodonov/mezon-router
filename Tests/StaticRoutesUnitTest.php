@@ -56,9 +56,9 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     public function testOneComponentRouterStatic(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', 'StaticRoutesUnitTest::staticHelloWorldOutput');
+        $router->addRoute('/one-component-static/', 'StaticRoutesUnitTest::staticHelloWorldOutput');
 
-        $content = $router->callRoute('/index/');
+        $content = $router->callRoute('/one-component-static/');
 
         $this->assertEquals(StaticRoutesUnitTest::HELLO_STATIC_WORLD, $content);
     }
@@ -144,10 +144,10 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         // setup
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/searching-route/', function () {});
+        $router->addRoute('/searching-route/', function (string $route) {return $route;});
 
         // test body and assertions
-        $this->assertTrue($router->routeExists('/searching-route/'));
+        $this->assertTrue($router->routeExists('searching-route'));
         $this->assertFalse($router->routeExists('not-searching-route'));
     }
 
@@ -224,16 +224,16 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     public function testArrayRoutes(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/item/', function ($route) {
+        $router->addRoute('/part1/part2/', function ($route) {
             return $route;
         }, 'GET');
 
         $result = $router->callRoute([
-            'catalog',
-            'item'
+            'part1',
+            'part2'
         ]);
 
-        $this->assertEquals($result, '/catalog/item/', 'Invalid extracted route');
+        $this->assertEquals($result, 'part1/part2');
     }
 
     /**
@@ -252,7 +252,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
             0 => ''
         ]);
 
-        $this->assertEquals($result, '/catalog/item/', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/item');
     }
 
     /**
@@ -271,7 +271,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
             0 => ''
         ]);
 
-        $this->assertEquals($result, '/index/', 'Invalid extracted route');
+        $this->assertEquals($result, 'index');
     }
 
     /**
@@ -299,7 +299,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
             0 => ''
         ]);
 
-        $this->assertEquals($result, '/index/', 'Invalid extracted route');
+        $this->assertEquals($result, 'index');
     }
 
     /**
@@ -307,24 +307,24 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testDeleteRequestForUnExistingStaticRoute(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'DELETE';
+        $_SERVER['REQUEST_METHOD'] = RouterUnitTest::DELETE_REQUEST_METHOD;
 
         $exception = '';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', [
+        $router->addRoute('/static-delete-unexisting/', [
             $this,
             'helloWorldOutput'
         ]);
 
         try {
-            $router->callRoute('/catalog/');
+            $router->callRoute('/static-delete-unexisting/');
         } catch (Exception $e) {
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/";
+        $msg = "The processor was not found for the route static-delete-unexisting";
 
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+        $this->assertNotFalse(strpos($exception, $msg));
     }
 
     /**
@@ -332,16 +332,16 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testDeleteRequestForExistingStaticRoute(): void
     {
-        $_SERVER['REQUEST_METHOD'] = 'DELETE';
+        $_SERVER['REQUEST_METHOD'] = RouterUnitTest::DELETE_REQUEST_METHOD;
 
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', function ($route) {
+        $router->addRoute('/static-delete-existing/', function ($route) {
             return $route;
-        }, 'DELETE');
+        }, RouterUnitTest::DELETE_REQUEST_METHOD);
 
-        $result = $router->callRoute('/catalog/');
+        $result = $router->callRoute('/static-delete-existing/');
 
-        $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
+        $this->assertEquals($result, 'static-delete-existing');
     }
 
     /**
@@ -353,20 +353,20 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $exception = '';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', [
+        $router->addRoute('/static-put-unexisting/', [
             $this,
             'helloWorldOutput'
         ]);
 
         try {
-            $router->callRoute('/catalog/');
+            $router->callRoute('/static-put-unexisting/');
         } catch (Exception $e) {
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/";
+        $msg = "The processor was not found for the route static-put-unexisting";
 
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+        $this->assertNotFalse(strpos($exception, $msg));
     }
 
     /**
@@ -377,13 +377,13 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = 'PUT';
 
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', function ($route) {
+        $router->addRoute('/static-put-existing/', function ($route) {
             return $route;
         }, 'PUT');
 
-        $result = $router->callRoute('/catalog/');
+        $result = $router->callRoute('/static-put-existing/');
 
-        $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
+        $this->assertEquals($result, 'static-put-existing');
     }
 
     /**
@@ -395,20 +395,20 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $exception = '';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', [
+        $router->addRoute('/static-post-unexisting/', [
             $this,
             'helloWorldOutput'
         ]);
 
         try {
-            $router->callRoute('/catalog/');
+            $router->callRoute('/static-post-unexisting/');
         } catch (Exception $e) {
             $exception = $e->getMessage();
         }
 
-        $msg = "The processor was not found for the route /catalog/";
+        $msg = "The processor was not found for the route static-post-unexisting";
 
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+        $this->assertNotFalse(strpos($exception, $msg));
     }
 
     /**
@@ -425,6 +425,6 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/');
 
-        $this->assertEquals($result, '/catalog/', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog');
     }
 }

@@ -31,6 +31,20 @@ trait RoutesSet
      * @var array
      */
     private $deleteRoutes = [];
+    
+    /**
+     * Mapping of routes to their execution functions for OPTION requests
+     *
+     * @var array
+     */
+    private $optionRoutes = [];
+
+    /**
+     * This flag rises when we add route / * /
+     *
+     * @var bool
+     */
+    protected $universalRouteWasAdded = false;
 
     /**
      * Method returns list of routes for the HTTP method.
@@ -57,6 +71,10 @@ trait RoutesSet
             case ('DELETE'):
                 $result = &$this->deleteRoutes;
                 break;
+                
+            case ('OPTION'):
+                $result = &$this->deleteRoutes;
+                break;
 
             default:
                 throw (new \Exception('Unsupported request method'));
@@ -77,6 +95,10 @@ trait RoutesSet
         $this->putRoutes = [];
 
         $this->deleteRoutes = [];
+
+        $this->optionRoutes = [];
+
+        $this->universalRouteWasAdded = false;
     }
 
     /**
@@ -88,7 +110,7 @@ trait RoutesSet
      */
     public function routeExists(string $route): bool
     {
-        $allRoutes = array_merge($this->deleteRoutes, $this->putRoutes, $this->postRoutes, $this->getRoutes);
+        $allRoutes = array_merge($this->deleteRoutes, $this->putRoutes, $this->postRoutes, $this->getRoutes, $this->optionRoutes);
 
         return isset($allRoutes[$route]);
     }
@@ -101,7 +123,8 @@ trait RoutesSet
         return (count($this->getRoutes) ? 'GET:' . implode(', ', array_keys($this->getRoutes)) . '; ' : '') .
         (count($this->postRoutes) ? 'POST:' . implode(', ', array_keys($this->postRoutes)) . '; ' : '') .
         (count($this->putRoutes) ? 'PUT:' . implode(', ', array_keys($this->putRoutes)) . '; ' : '') .
-        (count($this->deleteRoutes) ? 'DELETE:' . implode(', ', array_keys($this->deleteRoutes)) : '');
+        (count($this->deleteRoutes) ? 'DELETE:' . implode(', ', array_keys($this->deleteRoutes)) : '') .
+        (count($this->optionRoutes) ? 'OPTION:' . implode(', ', array_keys($this->optionRoutes)) : '');
     }
 
     /**
