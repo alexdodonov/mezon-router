@@ -22,9 +22,7 @@ namespace Mezon\Router;
 class Router
 {
 
-    use \Mezon\Router\RoutesSet;
-
-    use \Mezon\Router\UrlParser;
+    use \Mezon\Router\RoutesSet, \Mezon\Router\UrlParser, \Mezon\Router\DefaultTypes;
 
     /**
      * Method wich handles invalid route error
@@ -165,11 +163,13 @@ class Router
 
     /**
      * Method returns call back by it's router
-     * 
-     * @param array|string $route route
+     *
+     * @param array|string $route
+     *            route
      * @return array|callable|bool route callback
      */
-    public function getCallback($route){
+    public function getCallback($route)
+    {
         $route = \Mezon\Router\Utils::prepareRoute($route);
         $requestMethod = $this->getRequestMethod();
         $routesForMethod = $this->getRoutesForMethod($requestMethod);
@@ -182,6 +182,6 @@ class Router
             return $result;
         }
 
-        call_user_func($this->invalidRouteErrorHandler, $route);//@codeCoverageIgnoreStart
-    }//@codeCoverageIgnoreEnd
+        call_user_func($this->invalidRouteErrorHandler, $route); // @codeCoverageIgnoreStart
+    } // @codeCoverageIgnoreEnd
 }
