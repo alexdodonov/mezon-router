@@ -130,6 +130,17 @@ $callback = $router->getCallback('/static-route/');
 var_dump($callback());
 ```
 
+## Supported request methods
+
+Mezon Router supports: GET, POST, PUT, DELETE, OPTION
+
+To get the list of these methods you can use method getListOfSupportedRequestMethods:
+
+```php
+$router = new \Mezon\Router\Router();
+var_dump($router->getListOfSupportedRequestMethods());
+```
+
 ## One handler for all routes
 
 You can specify one processor for all routes like this:
@@ -183,6 +194,17 @@ $router->addRoute( '/contacts/' , function(){} , 'GET' );  // this handler will 
 $router->addRoute( '/contacts/' , function(){} , 'PUT' );  // this handler will be called for PUT requests
 $router->addRoute( '/contacts/' , function(){} , 'DELETE' );  // this handler will be called for DELETE requests
 $router->addRoute( '/contacts/' , function(){} , 'OPTION' );  // this handler will be called for OPTION requests
+```
+
+## Reverse routes
+
+You can reverse routes and compile URLs by route's name. For example:
+
+```php
+$router = new \Mezon\Router\Router();
+$router->addRoute('/some-route/[i:id]' , function(){} , 'GET' , 'name of the route');
+// will output /some-route/123
+var_dump($router->reverse('name of the route' , ['id' => 123]));
 ```
 
 # Learn more
