@@ -288,4 +288,24 @@ trait UrlParser
     {
         return isset($this->parameters[$name]);
     }
+
+    /**
+     * Compiling route into URL
+     *
+     * @param string $routeName
+     *            route name
+     * @param array $parameters
+     *            parameters to use in URL
+     * @return string compiled route
+     */
+    public function reverse(string $routeName, array $parameters = []): string
+    {
+        $route = $this->getRouteByName($routeName);
+
+        foreach ($parameters as $name => $value) {
+            $route = preg_replace('/\[([A-Za-z_\-])\:' . $name . ']/', $value, $route);
+        }
+
+        return $route;
+    }
 }

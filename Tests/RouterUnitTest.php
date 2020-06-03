@@ -114,35 +114,59 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing action fetching method.
+     * Data provider for the test testClassAction
+     *
+     * @return array test data
      */
-    public function testClassActions(): void
+    public function classActionDataProvider(): array
     {
-        // TODO join this test with the next one via data provider
-        $router = new \Mezon\Router\Router();
-        $router->fetchActions($this);
+        $testData = [];
 
-        $content = $router->callRoute('/a1/');
-        $this->assertEquals('action #1', $content, 'Invalid a1 route');
+        foreach ([
+            'GET',
+            'POST'
+        ] as $requestMethod) {
+            $testData[] = [
+                $requestMethod,
+                '/a1/',
+                'action #1'
+            ];
 
-        $content = $router->callRoute('/a2/');
-        $this->assertEquals('action #2', $content, 'Invalid a2 route');
+            $testData[] = [
+                $requestMethod,
+                '/a2/',
+                'action #2'
+            ];
 
-        $content = $router->callRoute('/double-word/');
-        $this->assertEquals('action double word', $content, 'Invalid a2 route');
+            $testData[] = [
+                $requestMethod,
+                '/double-word/',
+                'action double word'
+            ];
+        }
+
+        return $testData;
     }
 
     /**
-     * Method tests POST actions
+     * Method tests class actions
+     *
+     * @param string $requestMethod
+     *            request method
+     * @param string $route
+     *            requesting route
+     * @param string $expectedResult
+     *            expected result of route processing
+     * @dataProvider classActionDataProvider
      */
-    public function testPostClassAction(): void
+    public function testClassAction(string $requestMethod, string $route, string $expectedResult): void
     {
-        RouterUnitTest::setRequestMethod('POST');
+        RouterUnitTest::setRequestMethod($requestMethod);
 
         $router = new \Mezon\Router\Router();
         $router->fetchActions($this);
-        $content = $router->callRoute('/a1/');
-        $this->assertEquals('action #1', $content, 'Invalid a1 route');
+        $result = $router->callRoute($route);
+        $this->assertEquals($expectedResult, $result);
     }
 
     /**
@@ -189,6 +213,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function clearMethodTestDataProvider(): array
     {
+        // TODO user getListOfSupportedRequestMethods() to fetch supported request methods
         return [
             [
                 'POST'
@@ -246,11 +271,13 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetErrorHandler(): void
     {
+        // setup
         $router = new \Mezon\Router\Router();
         $router->setNoProcessorFoundErrorHandler(function () {
             $this->errorHandler();
         });
 
+        // test body and assertions
         RouterUnitTest::setRequestMethod('POST');
         $router->callRoute('/unexisting/');
     }
@@ -314,5 +341,81 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         // test body
         $router->getCallback('unexisting-route');
+    }
+
+    /**
+     * Data provider for the test testReverseRouteByName
+     *
+     * @return array test data
+     */
+    public function reverseRouteByNameDataProvider(): array
+    {
+        return [
+            [
+                'named-route-url',
+                [],
+                'named-route-url'
+            ],
+            [
+                'route-with-params/[i:id]',
+                [
+                    'id' => 123
+                ],
+                'route-with-params/123',
+            ],
+            [
+                'route-with-foo/[i:id]',
+                [
+                    'foo' => 123
+                ],
+                'route-with-foo/[i:id]',
+            ],
+            [
+                'route-no-params/[i:id]',
+                [],
+                'route-no-params/[i:id]',
+            ]
+        ];
+    }
+
+    /**
+     * Testing reverse route by it's name
+     *
+     * @param string $route
+     *            route
+     * @param array $parameters
+     *            parameters to be substituted
+     * @param string $extectedResult
+     *            quite obviuous to describe it here )
+     * @dataProvider reverseRouteByNameDataProvider
+     */
+    public function testReverseRouteByName(string $route, array $parameters = [], string $extectedResult): void
+    {
+        // setup
+        $router = new \Mezon\Router\Router();
+        $router->addRoute($route, function () {
+            return 'named route result';
+        }, 'GET', 'named-route');
+
+        // test body
+        $url = $router->reverse('named-route', $parameters);
+
+        // assertions
+        $this->assertEquals($extectedResult, $url);
+    }
+
+    /**
+     * Trying to fetch unexisting route by name
+     */
+    public function testFetchUnexistingRouteByName(): void
+    {
+        // setup
+        $router = new \Mezon\Router\Router();
+
+        // assertions
+        $this->expectException(\Exception::class);
+
+        // test body
+        $router->getRouteByName('unexisting-name');
     }
 }

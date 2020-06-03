@@ -5,39 +5,22 @@ trait RoutesSet
 {
 
     /**
-     * Mapping of routes to their execution functions for GET requests
-     *
-     * @var array
+     * List off routes for all supported request methods
      */
-    private $getRoutes = [];
+    private $routes = [
+        'GET' => [],
+        'POST' => [],
+        'PUT' => [],
+        'DELETE' => [],
+        'OPTION' => []
+    ];
 
     /**
-     * Mapping of routes to their execution functions for GET requests
+     * Route names
      *
      * @var array
      */
-    private $postRoutes = [];
-
-    /**
-     * Mapping of routes to their execution functions for PUT requests
-     *
-     * @var array
-     */
-    private $putRoutes = [];
-
-    /**
-     * Mapping of routes to their execution functions for DELETE requests
-     *
-     * @var array
-     */
-    private $deleteRoutes = [];
-    
-    /**
-     * Mapping of routes to their execution functions for OPTION requests
-     *
-     * @var array
-     */
-    private $optionRoutes = [];
+    private $routeNames = [];
 
     /**
      * This flag rises when we add route / * /
@@ -47,40 +30,47 @@ trait RoutesSet
     protected $universalRouteWasAdded = false;
 
     /**
+     * Validating that request method is supported within this router.
+     * If it is not supported then Exception will be thrown
+     *
+     * @param string $requestMethod
+     *            request method
+     */
+    protected function validateSupportedRequestMethod(string $requestMethod): void
+    {
+        if (isset($this->routes[$requestMethod]) === false) {
+            throw (new \Exception('Unsupported request method'));
+        }
+    }
+
+    /**
      * Method returns list of routes for the HTTP method.
      *
-     * @param string $method
-     *            HTTP Method
+     * @param string $requestMethod
+     *            HTTP request method
      * @return array Routes
      */
-    public function &getRoutesForMethod(string $method): array
+    protected function &getRoutesForMethod(string $requestMethod): array
     {
-        switch ($method) {
-            case ('GET'):
-                $result = &$this->getRoutes;
-                break;
+        $this->validateSupportedRequestMethod($requestMethod);
 
-            case ('POST'):
-                $result = &$this->postRoutes;
-                break;
+        return $this->routes[$requestMethod];
+    }
 
-            case ('PUT'):
-                $result = &$this->putRoutes;
-                break;
-
-            case ('DELETE'):
-                $result = &$this->deleteRoutes;
-                break;
-                
-            case ('OPTION'):
-                $result = &$this->deleteRoutes;
-                break;
-
-            default:
-                throw (new \Exception('Unsupported request method'));
-        }
-
-        return $result;
+    /**
+     * Method returns a list of supported request methods
+     *
+     * @return array list of supported request methods
+     */
+    public function getListOfSupportedRequestMethods(): array
+    {
+        return [
+            'GET',
+            'POST',
+            'PUT',
+            'DELETE',
+            'OPTION'
+        ];
     }
 
     /**
@@ -88,17 +78,13 @@ trait RoutesSet
      */
     public function clear()
     {
-        $this->getRoutes = [];
-
-        $this->postRoutes = [];
-
-        $this->putRoutes = [];
-
-        $this->deleteRoutes = [];
-
-        $this->optionRoutes = [];
-
         $this->universalRouteWasAdded = false;
+
+        $this->routeNames = [];
+
+        foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
+            $this->routes[$requestMethod] = [];
+        }
     }
 
     /**
@@ -110,9 +96,15 @@ trait RoutesSet
      */
     public function routeExists(string $route): bool
     {
-        $allRoutes = array_merge($this->deleteRoutes, $this->putRoutes, $this->postRoutes, $this->getRoutes, $this->optionRoutes);
+        $route = trim($route, '/');
 
-        return isset($allRoutes[$route]);
+        foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
+            if (isset($this->routes[$requestMethod][$route])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -120,22 +112,30 @@ trait RoutesSet
      */
     public function getAllRoutesTrace()
     {
-        return (count($this->getRoutes) ? 'GET:' . implode(', ', array_keys($this->getRoutes)) . '; ' : '') .
-        (count($this->postRoutes) ? 'POST:' . implode(', ', array_keys($this->postRoutes)) . '; ' : '') .
-        (count($this->putRoutes) ? 'PUT:' . implode(', ', array_keys($this->putRoutes)) . '; ' : '') .
-        (count($this->deleteRoutes) ? 'DELETE:' . implode(', ', array_keys($this->deleteRoutes)) : '') .
-        (count($this->optionRoutes) ? 'OPTION:' . implode(', ', array_keys($this->optionRoutes)) : '');
+        $trace = [];
+
+        foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
+            if (count($this->routes[$requestMethod]) > 0) {
+                $trace[] = $requestMethod . ':' . implode(', ', array_keys($this->routes[$requestMethod]));
+            }
+        }
+
+        return implode('; ', $trace);
     }
 
     /**
      * Additing route for GET request
-     * 
-     * @param string $route route
-     * @param object $object callback object
-     * @param string $method callback method
+     *
+     * @param string $route
+     *            route
+     * @param object $object
+     *            callback object
+     * @param string $method
+     *            callback method
      */
-    public function addGetRoute(string $route, object $object, string $method):void{
-        $this->getRoutes["/$route/"] = [
+    public function addGetRoute(string $route, object $object, string $method): void
+    {
+        $this->routes['GET'][trim($route, '/')] = [
             $object,
             $method
         ];
@@ -144,14 +144,60 @@ trait RoutesSet
     /**
      * Additing route for GET request
      *
-     * @param string $route route
-     * @param object $object callback object
-     * @param string $method callback method
+     * @param string $route
+     *            route
+     * @param object $object
+     *            callback object
+     * @param string $method
+     *            callback method
      */
-    public function addPostRoute(string $route, object $object, string $method):void{
-        $this->postRoutes["/$route/"] = [
+    public function addPostRoute(string $route, object $object, string $method): void
+    {
+        $this->routes['POST'][trim($route, '/')] = [
             $object,
             $method
         ];
+    }
+
+    /**
+     * Method registers name of the route
+     *
+     * @param string $routeName
+     *            route's name
+     * @param string $route
+     *            route
+     */
+    protected function registerRouteName(string $routeName, string $route): void
+    {
+        if ($routeName != '') {
+            $this->routeNames[$routeName] = $route;
+        }
+    }
+
+    /**
+     * Validating that route name exists
+     *
+     * @param string $routeName
+     * @return bool
+     */
+    protected function routeNameExists(string $routeName): bool
+    {
+        return isset($this->routeNames[$routeName]);
+    }
+
+    /**
+     * Getting route by name
+     *
+     * @param string $routeName
+     *            route's name
+     * @return string route
+     */
+    public function getRouteByName(string $routeName): string
+    {
+        if ($this->routeNameExists($routeName) === false) {
+            throw (new \Exception('Route with name ' . $routeName . ' does not exist'));
+        }
+
+        return $this->routeNames[$routeName];
     }
 }

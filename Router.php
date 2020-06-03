@@ -87,8 +87,9 @@ class Router
      *            Collback wich will be processing route call.
      * @param string|array $requestMethod
      *            Request type
+     * @param string $routeName name of the route
      */
-    public function addRoute(string $route, $callback, $requestMethod = 'GET'): void
+    public function addRoute(string $route, $callback, $requestMethod = 'GET', string $routeName = ''): void
     {
         $route = trim($route, '/');
 
@@ -98,7 +99,7 @@ class Router
 
         if (is_array($requestMethod)) {
             foreach ($requestMethod as $r) {
-                $this->addRoute($route, $callback, $r);
+                $this->addRoute($route, $callback, $r, $routeName);
             }
         } else {
             $routes = &$this->getRoutesForMethod($requestMethod);
@@ -108,6 +109,8 @@ class Router
                 $callback = $callback[1];
             }
             $routes[$route] = $callback;
+            // register route name
+            $this->registerRouteName($routeName, $route);
         }
     }
 
