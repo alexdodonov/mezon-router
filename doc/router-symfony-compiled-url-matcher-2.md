@@ -1,6 +1,6 @@
 # Intro
 
-Hi all! Since the last article I have got some feedback. And the time has come to improve benchmark according to this feedback.
+Hi all! Since the [last article](https://dev.to/alexdodonov/real-life-comparison-of-symfony-router-and-mezon-router-1hb5) I have got some feedback. And the time has come to improve benchmark according to this feedback.
 
 # Improvements
 
@@ -49,7 +49,7 @@ for ($i = 0; $i < \Mezon\Benchmark\Base::$iterationsAmount; $i ++) {
 
 ![table](images/symfony-compiled-url-matcher-2.png)
 
-1. Mezon router is almost in all cases faster then Symfony's default UtlMatcher;
+1. Mezon router is almost in all cases faster then Symfony's default UrlMatcher;
 2. But if you agree to dig into Symfony's CompiledUrlMatcher - it will be the best choice. 
 
 # What is mezon/router?
@@ -61,4 +61,4 @@ mezon/router now is:
 
 Repo on github.com: https://github.com/alexdodonov/mezon-router
 
-# I'll be very glad if you'll press "STAR" button )
+# I'll be very glad if you'll press "STAR" button on [Github](https://github.com/alexdodonov/mezon-router) )
