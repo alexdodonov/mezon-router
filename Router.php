@@ -102,6 +102,8 @@ class Router
                 $this->addRoute($route, $callback, $r, $routeName);
             }
         } else {
+            $this->validateRequestMethod($requestMethod);
+
             $routes = &$this->getRoutesForMethod($requestMethod);
             // this 'if' is for backward compatibility
             // remove it on 02-04-2021
@@ -151,6 +153,7 @@ class Router
     {
         $route = \Mezon\Router\Utils::prepareRoute($route);
         $requestMethod = $this->getRequestMethod();
+        $this->validateRequestMethod($requestMethod);
         $routesForMethod = $this->getRoutesForMethod($requestMethod);
 
         if (($result = $this->findStaticRouteProcessor($routesForMethod, $route)) !== false) {

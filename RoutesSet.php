@@ -30,13 +30,12 @@ trait RoutesSet
     protected $universalRouteWasAdded = false;
 
     /**
-     * Validating that request method is supported within this router.
-     * If it is not supported then Exception will be thrown
+     * Method validates request method
      *
      * @param string $requestMethod
-     *            request method
+     *            HTTP request method
      */
-    protected function validateSupportedRequestMethod(string $requestMethod): void
+    protected function validateRequestMethod(string $requestMethod): void
     {
         if (isset($this->routes[$requestMethod]) === false) {
             throw (new \Exception('Unsupported request method'));
@@ -52,8 +51,6 @@ trait RoutesSet
      */
     protected function &getRoutesForMethod(string $requestMethod): array
     {
-        $this->validateSupportedRequestMethod($requestMethod);
-
         return $this->routes[$requestMethod];
     }
 
