@@ -55,6 +55,21 @@ trait RoutesSet
     }
 
     /**
+     * Method sets callback for router
+     *
+     * @param string $route
+     *            route
+     * @param mixed $callback
+     *            route callback
+     * @param string $requestMethod
+     *            HTTP request method
+     */
+    protected function setRouteCallback(string $route, $callback, string $requestMethod): void
+    {
+        $this->routes[$requestMethod][$route] = $callback;
+    }
+
+    /**
      * Method returns a list of supported request methods
      *
      * @return array list of supported request methods

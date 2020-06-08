@@ -104,13 +104,13 @@ class Router
         } else {
             $this->validateRequestMethod($requestMethod);
 
-            $routes = &$this->getRoutesForMethod($requestMethod);
             // this 'if' is for backward compatibility
             // remove it on 02-04-2021
             if (is_array($callback) && isset($callback[1]) && is_array($callback[1])) {
                 $callback = $callback[1];
             }
             $routes[$route] = $callback;
+            $this->setRouteCallback($route, $callback, $requestMethod);
             // register route name
             $this->registerRouteName($routeName, $route);
         }
