@@ -153,7 +153,8 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing that
      */
-    public function testNotMatchingRoutes():void{
+    public function testNotMatchingRoutes(): void
+    {
         // setup
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
