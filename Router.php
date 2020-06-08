@@ -109,8 +109,8 @@ class Router
             if (is_array($callback) && isset($callback[1]) && is_array($callback[1])) {
                 $callback = $callback[1];
             }
-            $routes[$route] = $callback;
-            $this->setRouteCallback($route, $callback, $requestMethod);
+
+            $this->routes[$requestMethod][$route] = $callback;
             // register route name
             $this->registerRouteName($routeName, $route);
         }

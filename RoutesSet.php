@@ -7,7 +7,7 @@ trait RoutesSet
     /**
      * List off routes for all supported request methods
      */
-    private $routes = [
+    protected $routes = [
         'GET' => [],
         'POST' => [],
         'PUT' => [],
@@ -52,21 +52,6 @@ trait RoutesSet
     protected function &getRoutesForMethod(string $requestMethod): array
     {
         return $this->routes[$requestMethod];
-    }
-
-    /**
-     * Method sets callback for router
-     *
-     * @param string $route
-     *            route
-     * @param mixed $callback
-     *            route callback
-     * @param string $requestMethod
-     *            HTTP request method
-     */
-    protected function setRouteCallback(string $route, $callback, string $requestMethod): void
-    {
-        $this->routes[$requestMethod][$route] = $callback;
     }
 
     /**
