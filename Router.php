@@ -20,7 +20,7 @@ namespace Mezon\Router;
  * Router class
  */
 class Router
-{
+
 
     use \Mezon\Router\RoutesSet, \Mezon\Router\UrlParser, \Mezon\Router\DefaultTypes;
 
