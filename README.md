@@ -207,6 +207,24 @@ $router->addRoute('/some-route/[i:id]' , function(){} , 'GET' , 'name of the rou
 var_dump($router->reverse('name of the route' , ['id' => 123]));
 ```
 
+## Routes caching
+
+Since version 1.0.22 you can cache routes on disk and read them from this cache.
+
+To dump cache on disk use:
+
+```php
+$router->dumpOnDisk('./cache/cache.php');
+```
+
+And after that you can load routes:
+
+```php
+$router->loadFromDisk('./cache/cache.php');
+```
+
+But these methods have limitations - they can not dump and load closures because of obvious reasons
+
 # Learn more
 
 More information can be found here:
