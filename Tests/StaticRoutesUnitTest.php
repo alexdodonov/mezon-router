@@ -182,26 +182,6 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing sub array in route description
-     */
-    public function testSubArrayCompatibility(): void
-    {
-        // setup and test body
-        $_GET['r'] = 'sub-array';
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/sub-array/', [
-            $this,
-            [
-                $this,
-                'subArray'
-            ]
-        ]);
-
-        // assertions
-        $this->assertEquals('subArrayResult', $router->callRoute('/sub-array/'));
-    }
-
-    /**
      * Testing completely not callable trash
      */
     public function testNotCallableTrash(): void

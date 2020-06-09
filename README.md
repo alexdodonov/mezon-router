@@ -209,7 +209,7 @@ var_dump($router->reverse('name of the route' , ['id' => 123]));
 
 ## Routes caching
 
-Since version 1.0.22 you can cache routes on disk and read them from this cache.
+Since version 1.1.0 you can cache routes on disk and read them from this cache.
 
 To dump cache on disk use:
 
