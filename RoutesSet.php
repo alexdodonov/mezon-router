@@ -197,4 +197,33 @@ trait RoutesSet
 
         return $this->routeNames[$routeName];
     }
+
+    /**
+     * Method dumps all routes and their names on disk
+     *
+     * @param string $filePath
+     *            file path to cache
+     * @codeCoverageIgnore
+     */
+    public function dumpOnDisk(string $filePath = './cache/cache.php'): void
+    {
+        file_put_contents(
+            $filePath,
+            '<?php return ' . var_export([
+                0 => $this->routes,
+                1 => $this->routeNames
+            ], true) . ';');
+    }
+
+    /**
+     * Method loads routes from disk
+     *
+     * @param string $filePath
+     *            file path to cache
+     * @codeCoverageIgnore
+     */
+    public function loadFromDisk(string $filePath = './cache/cache.php'): void
+    {
+        list($this->routes, $this->routeNames) = require ($filePath);
+    }
 }

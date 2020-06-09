@@ -290,6 +290,15 @@ trait UrlParser
     }
 
     /**
+     * Getting route by name
+     *
+     * @param string $routeName
+     *            route's name
+     * @return string route
+     */
+    public abstract function getRouteByName(string $routeName): string;
+
+    /**
      * Compiling route into URL
      *
      * @param string $routeName
