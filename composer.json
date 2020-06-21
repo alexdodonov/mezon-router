@@ -11,7 +11,9 @@
 		}
 	],
 	"require": {
-		"php": ">=7.2.0",
+		"php": ">=7.2.0"
+	},
+	"require-dev": {
 		"phpunit/phpunit": "^8.5"
 	},
 	"support": {
@@ -26,5 +28,8 @@
 		"psr-4": {
 			"Mezon\\Router\\": ""
 		}
+	},
+	"scripts": {
+		"test": "php ./vendor/phpunit/phpunit/phpunit"
 	}
 }
