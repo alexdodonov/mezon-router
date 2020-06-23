@@ -1,4 +1,5 @@
 <?php
+namespace Mezon\Router\Tests;
 
 class RouterUtilsUnitTest extends \PHPUnit\Framework\TestCase
 {

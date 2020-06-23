@@ -1,4 +1,5 @@
 <?php
+namespace Mezon\Router\Tests;
 
 class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 {
@@ -27,7 +28,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         $router->callRoute('/catalog/1/');
 
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
 
         // test body and assertions
         $router->getParam('unexisting');
@@ -46,7 +47,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         });
 
         // assertions
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
 
         // test body
         $router->callRoute('/catalog/1/');
@@ -66,7 +67,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/12345./');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -91,7 +92,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/1025/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -116,7 +117,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/1024/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -141,7 +142,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/1024/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 

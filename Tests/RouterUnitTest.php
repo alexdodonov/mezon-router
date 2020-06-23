@@ -1,4 +1,5 @@
 <?php
+namespace Mezon\Router\Tests;
 
 class RouterUnitTest extends \PHPUnit\Framework\TestCase
 {
@@ -104,7 +105,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/unexisting-route/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -252,7 +253,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
             RouterUnitTest::setRequestMethod($method);
             $router->callRoute('/route-to-clear/');
             $flag = 'not cleared';
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $flag = 'cleared';
         }
         $this->assertEquals($flag, 'cleared', 'Data was not cleared');

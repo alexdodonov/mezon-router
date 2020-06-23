@@ -1,4 +1,5 @@
 <?php
+namespace Mezon\Router\Tests;
 
 class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 {
@@ -7,12 +8,22 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
     const HELLO_STATIC_WORLD = 'Hello static world!';
 
+    use Utils;
+
     /**
      * Function simply returns string.
      */
     public function helloWorldOutput(): string
     {
         return StaticRoutesUnitTest::HELLO_WORLD;
+    }
+
+    /**
+     * Function simply returns string.
+     */
+    static public function staticHelloWorldOutput(): string
+    {
+        return StaticRoutesUnitTest::HELLO_STATIC_WORLD;
     }
 
     /**
@@ -27,94 +38,115 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing one processor for all routes.
+     * Method returns data sets
+     *
+     * @return array testing data
      */
-    public function testSingleAllProcessor(): void
+    public function routesDataProvider(): array
     {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        $content = $router->callRoute('/some-star-compatible-route/');
-
-        $this->assertEquals(StaticRoutesUnitTest::HELLO_WORLD, $content);
+        return [
+            [
+                [
+                    [
+                        '*',
+                        [
+                            $this,
+                            'helloWorldOutput'
+                        ]
+                    ]
+                ],
+                '/some-star-compatible-route/',
+                StaticRoutesUnitTest::HELLO_WORLD
+            ],
+            [
+                [
+                    [
+                        '/one-component-static/',
+                        '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput'
+                    ]
+                ],
+                '/one-component-static/',
+                StaticRoutesUnitTest::HELLO_STATIC_WORLD
+            ],
+            [
+                [
+                    [
+                        '*',
+                        [
+                            $this,
+                            'helloWorldOutput'
+                        ]
+                    ],
+                    [
+                        '/to-be-overlapped/',
+                        '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput'
+                    ]
+                ],
+                '/some-route/',
+                StaticRoutesUnitTest::HELLO_WORLD
+            ],
+            [
+                [
+                    [
+                        '*',
+                        [
+                            $this,
+                            'helloWorldOutput'
+                        ]
+                    ],
+                    [
+                        '/index/',
+                        '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput'
+                    ]
+                ],
+                '/index/',
+                StaticRoutesUnitTest::HELLO_WORLD
+            ],
+            [
+                [
+                    [
+                        '/index/',
+                        '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput'
+                    ],
+                    [
+                        '*',
+                        [
+                            $this,
+                            'helloWorldOutput'
+                        ]
+                    ]
+                ],
+                '/index/',
+                StaticRoutesUnitTest::HELLO_STATIC_WORLD
+            ]
+        ];
     }
 
     /**
-     * Function simply returns string.
+     * Testing one processor for all routes
+     *
+     * @param array $routes
+     *            list of routes
+     * @param string $uri
+     *            uri to be requested
+     * @param string $result
+     *            expected result
+     * @dataProvider routesDataProvider
      */
-    static public function staticHelloWorldOutput(): string
-    {
-        return StaticRoutesUnitTest::HELLO_STATIC_WORLD;
-    }
-
-    /**
-     * Testing one component router.
-     */
-    public function testOneComponentRouterStatic(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/one-component-static/', 'StaticRoutesUnitTest::staticHelloWorldOutput');
-
-        $content = $router->callRoute('/one-component-static/');
-
-        $this->assertEquals(StaticRoutesUnitTest::HELLO_STATIC_WORLD, $content);
-    }
-
-    /**
-     * Testing one processor for all routes overlap.
-     */
-    public function testSingleAllProcessorOverlapUnexisting(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-        $router->addRoute('/index/', 'StaticRoutesUnitTest::staticHelloWorldOutput');
-
-        $content = $router->callRoute('/some-route/');
-
-        $this->assertEquals(StaticRoutesUnitTest::HELLO_WORLD, $content);
-    }
-
-    /**
-     * Testing one processor for all routes overlap.
-     */
-    public function testSingleAllProcessorOverlapExisting(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-        $router->addRoute('/index/', 'StaticRoutesUnitTest::staticHelloWorldOutput');
-
-        $content = $router->callRoute('/index/');
-
-        $this->assertEquals(StaticRoutesUnitTest::HELLO_WORLD, $content);
-    }
-
-    /**
-     * Testing one processor for all routes overlap.
-     */
-    public function testSingleAllProcessorExisting(): void
+    public function testRoutesHandler(array $routes, string $uri, string $result): void
     {
         // setup
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', 'StaticRoutesUnitTest::staticHelloWorldOutput');
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
+
+        foreach ($routes as $route) {
+            $router->addRoute($route[0], $route[1]);
+        }
 
         // test body
-        $content = $router->callRoute('/index/');
+        $content = $router->callRoute($uri);
 
         // assertions
-        $this->assertEquals(StaticRoutesUnitTest::HELLO_STATIC_WORLD, $content);
+        $this->assertEquals($result, $content);
     }
 
     /**
@@ -144,7 +176,9 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         // setup
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/searching-route/', function (string $route) {return $route;});
+        $router->addRoute('/searching-route/', function (string $route) {
+            return $route;
+        });
 
         // test body and assertions
         $this->assertTrue($router->routeExists('searching-route'));
@@ -221,7 +255,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testEmptyArrayRoutes(): void
     {
-        $_SERVER['REQUEST_URI'] = '/catalog/item/';
+        $this->setRequestUri('/catalog/item/');
 
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/item/', function ($route) {
@@ -240,7 +274,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testIndexRoute(): void
     {
-        $_SERVER['REQUEST_URI'] = '/';
+        $this->setRequestUri('/');
 
         $router = new \Mezon\Router\Router();
         $router->addRoute('/index/', function ($route) {
@@ -260,7 +294,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     public function testMultipleRequestTypes(): void
     {
         // setup
-        $_SERVER['REQUEST_URI'] = '/';
+        $this->setRequestUri('/');
 
         $router = new \Mezon\Router\Router();
         $router->addRoute('/index/', function ($route) {
@@ -298,7 +332,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/static-delete-unexisting/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -340,7 +374,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/static-put-unexisting/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -382,7 +416,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/static-post-unexisting/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 

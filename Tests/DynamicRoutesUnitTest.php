@@ -1,4 +1,5 @@
 <?php
+namespace Mezon\Router\Tests;
 
 class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 {
@@ -277,7 +278,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         try {
             $router->callRoute('/catalog/1024/item/');
             $this->assertFalse(true, 'Exception expected');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->assertFalse(false, '');
         }
     }
@@ -296,7 +297,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         try {
             $router->callRoute('/catalog/1024/item/2048/');
             $this->assertFalse(true, 'Exception expected');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->assertFalse(false, '');
         }
     }
@@ -315,7 +316,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/1024/item/2048/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -338,7 +339,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/1024/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -361,7 +362,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/foo/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -384,7 +385,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/a1024/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
@@ -407,7 +408,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         try {
             $router->callRoute('/catalog/~foo/');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
