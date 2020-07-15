@@ -108,4 +108,14 @@ I have got the following results:
 
 As you can see - Mezon router is up to 25 times faster than Klein router.
 
+# What is mezon/router?
+
+mezon/router now is:
+
+- framework for routing with **100% code coverage**
+- **10.0 points** at scrutinizer-ci.com
+- router is a part of the [Mezon Project](https://github.com/alexdodonov/mezon)
+
+Repo on github.com: https://github.com/alexdodonov/mezon-router
+
 # I'll be very glad if you'll press "STAR" button )

@@ -46,6 +46,7 @@ mezon/router now is:
 
 - framework for routing with **100% code coverage**
 - **10.0 points** at scrutinizer-ci.com
+- router is a part of the [Mezon Project](https://github.com/alexdodonov/mezon)
 
 Repo on github.com: https://github.com/alexdodonov/mezon-router
 
