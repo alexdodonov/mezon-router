@@ -118,6 +118,23 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
                 ],
                 '/index/',
                 StaticRoutesUnitTest::HELLO_STATIC_WORLD
+            ],
+            [
+                [
+                    [
+                        '/index/',
+                        'StaticRoutesUnitTest::staticHelloWorldOutput'
+                    ],
+                    [
+                        '*',
+                        [
+                            $this,
+                            'helloWorldOutput'
+                        ]
+                    ]
+                ],
+                '/some-route/',
+                StaticRoutesUnitTest::HELLO_WORLD
             ]
         ];
     }
@@ -147,42 +164,6 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         // assertions
         $this->assertEquals($result, $content);
-    }
-
-    /**
-     * Testing one processor for all routes overlap.
-     */
-    public function testSingleAllProcessorUnexisting(): void
-    {
-        // setup
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', 'StaticRoutesUnitTest::staticHelloWorldOutput');
-        $router->addRoute('*', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        // test body
-        $content = $router->callRoute('/some-route/');
-
-        // assertions
-        $this->assertEquals(StaticRoutesUnitTest::HELLO_WORLD, $content);
-    }
-
-    /**
-     * Testing routeExists
-     */
-    public function testRouteExists(): void
-    {
-        // setup
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/searching-route/', function (string $route) {
-            return $route;
-        });
-
-        // test body and assertions
-        $this->assertTrue($router->routeExists('searching-route'));
-        $this->assertFalse($router->routeExists('not-searching-route'));
     }
 
     /**
@@ -440,5 +421,21 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $result = $router->callRoute('/catalog/');
 
         $this->assertEquals($result, 'catalog');
+    }
+
+    /**
+     * Testing routeExists
+     */
+    public function testRouteExists(): void
+    {
+        // setup
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/searching-route/', function (string $route) {
+            return $route;
+        });
+
+        // test body and assertions
+        $this->assertTrue($router->routeExists('searching-route'));
+        $this->assertFalse($router->routeExists('not-searching-route'));
     }
 }

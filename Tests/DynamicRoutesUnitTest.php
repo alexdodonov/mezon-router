@@ -33,69 +33,99 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($router->hasParam('unexisting'));
     }
 
+    const TYPES_ROUTE_CATALOG_INT_BAR = '/catalog/[i:bar]/';
+
+    const TYPES_ROUTE_CATALOG_FIX_POINT_BAR = '/catalog/[fp:bar]/';
+
     /**
-     * Testing getParam for existing param
+     * Data provider for the testTypes
+     *
+     * @return array test data
      */
-    public function testGettingExistingParameter(): void
+    public function typesDataProvider(): array
+    {
+        return [
+            [
+                DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_INT_BAR,
+                '/catalog/1/',
+                1
+            ],
+            [
+                DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_INT_BAR,
+                '/catalog/-1/',
+                - 1
+            ],
+            [
+                DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_INT_BAR,
+                '/catalog/+1/',
+                1
+            ],
+            [
+                DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_FIX_POINT_BAR,
+                '/catalog/1.1/',
+                1.1
+            ],
+            [
+                DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_FIX_POINT_BAR,
+                '/catalog/-1.1/',
+                - 1.1
+            ],
+            [
+                DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_FIX_POINT_BAR,
+                '/catalog/+1.1/',
+                1.1
+            ],
+            [
+                '/[a:bar]/',
+                '/.-@/',
+                '.-@'
+            ],
+            [
+                '/[s:bar]/',
+                '/, ;:/',
+                ', ;:'
+            ],
+            [
+                [
+                    '/[fp:number]/',
+                    '/[s:bar]/'
+                ],
+                '/abc/',
+                'abc'
+            ]
+        ];
+    }
+
+    /**
+     * Testing router types
+     *
+     * @param mixed $pattern
+     *            route pattern
+     * @param string $route
+     *            real route
+     * @param mixed $expected
+     *            expected value
+     * @dataProvider typesDataProvider
+     */
+    public function testTypes($pattern, string $route, $expected): void
     {
         // setup
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function () {
-            // do nothing
-        });
+        if (is_string($pattern)) {
+            $router->addRoute($pattern, function () {
+                // do nothing
+            });
+        } else {
+            foreach ($pattern as $r) {
+                $router->addRoute($r, function () {
+                    // do nothing
+                });
+            }
+        }
+        $router->callRoute($route);
 
-        $router->callRoute('/catalog/1/');
-
-        // test body
-        $foo = $router->getParam('foo');
-
-        // assertions
-        $this->assertEquals(1, $foo);
-    }
-
-    /**
-     * Testing saving of the route parameters
-     */
-    public function testSavingParameters(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
-            return $parameters['foo'];
-        });
-
-        $router->callRoute('/catalog/-1/');
-
-        $this->assertEquals($router->getParam('foo'), '-1');
-    }
-
-    /**
-     * Testing command special chars.
-     */
-    public function testCommandSpecialChars(): void
-    {
-        $router = new \Mezon\Router\Router();
-
-        $router->addRoute('/[a:url]/', function () {
-            return 'GET';
-        }, 'GET');
-
-        $result = $router->callRoute('/.-@/');
-        $this->assertEquals($result, 'GET', 'Invalid selected route');
-    }
-
-    /**
-     * Testing strings.
-     */
-    public function testStringSpecialChars(): void
-    {
-        $router = new \Mezon\Router\Router();
-
-        $router->addRoute('/[s:url]/', function () {
-            return 'GET';
-        }, 'GET');
-
-        $result = $router->callRoute('/, ;:/');
-        $this->assertEquals($result, 'GET', 'Invalid selected route');
+        // test body and assertions
+        $this->assertEquals($expected, $router->getParam('bar'));
     }
 
     /**
@@ -134,83 +164,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/123&456/');
 
-        $this->assertEquals($result, '123&amp;456', 'Security data violation');
-    }
-
-    /**
-     * Testing float value.
-     */
-    public function testFloatI(): void
-    {
-        // TODO loop all possible types in data provider
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
-            return $parameters['foo'];
-        });
-
-        $result = $router->callRoute('/catalog/1.1/');
-
-        $this->assertEquals($result, '1.1');
-    }
-
-    /**
-     * Testing negative float value.
-     */
-    public function testNegativeFloatI(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
-            return $parameters['foo'];
-        });
-
-        $result = $router->callRoute('/catalog/-1.1/');
-
-        $this->assertEquals($result, '-1.1');
-    }
-
-    /**
-     * Testing positive float value.
-     */
-    public function testPositiveFloatI(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
-            return $parameters['foo'];
-        });
-
-        $result = $router->callRoute('/catalog/+1.1/');
-
-        $this->assertEquals($result, '+1.1');
-    }
-
-    /**
-     * Testing negative integer value
-     */
-    public function testNegativeIntegerI(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
-            return $parameters['foo'];
-        });
-
-        $result = $router->callRoute('/catalog/-1/');
-
-        $this->assertEquals('-1', $result);
-    }
-
-    /**
-     * Testing positive integer value
-     */
-    public function testPositiveIntegerI(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function ($route, $parameters) {
-            return $parameters['foo'];
-        });
-
-        $result = $router->callRoute('/catalog/1/');
-
-        $this->assertEquals('1', $result);
+        $this->assertEquals($result, '123&456', 'Security data violation');
     }
 
     /**
@@ -225,9 +179,9 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
             return $route;
         }, 'DELETE');
 
-        $result = $router->callRoute('/catalog/1024/');
+        $result = $router->callRoute('/catalog/123/');
 
-        $this->assertEquals($result, 'catalog/1024', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/123');
     }
 
     /**
@@ -244,7 +198,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/1024/');
 
-        $this->assertEquals($result, 'catalog/1024', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/1024');
     }
 
     /**
@@ -261,7 +215,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         $result = $router->callRoute('/catalog/1024/');
 
-        $this->assertEquals($result, 'catalog/1024', 'Invalid extracted route');
+        $this->assertEquals($result, 'catalog/1024');
     }
 
     /**
@@ -462,12 +416,16 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
             return $route;
         });
 
+        // first reading
         $result = $router->callRoute('/catalog/all/');
+        $this->assertEquals($result, 'catalog/all');
 
-        $this->assertEquals($result, 'catalog/all', 'Invalid extracted route');
-
+        // second route
         $result = $router->callRoute('/catalog/1024/');
+        $this->assertEquals($result, 'catalog/1024');
 
-        $this->assertEquals($result, 'catalog/1024', 'Invalid extracted route');
+        // reading regexp from cache in the _getRouteMatcherRegExPattern method
+        $result = $router->callRoute('/catalog/1024/');
+        $this->assertEquals($result, 'catalog/1024');
     }
 }

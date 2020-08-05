@@ -6,7 +6,7 @@ namespace Mezon\Router;
  *
  * @author gdever
  */
-trait DefaultTypes
+trait RouteTypes
 {
 
     /**
@@ -19,11 +19,12 @@ trait DefaultTypes
     /**
      * Init types
      */
-    protected function initDefaultTypes()
+    private function initDefaultTypes(): void
     {
-        $this->types['i'] = '\Mezon\Router\Types\IntegerRouterType::handle';
-        $this->types['a'] = '\Mezon\Router\Types\CommandRouterType::handle';
-        $this->types['il'] = '\Mezon\Router\Types\IntegerListRouterType::handle';
-        $this->types['s'] = '\Mezon\Router\Types\StringRouterType::handle';
+        $this->types['i'] = '\Mezon\Router\Types\IntegerRouterType';
+        $this->types['a'] = '\Mezon\Router\Types\CommandRouterType';
+        $this->types['il'] = '\Mezon\Router\Types\IntegerListRouterType';
+        $this->types['s'] = '\Mezon\Router\Types\StringRouterType';
+        $this->types['fp'] = '\Mezon\Router\Types\FixPointNumberRouterType';
     }
 }

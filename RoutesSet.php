@@ -82,6 +82,8 @@ trait RoutesSet
         foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
             $this->routes[$requestMethod] = [];
         }
+
+        $this->cachedRegExps = [];
     }
 
     /**

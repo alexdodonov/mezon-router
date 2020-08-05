@@ -2,11 +2,11 @@
 namespace Mezon\Router\Types;
 
 /**
- * Default string type for router
+ * Fix point number type for router
  *
  * @author gdever
  */
-class StringRouterType
+class FixPointNumberRouterType
 {
 
     /**
@@ -16,7 +16,7 @@ class StringRouterType
      */
     public static function searchRegExp(): string
     {
-        return '(\[s:'.BaseType::PARAMETER_NAME_REGEXP.'\])';
+        return '(\[fp:'.BaseType::PARAMETER_NAME_REGEXP.'+\])';
     }
 
     /**
@@ -26,6 +26,6 @@ class StringRouterType
      */
     public static function parserRegExp(): string
     {
-        return '([a-z0-9A-Z_\-.@%&:;,\s]+)';
+        return '([-+]{0,1}[0-9]+.[0-9]+)';
     }
 }

@@ -86,16 +86,4 @@ class Utils
 
         return serialize($processor);
     }
-
-    /**
-     * Method detects if the $string is a parameter or a static component of the route
-     *
-     * @param string $string
-     *            String to be validated
-     * @return bool Does we have parameter
-     */
-    public static function isParameter($string): bool
-    {
-        return $string[0] == '[' && $string[strlen($string) - 1] == ']';
-    }
 }

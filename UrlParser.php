@@ -12,67 +12,71 @@ trait UrlParser
     protected $parameters = [];
 
     /**
-     * Matching parameter and component
-     *
-     * @param mixed $component
-     *            Component of the URL
-     * @param string $parameter
-     *            Parameter to be matched
-     * @return string Matched url parameter
+     * Cache for regular expressions
+     * 
+     * @var array
      */
-    private function _matchParameterAndComponent(&$component, string $parameter)
-    {
-        $parameterData = explode(':', trim($parameter, '[]'));
+    private $cachedRegExps = [];
 
-        if (isset($this->types[$parameterData[0]])) {
-            if ($this->types[$parameterData[0]]($component)) {
-                return $parameterData[1];
-            } else {
-                return '';
-            }
-        } else {
-            throw (new \Exception('Unknown parameter type : ' . $parameterData[0]));
+    /**
+     * Method compiles route pattern string in regex string.
+     * For example [i:id]/some-str in ([\[0-9\]])/some-str
+     *
+     * @param string $routerPattern
+     *            router pattern
+     * @return string regexp pattern
+     */
+    private function _getRouteMatcherRegExPattern(string $routerPattern): string
+    {
+        // try read from cache
+        if (isset($this->cachedRegExps[$routerPattern])) {
+            return $this->cachedRegExps[$routerPattern];
         }
+
+        // parsing routes
+        $compiledRouterPattern = $routerPattern;
+        foreach ($this->types as $typeClass) {
+            $compiledRouterPattern = preg_replace(
+                '/' . $typeClass::searchRegExp() . '/',
+                $typeClass::parserRegExp(),
+                $compiledRouterPattern);
+        }
+
+        // final setup + save in cache
+        $this->cachedRegExps[$routerPattern] = $compiledRouterPattern;
+
+        // TODO and we need to store this cache while dumping
+        return $compiledRouterPattern;
     }
 
     /**
-     * Method matches route and pattern
+     * Method returns all parameter names in the route
      *
-     * @param array $cleanRoute
-     *            Cleaned route splitted in parts
-     * @param array $cleanPattern
-     *            Route pattern
-     * @return array|bool Array of route's parameters
+     * @param string $routerPattern
+     *            route
+     * @return array names
      */
-    private function _matchRouteAndPattern(array $cleanRoute, array $cleanPattern)
+    private function _getParameterNames(string $routerPattern): array
     {
-        if (count($cleanRoute) !== count($cleanPattern)) {
-            return false;
+        $regExPattern = [];
+
+        foreach (array_keys($this->types) as $typeName) {
+            $regExPattern[] = $typeName;
         }
 
-        $paremeters = [];
-        $patternsCount = count($cleanPattern);
+        $regExPattern = '\[(' . implode('|', $regExPattern) . '):([a-zA-Z0-9_\-]+)\]';
 
-        for ($i = 0; $i < $patternsCount; $i ++) {
-            if (\Mezon\Router\Utils::isParameter($cleanPattern[$i])) {
-                $parameterName = $this->_matchParameterAndComponent($cleanRoute[$i], $cleanPattern[$i]);
+        $names = [];
+        preg_match_all('/' . str_replace('/', '\\/', $regExPattern) . '/', $routerPattern, $names);
 
-                // it's a parameter
-                if ($parameterName !== '') {
-                    // parameter was matched, store it!
-                    $paremeters[$parameterName] = $cleanRoute[$i];
-                } else {
-                    return false;
-                }
-            } else {
-                // it's a static part of the route
-                if ($cleanRoute[$i] !== $cleanPattern[$i]) {
-                    return false;
-                }
-            }
+        $return = [];
+
+        foreach ($names[2] as $name) {
+            $return[] = $name;
         }
 
-        $this->parameters = $paremeters;
+        // TODO cache this value
+        return $return;
     }
 
     /**
@@ -86,16 +90,32 @@ trait UrlParser
      */
     protected function getDynamicRouteProcessor(array &$processors, string $route)
     {
-        $cleanRoute = explode('/', trim($route, '/'));
+        $values = [];
 
-        foreach ($processors as $i => $processor) {
-            $cleanPattern = explode('/', trim($i, '/'));
+        foreach ($processors as $pattern => $processor) {
+            // may be it is tatic route?
+            if (strpos($pattern, '[') === false) {
+                // it is static route, so skip it
+                continue;
+            }
 
-            if ($this->_matchRouteAndPattern($cleanRoute, $cleanPattern) !== false) {
+            $regExPattern = $this->_getRouteMatcherRegExPattern($pattern);
+
+            // try match
+            if (preg_match('/^' . str_replace('/', '\\/', $regExPattern) . '$/', $route, $values)) {
+                // fetch parameter names
+                $names = $this->_getParameterNames($pattern);
+
+                $this->parameters = [];
+                foreach ($names as $i => $name) {
+                    $this->parameters[$name] = $values[$i + 1];
+                }
+
                 return $processor;
             }
         }
 
+        // match was not found
         return false;
     }
 
@@ -110,14 +130,10 @@ trait UrlParser
      */
     public function findDynamicRouteProcessor(array &$processors, string $route)
     {
-        $cleanRoute = explode('/', trim($route, '/'));
+        $processor = $this->getDynamicRouteProcessor($processors, $route);
 
-        foreach ($processors as $i => $processor) {
-            $cleanPattern = explode('/', trim($i, '/'));
-
-            if ($this->_matchRouteAndPattern($cleanRoute, $cleanPattern) !== false) {
-                return call_user_func($processor, $route, $this->parameters); // return result of the router
-            }
+        if ($processor !== false) {
+            return call_user_func($processor, $route, $this->parameters);
         }
 
         return false;

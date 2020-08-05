@@ -10,18 +10,22 @@ class CommandRouterType
 {
 
     /**
-     * Method handles command type
+     * Method returns regexp for searching
      *
-     * @param string $value
-     *            value to be parsed
-     * @return bool was the value parsed
+     * @return string regexp for searching
      */
-    public static function handle(string &$value): bool
+    public static function searchRegExp(): string
     {
-        if (preg_match('/^([a-z0-9A-Z_\/\-\.\@]+)$/', $value)) {
-            return true;
-        }
+        return '(\[a:'.BaseType::PARAMETER_NAME_REGEXP.'\])';
+    }
 
-        return false;
+    /**
+     * Method returns regexp for parsing
+     *
+     * @return string regexp for parsing
+     */
+    public static function parserRegExp(): string
+    {
+        return '([a-z0-9A-Z_.\-@]+)';
     }
 }

@@ -10,18 +10,22 @@ class IntegerListRouterType
 {
 
     /**
-     * Method handles list of integers type
+     * Method returns regexp for searching
      *
-     * @param string $value
-     *            value to be parsed
-     * @return bool was the value parsed
+     * @return string regexp for searching
      */
-    public static function handle(string &$value): bool
+    public static function searchRegExp(): string
     {
-        if (preg_match('/^([0-9,]+)$/', $value)) {
-            return true;
-        }
+        return '(\[il:'.BaseType::PARAMETER_NAME_REGEXP.'\])';
+    }
 
-        return false;
+    /**
+     * Method returns regexp for parsing
+     *
+     * @return string regexp for parsing
+     */
+    public static function parserRegExp(): string
+    {
+        return '([0-9,]+)';
     }
 }

@@ -4,6 +4,16 @@ namespace Mezon\Router\Tests;
 class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 {
 
+    const HELLO_WORLD = 'Hello world!';
+
+    /**
+     * Function simply returns string.
+     */
+    public function helloWorldOutput(): string
+    {
+        return DynamicRoutesInvalidCasesUnitTest::HELLO_WORLD;
+    }
+
     /**
      * Default setup
      *
@@ -58,22 +68,19 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testInValidIdListParams(): void
     {
-        $exception = '';
+        // setup
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[il:cat_id]/', [
             $this,
             'helloWorldOutput'
         ]);
 
-        try {
-            $router->callRoute('/catalog/12345./');
-        } catch (\Exception $e) {
-            $exception = $e->getMessage();
-        }
+        // assertion
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The processor was not found for the route catalog/12345.');
 
-        $msg = "The processor was not found for the route catalog/12345.";
-
-        $this->assertNotFalse(strpos($exception, $msg));
+        // test body
+        $router->callRoute('/catalog/12345./');
     }
 
     /**
@@ -152,22 +159,41 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing that
+     * Data provider for the testNotMatchingRoutes
+     *
+     * @return array testing data
      */
-    public function testNotMatchingRoutes(): void
+    public function invalidCasesDataProvider(): array
+    {
+        return [
+            [
+                '/catalog/[i:some_id]',
+                '/catalog/1/a/'
+            ],
+            [
+                '/existing/[i:bar]/',
+                '/unexisting/1/'
+            ]
+        ];
+    }
+
+    /**
+     * Testing that all invalid cases will be covered
+     *
+     * @dataProvider invalidCasesDataProvider
+     */
+    public function testNotMatchingRoutes(string $route, string $calling): void
     {
         // setup
-        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:some_id]', [
-            $this,
-            'helloWorldOutput'
-        ]);
+        $router->addRoute($route, function () {
+            // do nothing
+        });
 
         // assertions
         $this->expectException(\Exception::class);
 
         // test body
-        $router->callRoute('/catalog/1/a/');
+        $router->callRoute($calling);
     }
 }
