@@ -13,10 +13,17 @@ trait UrlParser
 
     /**
      * Cache for regular expressions
-     * 
+     *
      * @var array
      */
     private $cachedRegExps = [];
+
+    /**
+     * Cached parameters for route
+     *
+     * @var array
+     */
+    private $cachedParameters = [];
 
     /**
      * Method compiles route pattern string in regex string.
@@ -45,7 +52,6 @@ trait UrlParser
         // final setup + save in cache
         $this->cachedRegExps[$routerPattern] = $compiledRouterPattern;
 
-        // TODO and we need to store this cache while dumping
         return $compiledRouterPattern;
     }
 
@@ -58,6 +64,10 @@ trait UrlParser
      */
     private function _getParameterNames(string $routerPattern): array
     {
+        if (isset($this->cachedParameters[$routerPattern])) {
+            return $this->cachedParameters[$routerPattern];
+        }
+
         $regExPattern = [];
 
         foreach (array_keys($this->types) as $typeName) {
@@ -75,8 +85,31 @@ trait UrlParser
             $return[] = $name;
         }
 
-        // TODO cache this value
+        $this->cachedParameters[$routerPattern] = $return;
+
         return $return;
+    }
+
+    /**
+     * Method warms cache
+     */
+    public function warmCache(): void
+    {
+        foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
+            $routesForMethod = $this->getRoutesForMethod($requestMethod);
+
+            foreach (array_keys($routesForMethod) as $routerPattern) {
+                // may be it is static route?
+                if (strpos($routerPattern, '[') === false) {
+                    // it is static route, so skip it
+                    continue;
+                }
+
+                $this->_getRouteMatcherRegExPattern($routerPattern);
+
+                $this->_getParameterNames($routerPattern);
+            }
+        }
     }
 
     /**
@@ -93,7 +126,7 @@ trait UrlParser
         $values = [];
 
         foreach ($processors as $pattern => $processor) {
-            // may be it is tatic route?
+            // may be it is static route?
             if (strpos($pattern, '[') === false) {
                 // it is static route, so skip it
                 continue;

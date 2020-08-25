@@ -92,6 +92,16 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
                 ],
                 '/abc/',
                 'abc'
+            ],
+            [
+                '/catalog/[il:bar]/',
+                '/catalog/123,456,789/',
+                '123,456,789'
+            ],
+            [
+                '/catalog/[s:bar]/',
+                '/catalog/123&456/',
+                '123&456'
             ]
         ];
     }
@@ -126,45 +136,6 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
         // test body and assertions
         $this->assertEquals($expected, $router->getParam('bar'));
-    }
-
-    /**
-     * Method for checking id list.
-     */
-    public function ilTest($route, $params): string
-    {
-        return $params['ids'];
-    }
-
-    /**
-     * Testing valid id list data types behaviour.
-     */
-    public function testValidIdListParams(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[il:ids]/', [
-            $this,
-            'ilTest'
-        ]);
-
-        $result = $router->callRoute('/catalog/123,456,789/');
-
-        $this->assertEquals($result, '123,456,789', 'Invalid router response');
-    }
-
-    /**
-     * Testing valid id list data types behaviour.
-     */
-    public function testStringParamSecurity(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[s:foo]/', function ($route, $parameters) {
-            return $parameters['foo'];
-        });
-
-        $result = $router->callRoute('/catalog/123&456/');
-
-        $this->assertEquals($result, '123&456', 'Security data violation');
     }
 
     /**
@@ -425,6 +396,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($result, 'catalog/1024');
 
         // reading regexp from cache in the _getRouteMatcherRegExPattern method
+        $router->warmCache();
         $result = $router->callRoute('/catalog/1024/');
         $this->assertEquals($result, 'catalog/1024');
     }

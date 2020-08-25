@@ -211,10 +211,15 @@ trait RoutesSet
     {
         file_put_contents(
             $filePath,
-            '<?php return ' . var_export([
-                0 => $this->routes,
-                1 => $this->routeNames
-            ], true) . ';');
+            '<?php return ' .
+            var_export(
+                [
+                    0 => $this->routes,
+                    1 => $this->routeNames,
+                    2 => $this->cachedRegExps,
+                    3 => $this->cachedParameters
+                ],
+                true) . ';');
     }
 
     /**
@@ -226,6 +231,6 @@ trait RoutesSet
      */
     public function loadFromDisk(string $filePath = './cache/cache.php'): void
     {
-        list($this->routes, $this->routeNames) = require ($filePath);
+        list ($this->routes, $this->routeNames, $this->cachedRegExps, $this->cachedParameters) = require ($filePath);
     }
 }
