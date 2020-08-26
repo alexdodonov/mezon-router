@@ -4,16 +4,6 @@ namespace Mezon\Router\Tests;
 class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 {
 
-    const HELLO_WORLD = 'Hello world!';
-
-    /**
-     * Function simply returns string.
-     */
-    public function helloWorldOutput(): string
-    {
-        return DynamicRoutesInvalidCasesUnitTest::HELLO_WORLD;
-    }
-
     /**
      * Default setup
      *
@@ -72,7 +62,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[il:cat_id]/', [
             $this,
-            'helloWorldOutput'
+            function () {return 1;}
         ]);
 
         // assertion
@@ -94,7 +84,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:cat_id]', [
             $this,
-            'helloWorldOutput'
+            function () {return 1;}
         ]);
 
         try {
@@ -119,7 +109,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:cat_id]', [
             $this,
-            'helloWorldOutput'
+            function () {return 1;}
         ]);
 
         try {
@@ -144,7 +134,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/[i:item_id]', [
             $this,
-            'helloWorldOutput'
+            function () {return 1;}
         ]);
 
         try {
@@ -195,5 +185,43 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         // test body
         $router->callRoute($calling);
+    }
+
+    /**
+     * Testing invalid data types behaviour.
+     */
+    public function testInvalidType(): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[unexisting-type:i]/item/', [
+            $this,
+            function () {return 1;}
+        ]);
+
+        try {
+            $router->callRoute('/catalog/1024/item/');
+            $this->assertFalse(true, 'Exception expected');
+        } catch (\Exception $e) {
+            $this->assertFalse(false, '');
+        }
+    }
+
+    /**
+     * Testing invalid data types behaviour.
+     */
+    public function testValidInvalidTypes(): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:cat_id]/item/[unexisting-type-trace:item_id]/', [
+            $this,
+            function () {return 1;}
+        ]);
+
+        try {
+            $router->callRoute('/catalog/1024/item/2048/');
+            $this->assertFalse(true, 'Exception expected');
+        } catch (\Exception $e) {
+            $this->assertFalse(false, '');
+        }
     }
 }

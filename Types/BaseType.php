@@ -14,5 +14,5 @@ class BaseType
      *
      * @var string
      */
-    const PARAMETER_NAME_REGEXP = '[a-zA-Z0-9_]*';
+    const PARAMETER_NAME_REGEXP = '[a-zA-Z0-9_\-]*';
 }

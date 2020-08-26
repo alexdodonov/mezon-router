@@ -45,46 +45,55 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
     public function typesDataProvider(): array
     {
         return [
+            // #0
             [
                 DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_INT_BAR,
                 '/catalog/1/',
                 1
             ],
+            // #1
             [
                 DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_INT_BAR,
                 '/catalog/-1/',
                 - 1
             ],
+            // #2
             [
                 DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_INT_BAR,
                 '/catalog/+1/',
                 1
             ],
+            // #3
             [
                 DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_FIX_POINT_BAR,
                 '/catalog/1.1/',
                 1.1
             ],
+            // #4
             [
                 DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_FIX_POINT_BAR,
                 '/catalog/-1.1/',
                 - 1.1
             ],
+            // #5
             [
                 DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_FIX_POINT_BAR,
                 '/catalog/+1.1/',
                 1.1
             ],
+            // #6
             [
                 '/[a:bar]/',
                 '/.-@/',
                 '.-@'
             ],
+            // #7
             [
                 '/[s:bar]/',
                 '/, ;:/',
                 ', ;:'
             ],
+            // #8
             [
                 [
                     '/[fp:number]/',
@@ -93,15 +102,24 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
                 '/abc/',
                 'abc'
             ],
+            // #9
             [
                 '/catalog/[il:bar]/',
                 '/catalog/123,456,789/',
                 '123,456,789'
             ],
+            // #10
             [
                 '/catalog/[s:bar]/',
                 '/catalog/123&456/',
                 '123&456'
+            ],
+            // #11, parameter name chars testing
+            [
+                '/[s:Aa_x-0]/',
+                '/abc123/',
+                'abc123',
+                'Aa_x-0'
             ]
         ];
     }
@@ -115,9 +133,11 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
      *            real route
      * @param mixed $expected
      *            expected value
+     * @param string $paramName
+     *            name of the validating parameter
      * @dataProvider typesDataProvider
      */
-    public function testTypes($pattern, string $route, $expected): void
+    public function testTypes($pattern, string $route, $expected, string $paramName = 'bar'): void
     {
         // setup
         $router = new \Mezon\Router\Router();
@@ -135,7 +155,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $router->callRoute($route);
 
         // test body and assertions
-        $this->assertEquals($expected, $router->getParam('bar'));
+        $this->assertEquals($expected, $router->getParam($paramName));
     }
 
     /**
@@ -187,44 +207,6 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $result = $router->callRoute('/catalog/1024/');
 
         $this->assertEquals($result, 'catalog/1024');
-    }
-
-    /**
-     * Testing invalid data types behaviour.
-     */
-    public function testInvalidType(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[unexisting-type:i]/item/', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        try {
-            $router->callRoute('/catalog/1024/item/');
-            $this->assertFalse(true, 'Exception expected');
-        } catch (\Exception $e) {
-            $this->assertFalse(false, '');
-        }
-    }
-
-    /**
-     * Testing invalid data types behaviour.
-     */
-    public function testValidInvalidTypes(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]/item/[unexisting-type-trace:item_id]/', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        try {
-            $router->callRoute('/catalog/1024/item/2048/');
-            $this->assertFalse(true, 'Exception expected');
-        } catch (\Exception $e) {
-            $this->assertFalse(false, '');
-        }
     }
 
     /**

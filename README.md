@@ -182,6 +182,8 @@ a - any [a-z0-9A-Z_\/\-\.\@]+ string
 il - comma separated list of integer ids
 s - any string
 
+Parameter name must consist of the following chars: [a-zA-Z0-9_\-] 
+
 All this variables are passed as second function parameter wich is named in the example above - $variales. All variables are passed as an associative array.
 
 ## Request types and first steps to the REST API
