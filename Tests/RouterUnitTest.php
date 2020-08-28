@@ -1,6 +1,8 @@
 <?php
 namespace Mezon\Router\Tests;
 
+use Mezon\Router\Router;
+
 class RouterUnitTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -63,7 +65,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     public function testOneComponentRouterClassMethod(): void
     {
         // TODO join this test with the next one via data provider
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
 
         $router->addRoute('/one-component-class-method/', [
             $this,
@@ -214,24 +216,15 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function clearMethodTestDataProvider(): array
     {
-        // TODO user getListOfSupportedRequestMethods() to fetch supported request methods
-        return [
-            [
-                'POST'
-            ],
-            [
-                'GET'
-            ],
-            [
-                'PUT'
-            ],
-            [
-                RouterUnitTest::DELETE_REQUEST_METHOD
-            ],
-            [
-                'OPTION'
-            ]
-        ];
+        $result = [];
+
+        foreach (\Mezon\Router\Router::getListOfSupportedRequestMethods() as $method) {
+            $result[] = [
+                $method
+            ];
+        }
+
+        return $result;
     }
 
     /**
@@ -390,7 +383,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      *            quite obviuous to describe it here )
      * @dataProvider reverseRouteByNameDataProvider
      */
-    public function testReverseRouteByName(string $route, array $parameters = [], string $extectedResult): void
+    public function testReverseRouteByName(string $route, array $parameters, string $extectedResult): void
     {
         // setup
         $router = new \Mezon\Router\Router();

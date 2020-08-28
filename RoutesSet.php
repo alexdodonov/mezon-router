@@ -59,7 +59,7 @@ trait RoutesSet
      *
      * @return array list of supported request methods
      */
-    public function getListOfSupportedRequestMethods(): array
+    public static function getListOfSupportedRequestMethods(): array
     {
         return [
             'GET',
@@ -79,7 +79,7 @@ trait RoutesSet
 
         $this->routeNames = [];
 
-        foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
             $this->routes[$requestMethod] = [];
         }
 
@@ -97,7 +97,7 @@ trait RoutesSet
     {
         $route = trim($route, '/');
 
-        foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
             if (isset($this->routes[$requestMethod][$route])) {
                 return true;
             }
@@ -113,7 +113,7 @@ trait RoutesSet
     {
         $trace = [];
 
-        foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
             if (count($this->routes[$requestMethod]) > 0) {
                 $trace[] = $requestMethod . ':' . implode(', ', array_keys($this->routes[$requestMethod]));
             }

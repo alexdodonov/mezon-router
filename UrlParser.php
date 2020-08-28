@@ -95,7 +95,7 @@ trait UrlParser
      */
     public function warmCache(): void
     {
-        foreach ($this->getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
             $routesForMethod = $this->getRoutesForMethod($requestMethod);
 
             foreach (array_keys($routesForMethod) as $routerPattern) {
