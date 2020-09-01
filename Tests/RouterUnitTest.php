@@ -60,60 +60,49 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing one component router.
+     * Data provider for the test
+     *
+     * @return array
      */
-    public function testOneComponentRouterClassMethod(): void
+    public function differentHandlersDataProvider(): array
     {
-        // TODO join this test with the next one via data provider
+        return [
+            # 0, class method
+            [
+                '/one-component-class-method/',
+                [
+                    $this,
+                    'helloWorldOutput'
+                ],
+                'Hello world!'
+            ],
+            # 1, lambda
+            [
+                '/one-component-lambda/',
+                function () {
+                    return 'Hello lambda!';
+                },
+                'Hello lambda!'
+            ],
+        ];
+    }
+
+    /**
+     * Testing router with different handlers
+     *
+     * @dataProvider differentHandlersDataProvider
+     */
+    public function testDifferentHandlers(string $url, $handler, string $expectedResult): void
+    {
+        // setup
         $router = new Router();
+        $router->addRoute($url, $handler);
 
-        $router->addRoute('/one-component-class-method/', [
-            $this,
-            'helloWorldOutput'
-        ]);
+        // test body
+        $content = $router->callRoute($url);
 
-        $content = $router->callRoute('/one-component-class-method/');
-
-        $this->assertEquals('Hello world!', $content);
-    }
-
-    /**
-     * Testing one component router.
-     */
-    public function testOneComponentRouterLambda(): void
-    {
-        $router = new \Mezon\Router\Router();
-
-        $router->addRoute('/one-comonent-lambda/', function () {
-            return 'Hello world!';
-        });
-
-        $content = $router->callRoute('/one-comonent-lambda/');
-
-        $this->assertEquals('Hello world!', $content);
-    }
-
-    /**
-     * Testing unexisting route behaviour.
-     */
-    public function testUnexistingRoute(): void
-    {
-        $exception = '';
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/existing-route/', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        try {
-            $router->callRoute('/unexisting-route/');
-        } catch (\Exception $e) {
-            $exception = $e->getMessage();
-        }
-
-        $msg = "The processor was not found for the route";
-
-        $this->assertNotFalse(strpos($exception, $msg), 'Valid error handling expected');
+        // assertions
+        $this->assertEquals($expectedResult, $content);
     }
 
     /**
@@ -274,142 +263,5 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
         // test body and assertions
         RouterUnitTest::setRequestMethod('POST');
         $router->callRoute('/unexisting/');
-    }
-
-    /**
-     * Data provider for the
-     *
-     * @return array testing dataset
-     */
-    public function getCallbackDataProvider(): array
-    {
-        return [
-            [
-                'some-static-route',
-                'some-static-route'
-            ],
-            [
-                'some/non-static/route/[i:id]',
-                'some/non-static/route/1'
-            ]
-        ];
-    }
-
-    /**
-     * Testing getting callback
-     *
-     * @param string $route
-     *            route
-     * @param string $url
-     *            concrete URL
-     * @dataProvider getCallbackDataProvider
-     */
-    public function testGetCallback(string $route, string $url): void
-    {
-        // setup
-        $router = new \Mezon\Router\Router();
-        $router->addRoute($route, function () {
-            return 'route result';
-        });
-
-        // test body
-        $callback = $router->getCallback($url);
-
-        // assertions
-        $this->assertEquals('route result', $callback());
-    }
-
-    /**
-     * Testing case with unexisting callback
-     */
-    public function testGetCallbackWithUnexistingRoute(): void
-    {
-        // setup
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('existing-route', function () {
-            return 'existing route result';
-        });
-
-        // assertions
-        $this->expectException(\Exception::class);
-
-        // test body
-        $router->getCallback('unexisting-route');
-    }
-
-    /**
-     * Data provider for the test testReverseRouteByName
-     *
-     * @return array test data
-     */
-    public function reverseRouteByNameDataProvider(): array
-    {
-        return [
-            [
-                'named-route-url',
-                [],
-                'named-route-url'
-            ],
-            [
-                'route-with-params/[i:id]',
-                [
-                    'id' => 123
-                ],
-                'route-with-params/123',
-            ],
-            [
-                'route-with-foo/[i:id]',
-                [
-                    'foo' => 123
-                ],
-                'route-with-foo/[i:id]',
-            ],
-            [
-                'route-no-params/[i:id]',
-                [],
-                'route-no-params/[i:id]',
-            ]
-        ];
-    }
-
-    /**
-     * Testing reverse route by it's name
-     *
-     * @param string $route
-     *            route
-     * @param array $parameters
-     *            parameters to be substituted
-     * @param string $extectedResult
-     *            quite obviuous to describe it here )
-     * @dataProvider reverseRouteByNameDataProvider
-     */
-    public function testReverseRouteByName(string $route, array $parameters, string $extectedResult): void
-    {
-        // setup
-        $router = new \Mezon\Router\Router();
-        $router->addRoute($route, function () {
-            return 'named route result';
-        }, 'GET', 'named-route');
-
-        // test body
-        $url = $router->reverse('named-route', $parameters);
-
-        // assertions
-        $this->assertEquals($extectedResult, $url);
-    }
-
-    /**
-     * Trying to fetch unexisting route by name
-     */
-    public function testFetchUnexistingRouteByName(): void
-    {
-        // setup
-        $router = new \Mezon\Router\Router();
-
-        // assertions
-        $this->expectException(\Exception::class);
-
-        // test body
-        $router->getRouteByName('unexisting-name');
     }
 }

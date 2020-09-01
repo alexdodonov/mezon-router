@@ -30,9 +30,4 @@
 		<log type="coverage-text" target="php://stdout"
 			showOnlySummary="true"></log>
 	</logging>
-	<groups>
-		<exclude>
-			<group>baseTests</group>
-		</exclude>
-	</groups>
 </phpunit>

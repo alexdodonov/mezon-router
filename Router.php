@@ -3,7 +3,6 @@ namespace Mezon\Router;
 
 // TODO add custom types
 // TODO PSR-7 compliant
-// TODO add non-static routes optimizations like here https://medium.com/@nicolas.grekas/making-symfonys-router-77-7x-faster-1-2-958e3754f0e1
 // TODO add 404 test benchmark
 
 /**

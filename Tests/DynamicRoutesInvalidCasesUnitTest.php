@@ -224,4 +224,35 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
             $this->assertFalse(false, '');
         }
     }
+
+    /**
+     * Function simply returns string.
+     */
+    public function helloWorldOutput(): string
+    {
+        return 'Hello world!';
+    }
+
+    /**
+     * Testing unexisting route behaviour
+     */
+    public function testUnexistingRoute(): void
+    {
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/existing-route/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+
+        try {
+            $router->callRoute('/unexisting-route/');
+        } catch (\Exception $e) {
+            $exception = $e->getMessage();
+        }
+
+        $msg = "The processor was not found for the route";
+
+        $this->assertNotFalse(strpos($exception, $msg), 'Valid error handling expected');
+    }
 }
