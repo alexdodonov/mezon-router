@@ -84,6 +84,8 @@ trait RoutesSet
         }
 
         $this->cachedRegExps = [];
+
+        $this->middleware = [];
     }
 
     /**

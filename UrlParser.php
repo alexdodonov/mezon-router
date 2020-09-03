@@ -12,6 +12,13 @@ trait UrlParser
     protected $parameters = [];
 
     /**
+     * Called route
+     *
+     * @var string
+     */
+    protected $calledRoute = '';
+
+    /**
      * Cache for regular expressions
      *
      * @var array
@@ -24,6 +31,13 @@ trait UrlParser
      * @var array
      */
     private $cachedParameters = [];
+
+    /**
+     * Middleware for routes processing
+     *
+     * @var array
+     */
+    private $middleware = [];
 
     /**
      * Method compiles route pattern string in regex string.
@@ -144,6 +158,8 @@ trait UrlParser
                     $this->parameters[$name] = $values[$i + 1];
                 }
 
+                $this->calledRoute = $pattern;
+
                 return $processor;
             }
         }
@@ -165,11 +181,11 @@ trait UrlParser
     {
         $processor = $this->getDynamicRouteProcessor($processors, $route);
 
-        if ($processor !== false) {
-            return call_user_func($processor, $route, $this->parameters);
+        if ($processor === false) {
+            return false;
         }
 
-        return false;
+        return $this->executeHandler($processor, $route);
     }
 
     /**
@@ -224,11 +240,14 @@ trait UrlParser
      */
     protected function getExactRouteHandlerOrUniversal(&$processors, string $route)
     {
+        $this->calledRoute = $route;
+
         if ($this->universalRouteWasAdded) {
             $allRoutes = array_keys($processors);
 
             if (array_search('*', $allRoutes) <= array_search($route, $allRoutes)) {
                 $processor = $processors['*'];
+                $this->calledRoute = '*';
             } else {
                 $processor = $processors[$route];
             }
@@ -237,6 +256,35 @@ trait UrlParser
         }
 
         return $processor;
+    }
+
+    /**
+     * Method registeres middleware for the router
+     *
+     * @param callable $middleware
+     *            middleware
+     */
+    public function registerMiddleware(string $router, callable $middleware): void
+    {
+        $this->middleware[trim($router, '/')] = $middleware;
+    }
+
+    /**
+     * Method returns middleware processing result
+     *
+     * @param string $route
+     *            processed route
+     * @return array middleware result
+     */
+    private function getMiddlewareResult(string $route): array
+    {
+        return isset($this->middleware[$this->calledRoute]) ? call_user_func(
+            $this->middleware[$this->calledRoute],
+            $route,
+            $this->parameters) : [
+                $route,
+                $this->parameters
+            ];
     }
 
     /**
@@ -249,14 +297,14 @@ trait UrlParser
     protected function executeHandler($processor, string $route)
     {
         if ($this->isFunction($processor)) {
-            return $processor($route, []);
+            return call_user_func_array($processor, $this->getMiddlewareResult($route));
         }
 
         $functionName = $processor[1] ?? null;
 
         if ($this->canBeCalled($processor, $functionName)) {
             // passing route path and parameters
-            return call_user_func($processor, $route, []);
+            return call_user_func_array($processor, $this->getMiddlewareResult($route));
         } else {
             $callableDescription = \Mezon\Router\Utils::getCallableDescription($processor);
 

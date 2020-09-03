@@ -233,6 +233,37 @@ You can also worm cache without dumping:
 $router->warmCache();
 ```
 
+## Middleware and model binding
+
+You can register your own middleware wich will be called before the route handler will be executed. This middleware can transform common parameters $route and $parameters into something different.
+
+Let's look at the example:
+
+```php
+$router = new Router();
+$router->addRoute('/user/[i:id]', function(string $route, array $parameters){
+    $userModel = new UserModel();
+    $userObject = $userModel->getUserById($parameters[$id]);
+
+    // use $userObject for any purpose you need
+});
+```
+
+Quite simple, but you can register middleware wich will do all dirty job:
+
+```php
+$router = new Router();
+$router->addRoute('/user/[i:id]', function(UserObject $userObject){
+    // here we get $userObject directly
+    // use use it in any way we need
+});
+$router->registerMiddleware('/user/[i:id]', function(string $route, array $parameters){
+    $userModel = new UserModel();
+    $userObject = $userModel->getUserById($parameters[$id]);
+    return $userObject;
+});
+```
+
 # Learn more
 
 More information can be found here:

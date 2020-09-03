@@ -86,9 +86,14 @@ class Router
      *            Collback wich will be processing route call.
      * @param string|array $requestMethod
      *            Request type
-     * @param string $routeName name of the route
+     * @param string $routeName
+     *            name of the route
      */
-    public function addRoute(string $route, $callback, $requestMethod = 'GET', string $routeName = ''): void
+    public function addRoute(
+        string $route,
+        $callback,
+        $requestMethod = 'GET',
+        string $routeName = ''): void
     {
         $route = trim($route, '/');
 

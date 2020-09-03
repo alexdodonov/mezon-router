@@ -8,6 +8,8 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 
     const HELLO_STATIC_WORLD = 'Hello static world!';
 
+    const HELLO_STATIC_WORLD_METHOD = '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput';
+
     use Utils;
 
     /**
@@ -62,7 +64,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
                 [
                     [
                         '/one-component-static/',
-                        '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput'
+                        StaticRoutesUnitTest::HELLO_STATIC_WORLD_METHOD
                     ]
                 ],
                 '/one-component-static/',
@@ -79,7 +81,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
                     ],
                     [
                         '/to-be-overlapped/',
-                        '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput'
+                        StaticRoutesUnitTest::HELLO_STATIC_WORLD_METHOD
                     ]
                 ],
                 '/some-route/',
@@ -96,7 +98,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
                     ],
                     [
                         '/index/',
-                        '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput'
+                        StaticRoutesUnitTest::HELLO_STATIC_WORLD_METHOD
                     ]
                 ],
                 '/index/',
@@ -106,7 +108,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
                 [
                     [
                         '/index/',
-                        '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput'
+                        StaticRoutesUnitTest::HELLO_STATIC_WORLD_METHOD
                     ],
                     [
                         '*',
@@ -323,23 +325,6 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing static routes for DELETE requests.
-     */
-    public function testDeleteRequestForExistingStaticRoute(): void
-    {
-        $_SERVER['REQUEST_METHOD'] = RouterUnitTest::DELETE_REQUEST_METHOD;
-
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/static-delete-existing/', function ($route) {
-            return $route;
-        }, RouterUnitTest::DELETE_REQUEST_METHOD);
-
-        $result = $router->callRoute('/static-delete-existing/');
-
-        $this->assertEquals($result, 'static-delete-existing');
-    }
-
-    /**
      * Testing static routes for PUT requests.
      */
     public function testPutRequestForUnExistingStaticRoute(): void
@@ -362,23 +347,6 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $msg = "The processor was not found for the route static-put-unexisting";
 
         $this->assertNotFalse(strpos($exception, $msg));
-    }
-
-    /**
-     * Testing static routes for PUT requests.
-     */
-    public function testPutRequestForExistingStaticRoute(): void
-    {
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
-
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/static-put-existing/', function ($route) {
-            return $route;
-        }, 'PUT');
-
-        $result = $router->callRoute('/static-put-existing/');
-
-        $this->assertEquals($result, 'static-put-existing');
     }
 
     /**
@@ -407,16 +375,62 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing static routes for POST requests.
+     * Data provider
+     *
+     * @return array
      */
-    public function testPostRequestForExistingStaticRoute(): void
+    public function clearMethodTestDataProvider(): array
     {
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $result = [];
+
+        foreach (\Mezon\Router\Router::getListOfSupportedRequestMethods() as $method) {
+            $result[] = [
+                $method
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Testing 'clear' method
+     *
+     * @param string $method
+     *            request method
+     * @dataProvider clearMethodTestDataProvider
+     */
+    public function testClearMethod(string $method): void
+    {
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/route-to-clear/', function () use ($method) {
+            return $method;
+        }, $method);
+        $router->clear();
+
+        try {
+            RouterUnitTest::setRequestMethod($method);
+            $router->callRoute('/route-to-clear/');
+            $flag = 'not cleared';
+        } catch (\Exception $e) {
+            $flag = 'cleared';
+        }
+        $this->assertEquals($flag, 'cleared', 'Data was not cleared');
+    }
+
+    /**
+     * Testing static routes calls for all possible request methods
+     *
+     * @param string $method
+     * @dataProvider clearMethodTestDataProvider
+     */
+    public function testRequestForExistingStaticRoute(string $method): void
+    {
+        $_SERVER['REQUEST_METHOD'] = $method;
 
         $router = new \Mezon\Router\Router();
         $router->addRoute('/catalog/', function ($route) {
             return $route;
-        }, 'POST');
+        }, $method);
 
         $result = $router->callRoute('/catalog/');
 

@@ -199,49 +199,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Data provider
-     *
-     * @return array
-     */
-    public function clearMethodTestDataProvider(): array
-    {
-        $result = [];
-
-        foreach (\Mezon\Router\Router::getListOfSupportedRequestMethods() as $method) {
-            $result[] = [
-                $method
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Testing 'clear' method
-     *
-     * @param string $method
-     *            request method
-     * @dataProvider clearMethodTestDataProvider
-     */
-    public function testClearMethod(string $method): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/route-to-clear/', function () use ($method) {
-            return $method;
-        }, $method);
-        $router->clear();
-
-        try {
-            RouterUnitTest::setRequestMethod($method);
-            $router->callRoute('/route-to-clear/');
-            $flag = 'not cleared';
-        } catch (\Exception $e) {
-            $flag = 'cleared';
-        }
-        $this->assertEquals($flag, 'cleared', 'Data was not cleared');
-    }
-
-    /**
      * Method increments assertion count
      */
     protected function errorHandler(): void
