@@ -2,7 +2,6 @@
 namespace Mezon\Router;
 
 // TODO add custom types
-// TODO PSR-7 compliant
 // TODO add 404 test benchmark
 
 /**

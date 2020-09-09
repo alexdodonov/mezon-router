@@ -264,6 +264,38 @@ $router->registerMiddleware('/user/[i:id]', function(string $route, array $param
 });
 ```
 
+## PSR-7 routes processing
+
+Originally Mezon Router was not designed to be PSR-7 compatible. But one of the latest features have made it possible. You can use middleware for this purpose. For example:
+
+```php
+$router = new Router();
+$router->addRoute('/user/[i:id]', function(\Nyholm\Psr7\Request $request){
+    // work here with the request in PSR-7 way
+
+    $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
+
+    $responseBody = $psr17Factory->createStream('Hello world');
+    $response = $psr17Factory->createResponse(200)->withBody($responseBody);
+    (new \Zend\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);
+});
+
+$router->registerMiddleware('/user/[i:id]', function(string $route, array $parameters){
+    $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
+
+    $creator = new \Nyholm\Psr7Server\ServerRequestCreator(
+        $psr17Factory, // ServerRequestFactory
+        $psr17Factory, // UriFactory
+        $psr17Factory, // UploadedFileFactory
+        $psr17Factory  // StreamFactory
+    );
+
+    return $creator->fromGlobals();
+});
+```
+
+The best thing about it - if you don't use PSR-7 in your project, then you don't "pay" for it )
+
 # Learn more
 
 More information can be found here:
