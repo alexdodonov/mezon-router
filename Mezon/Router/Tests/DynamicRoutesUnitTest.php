@@ -1,6 +1,9 @@
 <?php
 namespace Mezon\Router\Tests;
 
+use Mezon\Router\Router;
+use Mezon\Router\Types\DateRouterType;
+
 class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -44,7 +47,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function typesDataProvider(): array
     {
-        return [
+        $data = [
             // #0
             [
                 DynamicRoutesUnitTest::TYPES_ROUTE_CATALOG_INT_BAR,
@@ -120,8 +123,37 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
                 '/abc123/',
                 'abc123',
                 'Aa_x-0'
+            ],
+            // #12, date type testing 1
+            [
+                '/[date:dfield]/',
+                '/2020-02-02/',
+                '2020-02-02',
+                'dfield'
+            ],
+            // #13, date type testing 2
+            [
+                '/posts-[date:dfield]/',
+                '/posts-2020-02-02/',
+                '2020-02-02',
+                'dfield'
             ]
         ];
+
+        $return = [];
+
+        foreach (Router::getListOfSupportedRequestMethods() as $method) {
+            $tmp = array_merge($data);
+
+            foreach ($tmp as $item) {
+                $item = array_merge([
+                    $method
+                ], $item);
+                $return[] = $item;
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -137,191 +169,27 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
      *            name of the validating parameter
      * @dataProvider typesDataProvider
      */
-    public function testTypes($pattern, string $route, $expected, string $paramName = 'bar'): void
+    public function testTypes(string $method, $pattern, string $route, $expected, string $paramName = 'bar'): void
     {
         // setup
+        $_SERVER['REQUEST_METHOD'] = $method;
         $router = new \Mezon\Router\Router();
+        $router->addType('date', DateRouterType::class);
         if (is_string($pattern)) {
             $router->addRoute($pattern, function () {
                 // do nothing
-            });
+            }, $method);
         } else {
             foreach ($pattern as $r) {
                 $router->addRoute($r, function () {
                     // do nothing
-                });
+                } , $method);
             }
         }
         $router->callRoute($route);
 
         // test body and assertions
         $this->assertEquals($expected, $router->getParam($paramName));
-    }
-
-    /**
-     * Testing dynamic routes for DELETE requests.
-     */
-    public function testDeleteRequestForExistingDynamicRoute(): void
-    {
-        $_SERVER['REQUEST_METHOD'] = 'DELETE';
-
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]', function ($route) {
-            return $route;
-        }, 'DELETE');
-
-        $result = $router->callRoute('/catalog/123/');
-
-        $this->assertEquals($result, 'catalog/123');
-    }
-
-    /**
-     * Testing dynamic routes for PUT requests.
-     */
-    public function testPutRequestForExistingDynamicRoute(): void
-    {
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
-
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]', function ($route) {
-            return $route;
-        }, 'PUT');
-
-        $result = $router->callRoute('/catalog/1024/');
-
-        $this->assertEquals($result, 'catalog/1024');
-    }
-
-    /**
-     * Testing dynamic routes for POST requests.
-     */
-    public function testPostRequestForExistingDynamicRoute(): void
-    {
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]', function ($route) {
-            return $route;
-        }, 'POST');
-
-        $result = $router->callRoute('/catalog/1024/');
-
-        $this->assertEquals($result, 'catalog/1024');
-    }
-
-    /**
-     * Testing valid data types behaviour.
-     */
-    public function testValidTypes(): void
-    {
-        $exception = '';
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]/item/[i:item_id]/', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        try {
-            $router->callRoute('/catalog/1024/item/2048/');
-        } catch (\Exception $e) {
-            $exception = $e->getMessage();
-        }
-
-        $msg = "Illegal parameter type";
-
-        $this->assertFalse(strpos($exception, $msg));
-    }
-
-    /**
-     * Testing valid integer data types behaviour.
-     */
-    public function testValidIntegerParams(): void
-    {
-        $exception = '';
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]/', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        try {
-            $router->callRoute('/catalog/1024/');
-        } catch (\Exception $e) {
-            $exception = $e->getMessage();
-        }
-
-        $msg = "Illegal parameter type";
-
-        $this->assertFalse(strpos($exception, $msg));
-    }
-
-    /**
-     * Testing valid alnum data types behaviour.
-     */
-    public function testValidAlnumParams(): void
-    {
-        $exception = '';
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[a:cat_id]/', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        try {
-            $router->callRoute('/catalog/foo/');
-        } catch (\Exception $e) {
-            $exception = $e->getMessage();
-        }
-
-        $msg = "Illegal parameter type";
-
-        $this->assertFalse(strpos($exception, $msg));
-    }
-
-    /**
-     * Testing invalid integer data types behaviour.
-     */
-    public function testInValidIntegerParams(): void
-    {
-        $exception = '';
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]/', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        try {
-            $router->callRoute('/catalog/a1024/');
-        } catch (\Exception $e) {
-            $exception = $e->getMessage();
-        }
-
-        $msg = "The processor was not found for the route catalog/a1024";
-
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
-    }
-
-    /**
-     * Testing invalid alnum data types behaviour.
-     */
-    public function testInValidAlnumParams(): void
-    {
-        $exception = '';
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[a:cat_id]/', [
-            $this,
-            'helloWorldOutput'
-        ]);
-
-        try {
-            $router->callRoute('/catalog/~foo/');
-        } catch (\Exception $e) {
-            $exception = $e->getMessage();
-        }
-
-        $msg = "The processor was not found for the route catalog/~foo";
-
-        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
     }
 
     /**

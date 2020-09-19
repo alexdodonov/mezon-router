@@ -27,4 +27,19 @@ trait RouteTypes
         $this->types['s'] = '\Mezon\Router\Types\StringRouterType';
         $this->types['fp'] = '\Mezon\Router\Types\FixPointNumberRouterType';
     }
+
+    /**
+     * Method adds custom type
+     *
+     * @param string $typeName
+     *            type name
+     * @param string $className
+     *            name of the class wich represents custom type
+     */
+    public function addType(string $typeName, string $className): void
+    {
+        $this->types = array_merge([
+            $typeName => $className
+        ], $this->types);
+    }
 }

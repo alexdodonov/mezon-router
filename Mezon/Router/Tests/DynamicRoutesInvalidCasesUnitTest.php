@@ -255,4 +255,51 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNotFalse(strpos($exception, $msg), 'Valid error handling expected');
     }
+    
+    
+    /**
+     * Testing invalid integer data types behaviour.
+     */
+    public function testInValidIntegerParams(): void
+    {
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[i:cat_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+        
+        try {
+            $router->callRoute('/catalog/a1024/');
+        } catch (\Exception $e) {
+            $exception = $e->getMessage();
+        }
+        
+        $msg = "The processor was not found for the route catalog/a1024";
+        
+        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+    }
+    
+    /**
+     * Testing invalid alnum data types behaviour.
+     */
+    public function testInValidAlnumParams(): void
+    {
+        $exception = '';
+        $router = new \Mezon\Router\Router();
+        $router->addRoute('/catalog/[a:cat_id]/', [
+            $this,
+            'helloWorldOutput'
+        ]);
+        
+        try {
+            $router->callRoute('/catalog/~foo/');
+        } catch (\Exception $e) {
+            $exception = $e->getMessage();
+        }
+        
+        $msg = "The processor was not found for the route catalog/~foo";
+        
+        $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
+    }
 }

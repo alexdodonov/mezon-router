@@ -296,6 +296,71 @@ $router->registerMiddleware('/user/[i:id]', function(string $route, array $param
 
 The best thing about it - if you don't use PSR-7 in your project, then you don't "pay" for it )
 
+## Custom types
+
+You can define your own types for URL parser. Let's try to create `date` type.
+
+First of all we should create simple class:
+
+```php
+class DateListRouterType
+{
+
+    /**
+     * Method returns regexp for searching this entity in the URL
+     *
+     * @return string regexp for searching
+     */
+    public static function searchRegExp(): string
+    {
+        return '(\[date:'.BaseType::PARAMETER_NAME_REGEXP.'\])';
+    }
+}
+```
+
+Here BaseType::PARAMETER_NAME_REGEXP is a global setting wich tells router that parameter names must consist of:
+
+- a-z and A-Z letters
+- 0-9
+- and symbols _ and -
+
+Now we need to define one more class method wich will parse date if it will occur:
+
+```php
+public static function parserRegExp(): string
+{
+    // pretty simple regexp
+    return '([0-9]{4}-[0-9]{2}-[0-9]{2})';
+}
+```
+
+And somewhere in your setup files you need to switch this type on:
+
+```php
+$router->addType('date', DateListRouterType::class);
+```
+
+Now you can handle routes like this:
+
+```bash
+/some-url-part/2020-02-02/ending-part/
+/posts-for-2020-02-02/
+```
+
+But be careful. For example you will define such routes:
+
+```php
+$router->addRoute('/posts-for-[date:posts-date]/', function(UserObject $userObject){
+    // some activities here
+});
+
+$router->addRoute('/[s:some-url/', function(UserObject $userObject){
+    // some activities here
+});
+```
+
+Then the first handler `/posts-for-[date:posts-date]/` will be called for the route `/posts-for-2020-02-02/`.
+
 # Learn more
 
 More information can be found here:

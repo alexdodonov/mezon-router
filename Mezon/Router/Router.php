@@ -1,9 +1,6 @@
 <?php
 namespace Mezon\Router;
 
-// TODO add custom types
-// TODO add 404 test benchmark
-
 /**
  * Class Router
  *
