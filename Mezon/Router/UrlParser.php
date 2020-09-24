@@ -141,11 +141,6 @@ trait UrlParser
 
         foreach ($processors as $pattern => $processor) {
             // may be it is static route?
-            // TODO remove it, because this method is called after all static routes were parsed
-            if (strpos($pattern, '[') === false) {
-                // it is static route, so skip it
-                continue;
-            }
 
             $regExPattern = $this->_getRouteMatcherRegExPattern($pattern);
 

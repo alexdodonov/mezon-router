@@ -12,7 +12,8 @@ trait RoutesSet
         'POST' => [],
         'PUT' => [],
         'DELETE' => [],
-        'OPTION' => []
+        'OPTION' => [],
+        'PATCH' => []
     ];
 
     /**
@@ -66,7 +67,8 @@ trait RoutesSet
             'POST',
             'PUT',
             'DELETE',
-            'OPTION'
+            'OPTION',
+            'PATCH'
         ];
     }
 
