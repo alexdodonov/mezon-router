@@ -262,7 +262,13 @@ trait UrlParser
      */
     public function registerMiddleware(string $router, callable $middleware): void
     {
-        $this->middleware[trim($router, '/')] = $middleware;
+        $routerTrimmed = trim($router, '/');
+
+        if (!isset($this->middleware[$routerTrimmed])) {
+            $this->middleware[$routerTrimmed] = [];
+        }
+
+        $this->middleware[$routerTrimmed][] = $middleware;
     }
 
     /**
@@ -274,13 +280,29 @@ trait UrlParser
      */
     private function getMiddlewareResult(string $route): array
     {
-        return isset($this->middleware[$this->calledRoute]) ? call_user_func(
-            $this->middleware[$this->calledRoute],
-            $route,
-            $this->parameters) : [
-                $route,
-                $this->parameters
-            ];
+        $middleWares = $this->middleware[$this->calledRoute] ?? null;
+
+        $result = [$route, $this->parameters];
+
+        if (!isset($middleWares)) {
+            return $result;
+        }
+
+        foreach ($middleWares as $middleWare) {
+            $result = call_user_func($middleWare, $route, $this->parameters);
+
+            if (is_array($result)) {
+                if (array_key_exists(0, $result)) {
+                    $route = $result[0];
+                }
+
+                if (array_key_exists(1, $result)) {
+                    $this->parameters = $result[1];
+                }
+            }
+        }
+
+        return [$route, $this->parameters];
     }
 
     /**
