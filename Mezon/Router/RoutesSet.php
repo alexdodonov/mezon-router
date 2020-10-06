@@ -5,9 +5,11 @@ trait RoutesSet
 {
 
     /**
-     * List off routes for all supported request methods
+     * List of static routes for all supported request methods
+     *
+     * @var array
      */
-    protected $routes = [
+    protected $staticRoutes = [
         'GET' => [],
         'POST' => [],
         'PUT' => [],
@@ -15,6 +17,122 @@ trait RoutesSet
         'OPTION' => [],
         'PATCH' => []
     ];
+
+    /**
+     * List of non static routes
+     *
+     * @var array
+     */
+    protected $paramRoutes = [
+        'GET' => [],
+        'POST' => [],
+        'PUT' => [],
+        'DELETE' => [],
+        'OPTION' => [],
+        'PATCH' => []
+    ];
+
+    /**
+     * Bunch size
+     *
+     * @var integer
+     */
+    private $bunchSize = 10;
+
+    /**
+     * Generating appendix for the RegExp
+     *
+     * @param int $i
+     *            count of ()
+     * @return string appendix
+     */
+    private function getRegExpAppendix(int $i): string
+    {
+        $return = '';
+
+        for ($n = 0; $n < $i; $n ++) {
+            $return .= '()';
+        }
+
+        return $return;
+    }
+
+    /**
+     * Method compiles regexp for the bunch of routes
+     *
+     * @param array $bunch
+     */
+    protected function compileRegexpForBunch(array &$bunch): void
+    {
+        if (! empty($bunch['bunch'])) {
+            $items = [];
+
+            foreach ($bunch['bunch'] as $i => $route) {
+                $items[] = $this->_getRouteMatcherRegExPattern($route['pattern'], false) .
+                    $this->getRegExpAppendix($i - 1);
+            }
+
+            $bunch['regexp'] = '~^(?|' . implode('|', $items) . ')$~';
+        } else {
+            $bunch['regexp'] = '';
+        }
+    }
+
+    /**
+     * Were regexps compiled?
+     */
+    private $regExpsWereCompiled = false;
+
+    /**
+     * Method compiles all regeps for all routes
+     */
+    protected function compileRegexpForBunches(): void
+    {
+        if (! $this->regExpsWereCompiled) {
+            foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
+                foreach ($this->paramRoutes[$requestMethod] as &$bunch) {
+                    $this->compileRegexpForBunch($bunch);
+                }
+            }
+
+            $this->regExpsWereCompiled = true;
+        }
+    }
+
+    /**
+     * Method adds param router
+     *
+     * @param string $requestMethod
+     * @param string $route
+     * @param mixed $callback
+     */
+    protected function addParamRoute(string $requestMethod, string $route, $callback): void
+    {
+        if (empty($this->paramRoutes[$requestMethod])) {
+            $this->paramRoutes[$requestMethod] = [
+                [
+                    'bunch' => []
+                ]
+            ];
+        }
+
+        $bunchCursor = count($this->paramRoutes[$requestMethod]) - 1;
+
+        $lastBunchSize = count($this->paramRoutes[$requestMethod][$bunchCursor]['bunch']);
+
+        if ($lastBunchSize == $this->bunchSize) {
+            $this->paramRoutes[$requestMethod][] = [
+                'bunch' => []
+            ];
+            $bunchCursor ++;
+            $lastBunchSize = 0;
+        }
+
+        $this->paramRoutes[$requestMethod][$bunchCursor]['bunch'][$lastBunchSize + 1] = [
+            'pattern' => $route,
+            'callback' => $callback
+        ];
+    }
 
     /**
      * Route names
@@ -38,21 +156,9 @@ trait RoutesSet
      */
     protected function validateRequestMethod(string $requestMethod): void
     {
-        if (isset($this->routes[$requestMethod]) === false) {
+        if (isset($this->staticRoutes[$requestMethod]) === false) {
             throw (new \Exception('Unsupported request method'));
         }
-    }
-
-    /**
-     * Method returns list of routes for the HTTP method.
-     *
-     * @param string $requestMethod
-     *            HTTP request method
-     * @return array Routes
-     */
-    protected function &getRoutesForMethod(string $requestMethod): array
-    {
-        return $this->routes[$requestMethod];
     }
 
     /**
@@ -82,12 +188,15 @@ trait RoutesSet
         $this->routeNames = [];
 
         foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            $this->routes[$requestMethod] = [];
+            $this->staticRoutes[$requestMethod] = [];
+            $this->paramRoutes[$requestMethod] = [];
         }
 
         $this->cachedRegExps = [];
 
         $this->middleware = [];
+
+        $this->regExpsWereCompiled = false;
     }
 
     /**
@@ -99,11 +208,17 @@ trait RoutesSet
      */
     public function routeExists(string $route): bool
     {
+        $this->compileRegexpForBunches();
+
         $route = trim($route, '/');
 
         foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            if (isset($this->routes[$requestMethod][$route])) {
+            if (isset($this->staticRoutes[$requestMethod][$route])) {
                 return true;
+            } else {
+                if ($this->getDynamicRouteProcessor($route, $requestMethod) !== false) {
+                    return true;
+                }
             }
         }
 
@@ -118,12 +233,63 @@ trait RoutesSet
         $trace = [];
 
         foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            if (count($this->routes[$requestMethod]) > 0) {
-                $trace[] = $requestMethod . ':' . implode(', ', array_keys($this->routes[$requestMethod]));
+            $trace[] = $requestMethod . ' : ';
+            if (! empty($this->staticRoutes[$requestMethod])) {
+                $trace[] = implode(', ', array_keys($this->staticRoutes[$requestMethod]));
+                $trace[] = ', ';
+            }
+            if (! empty($this->paramRoutes[$requestMethod])) {
+                foreach ($this->paramRoutes[$requestMethod] as $bunch) {
+                    $items = [];
+                    foreach ($bunch['bunch'] as $item) {
+                        $items[] = $item['pattern'];
+                    }
+                    $trace[] = implode(', ', $items);
+                }
             }
         }
 
         return implode('; ', $trace);
+    }
+
+    /**
+     * Method adds route and it's handler
+     *
+     * $callback function may have two parameters - $route and $parameters. Where $route is a called route,
+     * and $parameters is associative array (parameter name => parameter value) with URL parameters
+     *
+     * @param string $route
+     *            Route
+     * @param mixed $callback
+     *            Collback wich will be processing route call.
+     * @param string|array $requestMethod
+     *            Request type
+     * @param string $routeName
+     *            name of the route
+     */
+    public function addRoute(string $route, $callback, $requestMethod = 'GET', string $routeName = ''): void
+    {
+        $route = trim($route, '/');
+
+        if ($route == '*') {
+            $this->universalRouteWasAdded = true;
+        }
+
+        if (is_array($requestMethod)) {
+            foreach ($requestMethod as $r) {
+                $this->addRoute($route, $callback, $r, $routeName);
+            }
+        } else {
+            $this->validateRequestMethod($requestMethod);
+
+            if (strpos($route, '[') === false) {
+                $this->staticRoutes[$requestMethod][$route] = $callback;
+            } else {
+                $this->addParamRoute($requestMethod, $route, $callback);
+            }
+            // register route name
+            $this->registerRouteName($routeName, $route);
+        }
     }
 
     /**
@@ -138,10 +304,10 @@ trait RoutesSet
      */
     public function addGetRoute(string $route, object $object, string $method): void
     {
-        $this->routes['GET'][trim($route, '/')] = [
+        $this->addRoute($route, [
             $object,
             $method
-        ];
+        ], 'GET');
     }
 
     /**
@@ -156,10 +322,10 @@ trait RoutesSet
      */
     public function addPostRoute(string $route, object $object, string $method): void
     {
-        $this->routes['POST'][trim($route, '/')] = [
+        $this->addRoute($route, [
             $object,
             $method
-        ];
+        ], 'POST');
     }
 
     /**
@@ -213,15 +379,18 @@ trait RoutesSet
      */
     public function dumpOnDisk(string $filePath = './cache/cache.php'): void
     {
+        $this->compileRegexpForBunches();
+
         file_put_contents(
             $filePath,
             '<?php return ' .
             var_export(
                 [
-                    0 => $this->routes,
-                    1 => $this->routeNames,
-                    2 => $this->cachedRegExps,
-                    3 => $this->cachedParameters
+                    0 => $this->staticRoutes,
+                    1 => $this->paramRoutes,
+                    2 => $this->routeNames,
+                    3 => $this->cachedRegExps,
+                    4 => $this->cachedParameters
                 ],
                 true) . ';');
     }
@@ -235,6 +404,6 @@ trait RoutesSet
      */
     public function loadFromDisk(string $filePath = './cache/cache.php'): void
     {
-        list ($this->routes, $this->routeNames, $this->cachedRegExps, $this->cachedParameters) = require ($filePath);
+        list ($this->staticRoutes, $this->paramRoutes, $this->routeNames, $this->cachedRegExps, $this->cachedParameters) = require ($filePath);
     }
 }

@@ -26,6 +26,6 @@ class IntegerRouterType
      */
     public static function parserRegExp(): string
     {
-        return '([-+]{0,1}[0-9]+)';
+        return '[-+]{0,1}[0-9]+';
     }
 }

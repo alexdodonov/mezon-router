@@ -26,6 +26,6 @@ class DateRouterType
      */
     public static function parserRegExp(): string
     {
-        return '([0-9]{4}-[0-9]{2}-[0-9]{2})';
+        return '[0-9]{4}-[0-9]{2}-[0-9]{2}';
     }
 }

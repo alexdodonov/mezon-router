@@ -26,6 +26,6 @@ class CommandRouterType
      */
     public static function parserRegExp(): string
     {
-        return '([a-z0-9A-Z_.\-@]+)';
+        return '[a-z0-9A-Z_.\-@]+';
     }
 }

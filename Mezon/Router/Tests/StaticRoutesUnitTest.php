@@ -444,12 +444,16 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         // setup
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/searching-route/', function (string $route) {
+        $router->addRoute('/searching-static-route/', function (string $route) {
             return $route;
         });
+            $router->addRoute('/searching-param-route/[i:id]/', function (string $route) {
+                return $route;
+            });
 
         // test body and assertions
-        $this->assertTrue($router->routeExists('searching-route'));
+        $this->assertTrue($router->routeExists('searching-static-route'));
+        $this->assertTrue($router->routeExists('searching-param-route/[i:id]'));
         $this->assertFalse($router->routeExists('not-searching-route'));
     }
 }

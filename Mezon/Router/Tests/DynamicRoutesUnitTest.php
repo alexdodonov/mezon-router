@@ -183,7 +183,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
             foreach ($pattern as $r) {
                 $router->addRoute($r, function () {
                     // do nothing
-                } , $method);
+                }, $method);
             }
         }
         $router->callRoute($route);
@@ -249,5 +249,26 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $router->warmCache();
         $result = $router->callRoute('/catalog/1024/');
         $this->assertEquals($result, 'catalog/1024');
+    }
+
+    /**
+     * Testing multyple routes
+     */
+    public function testMultyple(): void
+    {
+        // setup
+        $router = new Router();
+        for ($i = 0; $i < 15; $i ++) {
+            $router->addRoute('/multiple/' . $i . '/[i:id]', function () {
+                return 'done!';
+            });
+        }
+
+        // test body
+        $result = $router->callRoute('/multiple/' . rand(0, 15) . '/12345');
+
+        // assertions
+        $this->assertEquals('done!', $result);
+        $this->assertEquals('12345', $router->getParam('id'));
     }
 }

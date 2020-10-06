@@ -71,46 +71,6 @@ class Router
     }
 
     /**
-     * Method adds route and it's handler
-     *
-     * $callback function may have two parameters - $route and $parameters. Where $route is a called route,
-     * and $parameters is associative array (parameter name => parameter value) with URL parameters
-     *
-     * @param string $route
-     *            Route
-     * @param mixed $callback
-     *            Collback wich will be processing route call.
-     * @param string|array $requestMethod
-     *            Request type
-     * @param string $routeName
-     *            name of the route
-     */
-    public function addRoute(
-        string $route,
-        $callback,
-        $requestMethod = 'GET',
-        string $routeName = ''): void
-    {
-        $route = trim($route, '/');
-
-        if ($route == '*') {
-            $this->universalRouteWasAdded = true;
-        }
-
-        if (is_array($requestMethod)) {
-            foreach ($requestMethod as $r) {
-                $this->addRoute($route, $callback, $r, $routeName);
-            }
-        } else {
-            $this->validateRequestMethod($requestMethod);
-
-            $this->routes[$requestMethod][$route] = $callback;
-            // register route name
-            $this->registerRouteName($routeName, $route);
-        }
-    }
-
-    /**
      * Method processes no processor found error
      *
      * @param string $route
@@ -145,16 +105,17 @@ class Router
      */
     public function callRoute($route)
     {
+        $this->compileRegexpForBunches();
+
         $route = Utils::prepareRoute($route);
         $requestMethod = $this->getRequestMethod();
         $this->validateRequestMethod($requestMethod);
-        $routesForMethod = $this->getRoutesForMethod($requestMethod);
 
-        if (($result = $this->findStaticRouteProcessor($routesForMethod, $route)) !== false) {
+        if (($result = $this->findStaticRouteProcessor($route)) !== false) {
             return $result;
         }
 
-        if (($result = $this->findDynamicRouteProcessor($routesForMethod, $route)) !== false) {
+        if (($result = $this->findDynamicRouteProcessor($route)) !== false) {
             return $result;
         }
 
@@ -170,15 +131,15 @@ class Router
      */
     public function getCallback($route)
     {
-        $route = Utils::prepareRoute($route);
-        $requestMethod = $this->getRequestMethod();
-        $routesForMethod = $this->getRoutesForMethod($requestMethod);
+        $this->compileRegexpForBunches();
 
-        if (($result = $this->getStaticRouteProcessor($routesForMethod, $route)) !== false) {
+        $route = Utils::prepareRoute($route);
+
+        if (($result = $this->getStaticRouteProcessor($route)) !== false) {
             return $result;
         }
 
-        if (($result = $this->getDynamicRouteProcessor($routesForMethod, $route)) !== false) {
+        if (($result = $this->getDynamicRouteProcessor($route)) !== false) {
             return $result;
         }
 

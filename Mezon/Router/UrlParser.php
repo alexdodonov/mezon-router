@@ -1,6 +1,8 @@
 <?php
 namespace Mezon\Router;
 
+use Mezon\Router\Types\BaseType;
+
 trait UrlParser
 {
 
@@ -47,11 +49,13 @@ trait UrlParser
      *            router pattern
      * @return string regexp pattern
      */
-    private function _getRouteMatcherRegExPattern(string $routerPattern): string
+    private function _getRouteMatcherRegExPattern(string $routerPattern, bool $addBraces = true): string
     {
+        $key = $routerPattern . ($addBraces ? '1' : '0');
+
         // try read from cache
-        if (isset($this->cachedRegExps[$routerPattern])) {
-            return $this->cachedRegExps[$routerPattern];
+        if (isset($this->cachedRegExps[$key])) {
+            return $this->cachedRegExps[$key];
         }
 
         // parsing routes
@@ -59,12 +63,12 @@ trait UrlParser
         foreach ($this->types as $typeClass) {
             $compiledRouterPattern = preg_replace(
                 '/' . $typeClass::searchRegExp() . '/',
-                $typeClass::parserRegExp(),
+                ($addBraces ? '(' : '') . $typeClass::parserRegExp() . ($addBraces ? ')' : ''),
                 $compiledRouterPattern);
         }
 
         // final setup + save in cache
-        $this->cachedRegExps[$routerPattern] = $compiledRouterPattern;
+        $this->cachedRegExps[$key] = $compiledRouterPattern;
 
         return $compiledRouterPattern;
     }
@@ -88,7 +92,7 @@ trait UrlParser
             $regExPattern[] = $typeName;
         }
 
-        $regExPattern = '\[(' . implode('|', $regExPattern) . '):([a-zA-Z0-9_\-]+)\]';
+        $regExPattern = '\[(' . implode('|', $regExPattern) . '):(' . BaseType::PARAMETER_NAME_REGEXP . ')\]';
 
         $names = [];
         preg_match_all('/' . str_replace('/', '\\/', $regExPattern) . '/', $routerPattern, $names);
@@ -110,15 +114,9 @@ trait UrlParser
     public function warmCache(): void
     {
         foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            $routesForMethod = $this->getRoutesForMethod($requestMethod);
+            $routesForMethod = $this->paramRoutes[$requestMethod];
 
             foreach (array_keys($routesForMethod) as $routerPattern) {
-                // may be it is static route?
-                if (strpos($routerPattern, '[') === false) {
-                    // it is static route, so skip it
-                    continue;
-                }
-
                 $this->_getRouteMatcherRegExPattern($routerPattern);
 
                 $this->_getParameterNames($routerPattern);
@@ -129,34 +127,38 @@ trait UrlParser
     /**
      * Method searches dynamic route processor
      *
-     * @param array $processors
-     *            Callable router's processor
      * @param string $route
      *            Route
+     * @param string $requestMethod
+     *            Request method
      * @return array|callable|bool route's handler or false in case the handler was not found
      */
-    protected function getDynamicRouteProcessor(array &$processors, string $route)
+    protected function getDynamicRouteProcessor(string $route, string $requestMethod = '')
     {
-        $values = [];
+        $bunches = $this->paramRoutes[$requestMethod == '' ? $_SERVER['REQUEST_METHOD'] : $requestMethod];
 
-        foreach ($processors as $pattern => $processor) {
-            // may be it is static route?
+        foreach ($bunches as $bunch) {
+            $matches = [];
 
-            $regExPattern = $this->_getRouteMatcherRegExPattern($pattern);
+            if (preg_match($bunch['regexp'], $route, $matches)) {
+                $routeData = $bunch['bunch'][count($matches)];
+                $regExPattern = $this->_getRouteMatcherRegExPattern($routeData['pattern']);
 
-            // try match
-            if (preg_match('/^' . str_replace('/', '\\/', $regExPattern) . '$/', $route, $values)) {
-                // fetch parameter names
-                $names = $this->_getParameterNames($pattern);
+                // try match
+                $values = [];
+                if (preg_match('/^' . str_replace('/', '\\/', $regExPattern) . '$/', $route, $values)) {
+                    // fetch parameter names
+                    $names = $this->_getParameterNames($routeData['pattern']);
 
-                $this->parameters = [];
-                foreach ($names as $i => $name) {
-                    $this->parameters[$name] = $values[$i + 1];
+                    $this->parameters = [];
+                    foreach ($names as $i => $name) {
+                        $this->parameters[$name] = $values[$i + 1];
+                    }
+
+                    $this->calledRoute = $routeData['pattern'];
+
+                    return $routeData['callback'];
                 }
-
-                $this->calledRoute = $pattern;
-
-                return $processor;
             }
         }
 
@@ -167,15 +169,13 @@ trait UrlParser
     /**
      * Method searches dynamic route processor
      *
-     * @param array $processors
-     *            Callable router's processor
      * @param string $route
      *            Route
      * @return string|bool Result of the router'scall or false if any error occured
      */
-    public function findDynamicRouteProcessor(array &$processors, string $route)
+    public function findDynamicRouteProcessor(string $route)
     {
-        $processor = $this->getDynamicRouteProcessor($processors, $route);
+        $processor = $this->getDynamicRouteProcessor($route);
 
         if ($processor === false) {
             return false;
@@ -278,9 +278,9 @@ trait UrlParser
             $this->middleware[$this->calledRoute],
             $route,
             $this->parameters) : [
-                $route,
-                $this->parameters
-            ];
+            $route,
+            $this->parameters
+        ];
     }
 
     /**
@@ -315,14 +315,14 @@ trait UrlParser
     /**
      * Method returns route handler
      *
-     * @param mixed $processors
-     *            Callable router's processor
      * @param string $route
      *            Route
      * @return array|callable|bool route handler
      */
-    protected function getStaticRouteProcessor(&$processors, string $route)
+    protected function getStaticRouteProcessor(string $route)
     {
+        $processors = $this->staticRoutes[$_SERVER['REQUEST_METHOD']];
+
         if (isset($processors[$route])) {
             $processor = $this->getExactRouteHandlerOrUniversal($processors, $route);
         } elseif (isset($processors['*'])) {
@@ -337,15 +337,13 @@ trait UrlParser
     /**
      * Method searches route processor
      *
-     * @param mixed $processors
-     *            Callable router's processor
      * @param string $route
      *            Route
      * @return mixed Result of the router processor
      */
-    public function findStaticRouteProcessor(&$processors, string $route)
+    public function findStaticRouteProcessor(string $route)
     {
-        $processor = $this->getStaticRouteProcessor($processors, $route);
+        $processor = $this->getStaticRouteProcessor($route);
 
         if ($processor === false) {
             return false;
