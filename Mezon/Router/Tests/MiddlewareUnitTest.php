@@ -47,6 +47,9 @@ class MiddlewareUnitTest extends TestCase
         $this->assertEquals(2, $result[1]);
     }
 
+    /**
+     * Testing multiple middlewares
+     */
     public function testMultipleMiddlewaresInOrderAndOmitMalformed(): void
     {
         // setup

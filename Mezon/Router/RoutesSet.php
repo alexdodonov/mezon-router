@@ -200,6 +200,28 @@ trait RoutesSet
     }
 
     /**
+     * Method returns true if the param router exists
+     *
+     * @param string $route
+     *            checking route
+     * @param string $requestMethod
+     *            HTTP request method
+     * @return bool true if the param router exists, false otherwise
+     */
+    private function paramRouteExists(string $route, string $requestMethod): bool
+    {
+        foreach ($this->paramRoutes[$requestMethod] as $bunch) {
+            foreach ($bunch['bunch'] as $item) {
+                if ($item['pattern'] === $route) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Method returns true if the router exists
      *
      * @param string $route
@@ -216,7 +238,7 @@ trait RoutesSet
             if (isset($this->staticRoutes[$requestMethod][$route])) {
                 return true;
             } else {
-                if ($this->getDynamicRouteProcessor($route, $requestMethod) !== false) {
+                if ($this->paramRouteExists($route, $requestMethod)) {
                     return true;
                 }
             }
