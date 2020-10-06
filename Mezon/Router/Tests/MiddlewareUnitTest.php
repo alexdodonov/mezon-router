@@ -46,4 +46,44 @@ class MiddlewareUnitTest extends TestCase
         $this->assertEquals(1, $result[0]);
         $this->assertEquals(2, $result[1]);
     }
+
+    public function testMultipleMiddlewaresInOrderAndOmitMalformed(): void
+    {
+        // setup
+        $route = '/route/[i:id]';
+        $router = new Router();
+
+        $router->addRoute($route, function (string $route, $parameters) {
+            return $parameters;
+        });
+
+        $router->registerMiddleware($route, function (string $route, array $parameters) {
+            $parameters['id'] += 9;
+
+            return [
+                $route,
+                $parameters
+            ];
+        });
+
+        // This middleware is broken, don't parse the result
+        $router->registerMiddleware($route, function (string $route, array $parameters) {
+            return null;
+        });
+
+        $router->registerMiddleware($route, function (string $route, array $parameters) {
+            $parameters['id'] *= 2;
+
+            return [
+                $route,
+                $parameters
+            ];
+        });
+
+        // test body
+        $result = $router->callRoute('/route/1');
+
+        // assertions
+        $this->assertEquals(20, $result['id']);
+    }
 }
