@@ -5,6 +5,12 @@
 ## Intro
 Mezon provides simple routing class for your needs.
 
+## Contributors
+
+[@jaumarar](https://github.com/jaumarar) - have implemented multiple middleware for routes.
+
+Once again thank you people for your contributions )
+
 ## Installation
 
 Just print in console
@@ -264,6 +270,36 @@ $router->registerMiddleware('/user/[i:id]', function(string $route, array $param
     return $userObject;
 });
 ```
+
+### Multiple middleware and invalid result omitting
+
+You can specify multiple middleware for one route. For example:
+
+```php
+$router->registerMiddleware('/user/[i:id]', function (string $route, array $parameters) {
+	// here we for example validate user existence
+
+    return [
+        $route,
+        $parameters
+    ];
+});
+
+// This middleware is broken, don't parse the result
+$router->registerMiddleware('/user/[i:id]', function (string $route, array $parameters) {
+    return null;
+});
+
+$router->registerMiddleware('/user/[i:id]', function (string $route, array $parameters) { 
+    // and here we return existing user because in the previous 
+    // middleware we have checked that it exists
+	$userModel = new UserModel();
+    $userObject = $userModel->getUserById($parameters[$id]);
+    return $userObject;
+});
+```
+
+Middleware will be executed in the order they were attached to the route.
 
 ## PSR-7 routes processing
 

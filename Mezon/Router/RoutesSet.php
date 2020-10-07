@@ -64,6 +64,8 @@ trait RoutesSet
      */
     protected function compileRegexpForBunch(array &$bunch): void
     {
+        $bunch['regexp'] = '';
+
         if (! empty($bunch['bunch'])) {
             $items = [];
 
@@ -73,8 +75,6 @@ trait RoutesSet
             }
 
             $bunch['regexp'] = '~^(?|' . implode('|', $items) . ')$~';
-        } else {
-            $bunch['regexp'] = '';
         }
     }
 
