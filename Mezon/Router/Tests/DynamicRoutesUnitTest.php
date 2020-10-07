@@ -18,24 +18,6 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
-    /**
-     * Testing hasParam method
-     */
-    public function testValidatingParameter(): void
-    {
-        // setup
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function () {
-            // do nothing
-        });
-
-        $router->callRoute('/catalog/1/');
-
-        // test body and assertions
-        $this->assertTrue($router->hasParam('foo'));
-        $this->assertFalse($router->hasParam('unexisting'));
-    }
-
     const TYPES_ROUTE_CATALOG_INT_BAR = '/catalog/[i:bar]/';
 
     const TYPES_ROUTE_CATALOG_FIX_POINT_BAR = '/catalog/[fp:bar]/';
@@ -193,65 +175,6 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing parameter extractor.
-     */
-    public function testValidExtractedParameter(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[a:cat_id]/', function ($route, $parameters) {
-            return $parameters['cat_id'];
-        });
-
-        $result = $router->callRoute('/catalog/foo/');
-
-        $this->assertEquals($result, 'foo', 'Invalid extracted parameter');
-    }
-
-    /**
-     * Testing parameter extractor.
-     */
-    public function testValidExtractedParameters(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute(
-            '/catalog/[a:cat_id]/[i:item_id]',
-            function ($route, $parameters) {
-                return $parameters['cat_id'] . $parameters['item_id'];
-            });
-
-        $result = $router->callRoute('catalog/foo/1024');
-
-        $this->assertEquals($result, 'foo1024', 'Invalid extracted parameter');
-    }
-
-    /**
-     * Testing parameter extractor.
-     */
-    public function testValidRouteParameter(): void
-    {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/all/', function ($route) {
-            return $route;
-        });
-        $router->addRoute('/catalog/[i:cat_id]', function ($route) {
-            return $route;
-        });
-
-        // first reading
-        $result = $router->callRoute('/catalog/all/');
-        $this->assertEquals($result, 'catalog/all');
-
-        // second route
-        $result = $router->callRoute('/catalog/1024/');
-        $this->assertEquals($result, 'catalog/1024');
-
-        // reading regexp from cache in the _getRouteMatcherRegExPattern method
-        $router->warmCache();
-        $result = $router->callRoute('/catalog/1024/');
-        $this->assertEquals($result, 'catalog/1024');
-    }
-
-    /**
      * Testing multyple routes
      */
     public function testMultyple(): void
@@ -265,7 +188,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
         }
 
         // test body
-        $result = $router->callRoute('/multiple/' . rand(0, 15) . '/12345');
+        $result = $router->callRoute('/multiple/' . rand(0, 14) . '/12345');
 
         // assertions
         $this->assertEquals('done!', $result);
