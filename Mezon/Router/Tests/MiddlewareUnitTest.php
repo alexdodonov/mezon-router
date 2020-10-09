@@ -26,16 +26,22 @@ class MiddlewareUnitTest extends TestCase
         // setup
         $route = '/route-with-middleware/';
         $router = new Router();
+        $router->registerMiddleware('*', function () {
+            return [
+                1,
+                2
+            ];
+        });
         $router->addRoute($route, function (int $i, int $j) {
             return [
                 $i,
                 $j
             ];
         });
-        $router->registerMiddleware($route, function () {
+        $router->registerMiddleware($route, function (int $i, int $j) {
             return [
-                1,
-                2
+                $i,
+                $j
             ];
         });
 
@@ -61,6 +67,7 @@ class MiddlewareUnitTest extends TestCase
         });
 
         $router->registerMiddleware($route, function (string $route, array $parameters) {
+            $parameters['_second'] = $parameters['id'];
             $parameters['id'] += 9;
 
             return [
@@ -71,10 +78,23 @@ class MiddlewareUnitTest extends TestCase
 
         // This middleware is broken, don't parse the result
         $router->registerMiddleware($route, function (string $route, array $parameters) {
+            $parameters['_dont_set_this'] = true;
+
             return null;
         });
 
         $router->registerMiddleware($route, function (string $route, array $parameters) {
+            $parameters['_third'] = $parameters['id'];
+            $parameters['id'] *= 2;
+
+            return [
+                $route,
+                $parameters
+            ];
+        });
+
+        $router->registerMiddleware('*', function (string $route, array $parameters) {
+            $parameters['_first'] = $parameters['id'];
             $parameters['id'] *= 2;
 
             return [
@@ -87,6 +107,10 @@ class MiddlewareUnitTest extends TestCase
         $result = $router->callRoute('/route/1');
 
         // assertions
-        $this->assertEquals(20, $result['id']);
+        $this->assertEquals(22, $result['id']);
+        $this->assertEquals(1, $result['_first']);
+        $this->assertEquals(2, $result['_second']);
+        $this->assertEquals(11, $result['_third']);
+        $this->assertTrue(empty($result['_dont_set_this']));
     }
 }
