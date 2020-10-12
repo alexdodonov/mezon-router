@@ -280,11 +280,19 @@ trait UrlParser
      */
     private function getMiddlewareResult(string $route): array
     {
-        $middleWares = $this->middleware[$this->calledRoute] ?? null;
+        $middleWares = [];
+
+        if (isset($this->middleware['*'])) {
+            $middleWares = $this->middleware['*'];
+        }
+
+        if ($this->calledRoute !== '*' && isset($this->middleware[$this->calledRoute])) {
+            $middleWares = array_merge($middleWares, $this->middleware[$this->calledRoute]);
+        }
 
         $result = [$route, $this->parameters];
 
-        if (!isset($middleWares)) {
+        if (!count($middleWares)) {
             return $result;
         }
 

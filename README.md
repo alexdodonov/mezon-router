@@ -240,66 +240,75 @@ You can also worm cache without dumping:
 $router->warmCache();
 ```
 
-## Middleware and model binding
+## Middleware and parameters modification
 
-You can register your own middleware wich will be called before the route handler will be executed. This middleware can transform common parameters $route and $parameters into something different.
+Types of middlewares that you can add which will be called before the route handler will be executed. This middleware can transform common parameters $route and $parameters into something different.
+- Multiple global middlewares that will be **called in order of attachment**
+- Multiple route specific middlewares that **will be called in order of attachment**
 
-Let's look at the example:
+Order of execution of the middlewares
+1. Global middlewares ``$router->addRoute('*', ...)``
+2. Before calling route callback ``$router->addRoute('/example', ...)`` all those matching the route will be executed
+
+Let's look at a simple example:
 
 ```php
 $router = new Router();
 $router->addRoute('/user/[i:id]', function(string $route, array $parameters){
     $userModel = new UserModel();
-    $userObject = $userModel->getUserById($parameters[$id]);
+    $userObject = $userModel->getUserById($parameters['id']);
 
     // use $userObject for any purpose you need
 });
 ```
 
-Quite simple, but you can register middleware wich will do all dirty job:
+Now let's watch an example with all the possibilities 
 
 ```php
 $router = new Router();
-$router->addRoute('/user/[i:id]', function(UserObject $userObject){
-    // here we get $userObject directly
-    // use use it in any way we need
+
+// First step. We have an API that talks JSON, convert the body
+$router->registerMiddleware('*', function (string $route, array $parameters){
+    $request = Request::createFromGlobals();
+    
+    $parameters['_request'] = $request;
+    $parameters['_body'] = json_decode($request->getContent(), true);
+
+    return $parameters;    
 });
-$router->registerMiddleware('/user/[i:id]', function(string $route, array $parameters){
+
+// Second step. Ensure that we are logged in when we are in the private area
+$router->registerMiddleware('*', function (string $route, array $parameters){
+    // Is not a private area
+    if (mb_strpos($route, '/user') !== 0 || empty($parameters['user_id'])) {
+        return $parameters;
+    }
+
+    $token = $parameters['_request']->headers->get('oauth_token');
+
+    $auth = new SomeAuth();
+    $auth->validateTokenOrFail(
+        $token,
+        $parameters['user_id']
+    );
+
+    // We don't need to return nothing
+});
+
+// Last step. Now we will modify the parameters so the handler can work with them
+$router->registerMiddleware('/user/[i:user_id]', function(string $route, array $parameters){
     $userModel = new UserModel();
-    $userObject = $userModel->getUserById($parameters[$id]);
-    return $userObject;
+    
+    return $userModel->getUserById(
+        $parameters['user_id']
+    );
+});
+
+// Final destination. We have ended the middlewares, now we can work with the processed data
+$router->addRoute('/user/[i:user_id]', function (UserObject $userObject){
+    // Do everything
 });
 ```
-
-### Multiple middleware and invalid result omitting
-
-You can specify multiple middleware for one route. For example:
-
-```php
-$router->registerMiddleware('/user/[i:id]', function (string $route, array $parameters) {
-	// here we for example validate user existence
-
-    return [
-        $route,
-        $parameters
-    ];
-});
-
-// This middleware is broken, don't parse the result
-$router->registerMiddleware('/user/[i:id]', function (string $route, array $parameters) {
-    return null;
-});
-
-$router->registerMiddleware('/user/[i:id]', function (string $route, array $parameters) { 
-    // and here we return existing user because in the previous 
-    // middleware we have checked that it exists
-	$userModel = new UserModel();
-    $userObject = $userModel->getUserById($parameters[$id]);
-    return $userObject;
-});
-```
-
-Middleware will be executed in the order they were attached to the route.
 
 ## PSR-7 routes processing
 
