@@ -7,7 +7,7 @@ Mezon provides simple routing class for your needs.
 
 ## Contributors
 
-[@jaumarar](https://github.com/jaumarar) - have implemented multiple middleware for routes.
+[@jaumarar](https://github.com/jaumarar) - have implemented multiple middleware for routes. Global middleware is also made by him.
 
 Once again thank you people for your contributions )
 
@@ -30,7 +30,12 @@ The mezon/router is
 - 30 to 50 times faster then Laravel router;
 - more then 1,5 times faster then nikic/fast-toute;
 
-![results](doc/images/graph-yii2.png)
+## What is "First case" and "Second case"?
+
+1. **First case** - http server accepts request, launches php script, wich handles this request, and then all script data uploads from memory. All following requests are processed in the same way. In this case very critical to launch script as soon as possible and we do not have time for long pre-compilations and preparations. Because all of it will be lost after the script will finish working;
+2. **Second case** - php script is launching, initiating all internal components (and router is one of them) and then starting processing requests. This case can be organized via for example react-php. It differs from the previous case because we can spend reasonable time to pre-compile routes for faster
+
+![results](doc/images/table-1.2.8.jpg)
 
 [mezon and klein comparison](doc/router.md)
 
@@ -43,6 +48,8 @@ The mezon/router is
 [mezon and yii2 router comparison](doc/yii2.md)
 
 # I'll be very glad if you'll press "STAR" button )
+
+
 
 ## Simple routes
 
