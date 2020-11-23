@@ -30,10 +30,22 @@ The mezon/router is
 - 30 to 50 times faster then Laravel router;
 - more then 1,5 times faster then nikic/fast-toute;
 
+# Learn more
+
+More information can be found here:
+
+[Twitter](https://twitter.com/mezonphp)
+
+[dev.to](https://dev.to/alexdodonov)
+
+[Slack](https://join.slack.com/t/mezon-framework/signup?x=x-p1148081653955-1171709616688-1154057706548)
+
 ## What is "First case" and "Second case"?
 
 1. **First case** - http server accepts request, launches php script, wich handles this request, and then all script data uploads from memory. All following requests are processed in the same way. In this case very critical to launch script as soon as possible and we do not have time for long pre-compilations and preparations. Because all of it will be lost after the script will finish working;
 2. **Second case** - php script is launching, initiating all internal components (and router is one of them) and then starting processing requests. This case can be organized via for example react-php. It differs from the previous case because we can spend reasonable time to pre-compile routes for faster
+
+In this table you can see requests per second. The bigger numbers mean better )
 
 ![results](doc/images/table-1.2.8.jpg)
 
@@ -356,7 +368,7 @@ You can define your own types for URL parser. Let's try to create `date` type.
 First of all we should create simple class:
 
 ```php
-class DateListRouterType
+class DateRouterType
 {
 
     /**
@@ -390,7 +402,7 @@ public static function parserRegExp(): string
 And somewhere in your setup files you need to switch this type on:
 
 ```php
-$router->addType('date', DateListRouterType::class);
+$router->addType('date', DateRouterType::class);
 ```
 
 Now you can handle routes like this:
@@ -413,13 +425,3 @@ $router->addRoute('/[s:some-url/', function(UserObject $userObject){
 ```
 
 Then the first handler `/posts-for-[date:posts-date]/` will be called for the route `/posts-for-2020-02-02/`.
-
-# Learn more
-
-More information can be found here:
-
-[Twitter](https://twitter.com/mezonphp)
-
-[dev.to](https://dev.to/alexdodonov)
-
-[Slack](https://join.slack.com/t/mezon-framework/signup?x=x-p1148081653955-1171709616688-1154057706548)
