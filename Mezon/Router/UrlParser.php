@@ -49,9 +49,9 @@ trait UrlParser
      *            router pattern
      * @return string regexp pattern
      */
-    private function _getRouteMatcherRegExPattern(string $routerPattern, bool $addBraces = true): string
+    private function _getRouteMatcherRegExPattern(string $routerPattern): string
     {
-        $key = $routerPattern . ($addBraces ? '1' : '0');
+        $key = $routerPattern;
 
         // try read from cache
         if (isset($this->cachedRegExps[$key])) {
@@ -63,7 +63,7 @@ trait UrlParser
         foreach ($this->types as $typeClass) {
             $compiledRouterPattern = preg_replace(
                 '/' . $typeClass::searchRegExp() . '/',
-                ($addBraces ? '(' : '') . $typeClass::parserRegExp() . ($addBraces ? ')' : ''),
+                '(' . $typeClass::parserRegExp() . ')',
                 $compiledRouterPattern);
         }
 
@@ -114,12 +114,12 @@ trait UrlParser
     public function warmCache(): void
     {
         foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            $routesForMethod = $this->paramRoutes[$requestMethod];
-
-            foreach (array_keys($routesForMethod) as $routerPattern) {
-                $this->_getRouteMatcherRegExPattern($routerPattern);
-
-                $this->_getParameterNames($routerPattern);
+            foreach ($this->paramRoutes[$requestMethod] as $bunch) {
+                foreach ($bunch['bunch'] as $route) {
+                    $this->_getRouteMatcherRegExPattern($route['pattern']);
+                    
+                    $this->_getParameterNames($route['pattern']);
+                }
             }
         }
     }
@@ -142,23 +142,17 @@ trait UrlParser
 
             if (preg_match($bunch['regexp'], $route, $matches)) {
                 $routeData = $bunch['bunch'][count($matches)];
-                $regExPattern = $this->_getRouteMatcherRegExPattern($routeData['pattern']);
 
-                // try match
-                $values = [];
-                if (preg_match('/^' . str_replace('/', '\\/', $regExPattern) . '$/', $route, $values)) {
-                    // fetch parameter names
-                    $names = $this->_getParameterNames($routeData['pattern']);
+                $names = $this->_getParameterNames($routeData['pattern']);
 
-                    $this->parameters = [];
-                    foreach ($names as $i => $name) {
-                        $this->parameters[$name] = $values[$i + 1];
-                    }
-
-                    $this->calledRoute = $routeData['pattern'];
-
-                    return $routeData['callback'];
+                $this->parameters = [];
+                foreach ($names as $i => $name) {
+                    $this->parameters[$name] = $matches[$i + 1];
                 }
+
+                $this->calledRoute = $routeData['pattern'];
+
+                return $routeData['callback'];
             }
         }
 
@@ -264,7 +258,7 @@ trait UrlParser
     {
         $routerTrimmed = trim($router, '/');
 
-        if (!isset($this->middleware[$routerTrimmed])) {
+        if (! isset($this->middleware[$routerTrimmed])) {
             $this->middleware[$routerTrimmed] = [];
         }
 
@@ -290,9 +284,12 @@ trait UrlParser
             $middleWares = array_merge($middleWares, $this->middleware[$this->calledRoute]);
         }
 
-        $result = [$route, $this->parameters];
+        $result = [
+            $route,
+            $this->parameters
+        ];
 
-        if (!count($middleWares)) {
+        if (! count($middleWares)) {
             return $result;
         }
 
@@ -310,7 +307,10 @@ trait UrlParser
             }
         }
 
-        return [$route, $this->parameters];
+        return [
+            $route,
+            $this->parameters
+        ];
     }
 
     /**

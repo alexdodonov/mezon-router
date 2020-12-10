@@ -11,6 +11,8 @@ namespace Mezon\Router;
  * @copyright Copyright (c) 2019, aeon.org
  */
 
+// TODO add code snippet dataProvider wich adds data provider
+
 /**
  * Router class
  */
@@ -105,7 +107,9 @@ class Router
      */
     public function callRoute($route)
     {
-        $this->compileRegexpForBunches();
+        if (! $this->regExpsWereCompiled) {
+            $this->compileRegexpForBunches();
+        }
 
         $route = Utils::prepareRoute($route);
         $requestMethod = $this->getRequestMethod();

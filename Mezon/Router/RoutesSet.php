@@ -37,7 +37,7 @@ trait RoutesSet
      *
      * @var integer
      */
-    private $bunchSize = 10;
+    private $bunchSize = 100;
 
     /**
      * Generating appendix for the RegExp
@@ -50,7 +50,7 @@ trait RoutesSet
     {
         $return = '';
 
-        for ($n = 0; $n < $i; $n ++) {
+        for ($n = 0; $n <= $i; $n ++) {
             $return .= '()';
         }
 
@@ -64,17 +64,29 @@ trait RoutesSet
      */
     protected function compileRegexpForBunch(array &$bunch): void
     {
-        $bunch['regexp'] = '';
-
         if (! empty($bunch['bunch'])) {
+            $bunch['regexp'] = '';
+            $hashTable = [];
             $items = [];
+            $previousIndex = 0;
 
-            foreach ($bunch['bunch'] as $i => $route) {
-                $items[] = $this->_getRouteMatcherRegExPattern($route['pattern'], false) .
-                    $this->getRegExpAppendix($i - 1);
+            foreach ($bunch['bunch'] as $route) {
+                $vars = $this->_getParameterNames($route['pattern']);
+                $routeMatcher = $this->_getRouteMatcherRegExPattern($route['pattern']);
+                $currentIndex = count($vars) + 1;
+                if (isset($hashTable[$currentIndex])) {
+                    $items[] = $routeMatcher . $this->getRegExpAppendix($previousIndex - $currentIndex);
+                    $currentIndex = $previousIndex + 1;
+                    $hashTable[$currentIndex] = $route;
+                } else {
+                    $items[] = $routeMatcher;
+                    $hashTable[$currentIndex] = $route;
+                }
+                $previousIndex = $currentIndex;
             }
 
             $bunch['regexp'] = '~^(?|' . implode('|', $items) . ')$~';
+            $bunch['bunch'] = $hashTable;
         }
     }
 
@@ -412,7 +424,8 @@ trait RoutesSet
                     1 => $this->paramRoutes,
                     2 => $this->routeNames,
                     3 => $this->cachedRegExps,
-                    4 => $this->cachedParameters
+                    4 => $this->cachedParameters,
+                    5 => $this->regExpsWereCompiled
                 ],
                 true) . ';');
     }
@@ -426,6 +439,6 @@ trait RoutesSet
      */
     public function loadFromDisk(string $filePath = './cache/cache.php'): void
     {
-        list ($this->staticRoutes, $this->paramRoutes, $this->routeNames, $this->cachedRegExps, $this->cachedParameters) = require ($filePath);
+        list ($this->staticRoutes, $this->paramRoutes, $this->routeNames, $this->cachedRegExps, $this->cachedParameters, $this->regExpsWereCompiled) = require ($filePath);
     }
 }
