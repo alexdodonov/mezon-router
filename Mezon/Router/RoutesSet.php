@@ -303,7 +303,7 @@ trait RoutesSet
      */
     public function addRoute(string $route, $callback, $requestMethod = 'GET', string $routeName = ''): void
     {
-        $route = trim($route, '/');
+        $route = Utils::prepareRoute($route);
 
         if ($route == '*') {
             $this->universalRouteWasAdded = true;
