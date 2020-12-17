@@ -59,7 +59,7 @@ return microtime(true) - $startTime;
 
 ![table](./images/table-pux.png)
 
-As you can see Mezon router is almost in all cases is faster then Pux Route.
+As you can see Mezon router is in all cases is faster then Pux Route.
 
 # What is mezon/router?
 
