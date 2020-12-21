@@ -11,8 +11,6 @@ namespace Mezon\Router;
  * @copyright Copyright (c) 2019, aeon.org
  */
 
-// TODO add code snippet dataProvider wich adds data provider
-
 /**
  * Router class
  */
