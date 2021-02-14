@@ -170,6 +170,7 @@ trait UrlParser
     {
         $processor = $this->getDynamicRouteProcessor($route);
 
+
         if ($processor === false) {
             return false;
         }
@@ -347,17 +348,21 @@ trait UrlParser
      *            Route
      * @return array|callable|bool route handler
      */
-    protected function getStaticRouteProcessor(string $route)
+    protected function getStaticRouteProcessor(string $route , $universal)
     {
         $processors = $this->staticRoutes[$_SERVER['REQUEST_METHOD']];
 
-        if (isset($processors[$route])) {
-            $processor = $this->getExactRouteHandlerOrUniversal($processors, $route);
-        } elseif (isset($processors['*'])) {
-            $processor = $processors['*'];
-        } else {
-            return false;
+        if (!$universal) {
+            if (isset($processors[$route])) {
+                $processor = $this->getExactRouteHandlerOrUniversal($processors, $route);
+            } else {
+                return false;
+            }
         }
+        else {
+            $processor = $processors['*'];
+        }
+        
 
         return $processor;
     }
@@ -369,9 +374,9 @@ trait UrlParser
      *            Route
      * @return mixed Result of the router processor
      */
-    public function findStaticRouteProcessor(string $route)
+    public function findStaticRouteProcessor(string $route , $universal = false)
     {
-        $processor = $this->getStaticRouteProcessor($route);
+        $processor = $this->getStaticRouteProcessor($route , $universal);
 
         if ($processor === false) {
             return false;
