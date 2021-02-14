@@ -112,15 +112,16 @@ class Router
         $route = Utils::prepareRoute($route);
         $requestMethod = $this->getRequestMethod();
         $this->validateRequestMethod($requestMethod);
-
-        if (($result = $this->findStaticRouteProcessor($route)) !== false) {
+        
+        if (($result = $this->findStaticRouteProcessor($route,false)) !== false) {
             return $result;
         }
-
         if (($result = $this->findDynamicRouteProcessor($route)) !== false) {
             return $result;
         }
-
+        if (($result = $this->findStaticRouteProcessor($route,true)) !== false) {
+            return $result;
+        }
         call_user_func($this->invalidRouteErrorHandler, $route);
     }
 
@@ -137,11 +138,15 @@ class Router
 
         $route = Utils::prepareRoute($route);
 
-        if (($result = $this->getStaticRouteProcessor($route)) !== false) {
+        if (($result = $this->getStaticRouteProcessor($route,false)) !== false) {
             return $result;
         }
 
         if (($result = $this->getDynamicRouteProcessor($route)) !== false) {
+            return $result;
+        }
+
+        if (($result = $this->getStaticRouteProcessor($route,true)) !== false) {
             return $result;
         }
 
