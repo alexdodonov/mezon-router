@@ -113,14 +113,16 @@ class Router
         $requestMethod = $this->getRequestMethod();
         $this->validateRequestMethod($requestMethod);
 
+        
         if (($result = $this->findStaticRouteProcessor($route)) !== false) {
             return $result;
         }
-
         if (($result = $this->findDynamicRouteProcessor($route)) !== false) {
             return $result;
         }
-
+        if (($result = $this->findStaticRouteProcessor($route,true)) !== false) {
+            return $result;
+        }
         call_user_func($this->invalidRouteErrorHandler, $route);
     }
 
