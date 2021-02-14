@@ -139,6 +139,28 @@ trait RoutesSet
             $bunchCursor ++;
             $lastBunchSize = 0;
         }
+        preg_match_all('#\[(.*?)\]#', $route, $match);
+        foreach ( $match[0] as $key =>$block ) {
+            $role = explode ( ":",$match[1][$key]);
+            switch($role[0]) {
+                case "s": // any string
+                    $regex = "[a-zA-Z0-9]+$";
+                    $route = str_replace($match[0][$key],$regex,$route);
+                    break;
+                case "i": // any integer number
+                    $regex = "[0-9]+$";
+                    $route = str_replace($match[0][$key],$regex,$route);
+                    break;
+                case "a": // any string
+                    $regex = "([^\s]+)";
+                    $route = str_replace($match[0][$key],$regex,$route);
+                    break;
+                case "il": // comma separated list of integer ids
+                    $regex = "[0-9]+(,[0-9]+)*";
+                    $route = str_replace($match[0][$key],$regex,$route);
+                    break;
+            }
+        }
 
         $this->paramRoutes[$requestMethod][$bunchCursor]['bunch'][$lastBunchSize + 1] = [
             'pattern' => $route,
