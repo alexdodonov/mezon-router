@@ -9,6 +9,8 @@ Mezon provides simple routing class for your needs.
 
 [@jaumarar](https://github.com/jaumarar) - have implemented multiple middleware for routes. Global middleware is also made by him.
 
+[@sinakuhestani](https://github.com/sinakuhestani) - have provided a better way for processing universal route. Plus some bug fixes.
+
 Once again thank you people for your contributions )
 
 ## Installation

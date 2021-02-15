@@ -22,6 +22,10 @@ class GetCallbackUnitTest extends TestCase
             [
                 'some/non-static/route/[i:id]',
                 'some/non-static/route/1'
+            ],
+            [
+                '*',
+                'unexisting-route'
             ]
         ];
     }
