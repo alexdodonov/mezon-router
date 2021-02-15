@@ -419,7 +419,7 @@ $router->addRoute('/posts-for-[date:posts-date]/', function(UserObject $userObje
     // some activities here
 });
 
-$router->addRoute('/[s:some-url/', function(UserObject $userObject){
+$router->addRoute('/[s:some-url]/', function(UserObject $userObject){
     // some activities here
 });
 ```
