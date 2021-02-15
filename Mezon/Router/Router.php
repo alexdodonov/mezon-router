@@ -116,11 +116,12 @@ class Router
         if (($result = $this->findStaticRouteProcessor($route)) !== false) {
             return $result;
         }
-
         if (($result = $this->findDynamicRouteProcessor($route)) !== false) {
             return $result;
         }
-
+        if (($result = $this->findUniversalRouteProcessor($route)) !== false) {
+            return $result;
+        }
         call_user_func($this->invalidRouteErrorHandler, $route);
     }
 
@@ -142,6 +143,10 @@ class Router
         }
 
         if (($result = $this->getDynamicRouteProcessor($route)) !== false) {
+            return $result;
+        }
+
+        if (($result = $this->getUniversalRouteProcessor($route)) !== false) {
             return $result;
         }
 

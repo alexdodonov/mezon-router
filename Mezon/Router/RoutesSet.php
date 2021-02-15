@@ -154,13 +154,6 @@ trait RoutesSet
     private $routeNames = [];
 
     /**
-     * This flag rises when we add route / * /
-     *
-     * @var bool
-     */
-    protected $universalRouteWasAdded = false;
-
-    /**
      * Method validates request method
      *
      * @param string $requestMethod
@@ -195,8 +188,6 @@ trait RoutesSet
      */
     public function clear()
     {
-        $this->universalRouteWasAdded = false;
-
         $this->routeNames = [];
 
         foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
@@ -304,10 +295,6 @@ trait RoutesSet
     public function addRoute(string $route, $callback, $requestMethod = 'GET', string $routeName = ''): void
     {
         $route = Utils::prepareRoute($route);
-
-        if ($route == '*') {
-            $this->universalRouteWasAdded = true;
-        }
 
         if (is_array($requestMethod)) {
             foreach ($requestMethod as $r) {

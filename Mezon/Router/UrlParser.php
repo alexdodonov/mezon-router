@@ -61,7 +61,10 @@ trait UrlParser
         // parsing routes
         $compiledRouterPattern = $routerPattern;
         foreach ($this->types as $typeClass) {
-            $compiledRouterPattern = preg_replace('/' . $typeClass::searchRegExp() . '/', '(' . $typeClass::parserRegExp() . ')', $compiledRouterPattern);
+            $compiledRouterPattern = preg_replace(
+                '/' . $typeClass::searchRegExp() . '/',
+                '(' . $typeClass::parserRegExp() . ')',
+                $compiledRouterPattern);
         }
 
         // final setup + save in cache
@@ -202,7 +205,8 @@ trait UrlParser
      */
     private function canBeCalled($processor, ?string $functionName): bool
     {
-        return is_callable($processor) && (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName));
+        return is_callable($processor) &&
+            (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName));
     }
 
     /**
@@ -215,35 +219,6 @@ trait UrlParser
     private function isFunction($processor): bool
     {
         return is_callable($processor) && is_array($processor) === false;
-    }
-
-    /**
-     * Method returns either universal hanler if it fits or normal handler
-     *
-     * @param array $processors
-     *            list of routes and handlers
-     * @param string $route
-     *            calling route
-     * @return mixed processor
-     */
-    protected function getExactRouteHandlerOrUniversal(&$processors, string $route)
-    {
-        $this->calledRoute = $route;
-
-        if ($this->universalRouteWasAdded) {
-            $allRoutes = array_keys($processors);
-
-            if (array_search('*', $allRoutes) <= array_search($route, $allRoutes)) {
-                $processor = $processors['*'];
-                $this->calledRoute = '*';
-            } else {
-                $processor = $processors[$route];
-            }
-        } else {
-            $processor = $processors[$route];
-        }
-
-        return $processor;
     }
 
     /**
@@ -352,14 +327,30 @@ trait UrlParser
         $processors = $this->staticRoutes[$_SERVER['REQUEST_METHOD']];
 
         if (isset($processors[$route])) {
-            $processor = $this->getExactRouteHandlerOrUniversal($processors, $route);
-        } elseif (isset($processors['*'])) {
-            $processor = $processors['*'];
+            $this->calledRoute = $route;
+
+            return $processors[$route];
         } else {
             return false;
         }
+    }
 
-        return $processor;
+    /**
+     * Method returns route handler
+     *
+     * @return array|callable|bool route handler
+     */
+    protected function getUniversalRouteProcessor()
+    {
+        $processors = $this->staticRoutes[$_SERVER['REQUEST_METHOD']];
+
+        if (isset($processors['*'])) {
+            $this->calledRoute = '*';
+
+            return $processors['*'];
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -372,6 +363,24 @@ trait UrlParser
     public function findStaticRouteProcessor(string $route)
     {
         $processor = $this->getStaticRouteProcessor($route);
+
+        if ($processor === false) {
+            return false;
+        }
+
+        return $this->executeHandler($processor, $route);
+    }
+
+    /**
+     * Method searches universal route processor
+     *
+     * @param string $route
+     *            Route
+     * @return mixed Result of the router processor
+     */
+    public function findUniversalRouteProcessor(string $route)
+    {
+        $processor = $this->getUniversalRouteProcessor();
 
         if ($processor === false) {
             return false;
