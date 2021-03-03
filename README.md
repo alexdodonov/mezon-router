@@ -32,6 +32,8 @@ The mezon/router is
 - 30 to 50 times faster then Laravel router;
 - more then 1,5 times faster then nikic/fast-toute;
 
+More benchmarks can be found [here](https://github.com/alexdodonov/mezon-router-benchmark)
+
 # Learn more
 
 More information can be found here:
