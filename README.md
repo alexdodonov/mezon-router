@@ -51,7 +51,7 @@ More information can be found here:
 
 In this table you can see requests per second. The bigger numbers mean better )
 
-![results](doc/images/table-1.2.8.jpg)
+![results](https://github.com/alexdodonov/mezon-router/blob/doc/images/table-1.2.8.jpg?raw=true)
 
 [mezon and klein comparison](doc/router.md)
 
