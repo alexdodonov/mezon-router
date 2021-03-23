@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/alexdodonov/mezon-router.svg?branch=master)](https://travis-ci.com/alexdodonov/mezon-router) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/?branch=master) [![codecov](https://codecov.io/gh/alexdodonov/mezon-router/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdodonov/mezon-router)
 
 ## Intro
-Mezon provides simple routing class for your needs.
+[Mezon Framework](https://github.com/alexdodonov/mezon) provides simple routing class for your needs. It is already used in [Web Application](https://github.com/alexdodonov/mezon-common-application), [Service](https://github.com/alexdodonov/mezon-service), [CRUD Service](https://github.com/alexdodonov/mezon-crud-service)
 
 ## Contributors
 
@@ -41,8 +41,6 @@ More information can be found here:
 [Twitter](https://twitter.com/mezonphp)
 
 [dev.to](https://dev.to/alexdodonov)
-
-[Slack](https://join.slack.com/t/mezon-framework/signup?x=x-p1148081653955-1171709616688-1154057706548)
 
 ## What is "First case" and "Second case"?
 
