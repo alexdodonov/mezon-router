@@ -42,6 +42,7 @@ class GetCallbackUnitTest extends TestCase
     public function testGetCallback(string $route, string $url): void
     {
         // setup
+        RouterUnitTest::setRequestMethod('GET');
         $router = new Router();
         $router->addRoute($route, function () {
             return 'route result';

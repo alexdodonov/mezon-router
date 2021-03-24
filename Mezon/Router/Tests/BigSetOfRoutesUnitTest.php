@@ -34,6 +34,7 @@ class BigSetOfRoutesUnitTest extends TestCase
     public function testBigSetOfRoutes(int $amount): void
     {
         // setup
+        RouterUnitTest::setRequestMethod('GET');
         $router = new Router();
         for ($i = 1; $i <= $amount; $i ++) {
             $router->addRoute('/param/[i:id]/' . $i, function () use ($i): int {

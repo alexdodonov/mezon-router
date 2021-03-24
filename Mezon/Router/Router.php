@@ -56,16 +56,26 @@ class Router
      *
      * @param object $object
      *            Object to be processed
+     * @param
      */
-    public function fetchActions(object $object): void
+    public function fetchActions(object $object, array $map = []): void
     {
         $methods = get_class_methods($object);
 
         foreach ($methods as $method) {
             if (strpos($method, 'action') === 0) {
                 $route = Utils::convertMethodNameToRoute($method);
-                $this->addGetRoute($route, $object, $method);
-                $this->addPostRoute($route, $object, $method);
+
+                $key = str_replace('action', '', $method);
+                $requestMethods = array_key_exists($key, $map) ? $map[$key] : [
+                    'GET',
+                    'POST'
+                ];
+
+                $this->addRoute($route, [
+                    $object,
+                    $method
+                ], $requestMethods);
             }
         }
     }
@@ -78,8 +88,7 @@ class Router
      */
     public function noProcessorFoundErrorHandler(string $route)
     {
-        throw (new \Exception(
-            'The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace()));
+        throw (new \Exception('The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace()));
     }
 
     /**

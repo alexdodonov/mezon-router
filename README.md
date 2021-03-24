@@ -77,29 +77,48 @@ Each Application object implicitly creates routes for it's 'action[action-name]'
 class           MySite
 {
     /**
-    *   Main page.
-    */
+     * Main page
+     */
     public function actionIndex()
     {
         return 'This is the main page of our simple site';
     }
 
     /**
-    *   Contacts page.
-    */
+     * Contacts page
+     */
     public function actionContacts()
     {
         return 'This is the "Contacts" page';
     }
 
     /**
-    *   Some custom action handler.
-    */
+     * FAQ page
+     */
+    public function actionFaq()
+    {
+        return 'This is the "FAQ" page';
+    }
+
+    /**
+     * Contacts page
+     */
+    public function actionContacts()
+    {
+        return 'This is the "Contacts" page';
+    }
+
+    /**
+     * Some custom action handler
+     */
     public function someOtherPage()
     {
         return 'Some other page of our site';
     }
     
+    /**
+     * Some static method
+     */
     public static function someStaticMethod()
     {
         return 'Result of static method';
@@ -111,29 +130,39 @@ And this code
 
 ```PHP
 $router = new \Mezon\Router\Router();
-$router->fetchActions( $mySite = new MySite() );
+$router->fetchActions($mySite = new MySite());
 ```
 
-will create router object and loads information about it's actions and create routes. Strictly it will create two routes, because the class MySite has only two methods wich start with 'action[Suffix]'. Method 'someOtherPage' will not be converted into route automatically.
+will create router object and loads information about it's actions and create routes. Strictly it will create two routes, because the class MySite has only two methods wich start with 'action[Suffix]'. Method 'someOtherPage' will not be converted into route automatically. By default this method will create routes wich handle both POST and GET request methods.
 
 Then just call to run callback by URL:
 
 ```php
-$router->callRoute('/other-page/');
+$router->callRoute('/index/');
+```
+
+There is a way to specify request methods for each action:
+
+```php
+$router->fetchActions($mySite = new MySite(), [
+	'Index' => 'GET',
+	'Contacts' => 'POST',
+	'Faq' => ['GET', 'POST'],
+]);
 ```
 
 You can manually specify callbacks for every URL in your application:
 
 ```PHP
-$router->addRoute( '/some-any-other-route/' , [ $mySite , 'someOtherPage' ] );
+$router->addRoute('/some-any-other-route/', [$mySite, 'someOtherPage']);
 ```
 
 And you also can use static methods:
 
 ```PHP
-$router->addRoute( '/static-route/' , [ 'MySite' , 'someStaticMethod' ] );
+$router->addRoute('/static-route/', ['MySite', 'someStaticMethod']);
 // or in this way
-$router->addRoute( '/static-route/' , 'MySite::someStaticMethod' );
+$router->addRoute('/static-route/', 'MySite::someStaticMethod');
 ```
 
 We just need to create it explicitly.
@@ -143,16 +172,16 @@ We can also use simple functions for route creation:
 ```PHP
 function        sitemap()
 {
-    return( 'Some fake sitemap' );
+    return 'Some fake sitemap';
 }
 
-$router->addRoute( '/sitemap/' , 'sitemap' );
+$router->addRoute('/sitemap/', 'sitemap');
 ```
 
 And you can find callback without launching it:
 
 ```php
-$router->addRoute( '/static-route/' , 'MySite::someStaticMethod' );
+$router->addRoute('/static-route/', 'MySite::someStaticMethod');
 $callback = $router->getCallback('/static-route/');
 var_dump($callback());
 ```
@@ -173,22 +202,22 @@ var_dump($router->getListOfSupportedRequestMethods());
 You can specify one processor for all routes like this:
 
 ```PHP
-$router->addRoute( '/*/' , function(){} );
+$router->addRoute('/*/', function(){});
 ```
 
 Note that routing search will stops if the '*' handler will be found. For example:
 
 ```PHP
-$router->addRoute( '/*/' , function(){} );
-$router->addRoute( '/index/' , function(){} );
+$router->addRoute('/*/', function(){});
+$router->addRoute('/index/', function(){});
 ```
 
 In this example route /index/ will never be reached. All request will be passed to the '*' handler. But in this example:
 
 ```PHP
-$router->addRoute( '/contacts/' , function(){} );
-$router->addRoute( '/*/' , function(){} );
-$router->addRoute( '/index/' , function(){} );
+$router->addRoute('/contacts/', function(){});
+$router->addRoute('/*/', function(){});
+$router->addRoute('/index/', function(){});
 ```
 
 route /contacts/ will be processed by it's own handler, and all other routes (even /index/) will be processed by the '*' handler.
@@ -198,8 +227,8 @@ route /contacts/ will be processed by it's own handler, and all other routes (ev
 And now a little bit more complex routes:
 
 ```PHP
-$router->addRoute( '/catalogue/[i:cat_id]/' , function( $route , $variables ){} );
-$router->addRoute( '/catalogue/[a:cat_name]/' , function( $route , $variables ){} );
+$router->addRoute('/catalogue/[i:cat_id]/', function($route, $variables){});
+$router->addRoute('/catalogue/[a:cat_name]/', function($route, $variables){});
 ```
 
 Here:
@@ -218,12 +247,12 @@ All this variables are passed as second function parameter wich is named in the 
 You can bind handlers to different request types as shown bellow:
 
 ```PHP
-$router->addRoute( '/contacts/' , function(){} , 'POST' ); // this handler will be called for POST requests
-$router->addRoute( '/contacts/' , function(){} , 'GET' );  // this handler will be called for GET requests
-$router->addRoute( '/contacts/' , function(){} , 'PUT' );  // this handler will be called for PUT requests
-$router->addRoute( '/contacts/' , function(){} , 'DELETE' );  // this handler will be called for DELETE requests
-$router->addRoute( '/contacts/' , function(){} , 'OPTION' );  // this handler will be called for OPTION requests
-$router->addRoute( '/contacts/' , function(){} , 'PATCH' );  // this handler will be called for PATCH requests
+$router->addRoute('/contacts/', function(){}, 'POST'); // this handler will be called for POST requests
+$router->addRoute('/contacts/', function(){}, 'GET');  // this handler will be called for GET requests
+$router->addRoute('/contacts/', function(){}, 'PUT');  // this handler will be called for PUT requests
+$router->addRoute('/contacts/', function(){}, 'DELETE');  // this handler will be called for DELETE requests
+$router->addRoute('/contacts/', function(){}, 'OPTION');  // this handler will be called for OPTION requests
+$router->addRoute('/contacts/', function(){}, 'PATCH');  // this handler will be called for PATCH requests
 ```
 
 ## Reverse routes
@@ -232,9 +261,9 @@ You can reverse routes and compile URLs by route's name. For example:
 
 ```php
 $router = new \Mezon\Router\Router();
-$router->addRoute('/some-route/[i:id]' , function(){} , 'GET' , 'name of the route');
+$router->addRoute('/some-route/[i:id]', function(){}, 'GET', 'name of the route');
 // will output /some-route/123
-var_dump($router->reverse('name of the route' , ['id' => 123]));
+var_dump($router->reverse('name of the route', ['id' => 123]));
 ```
 
 ## Routes caching

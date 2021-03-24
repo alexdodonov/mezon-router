@@ -255,26 +255,37 @@ trait RoutesSet
      */
     public function getAllRoutesTrace()
     {
-        $trace = [];
+        $fullTrace = [];
 
         foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            $trace[] = $requestMethod . ' : ';
+            $trace = [
+                $requestMethod . ' : '
+            ];
+            $hasRoutes = false;
             if (! empty($this->staticRoutes[$requestMethod])) {
                 $trace[] = implode(', ', array_keys($this->staticRoutes[$requestMethod]));
                 $trace[] = ', ';
+                $hasRoutes = true;
             }
             if (! empty($this->paramRoutes[$requestMethod])) {
                 foreach ($this->paramRoutes[$requestMethod] as $bunch) {
                     $items = [];
                     foreach ($bunch['bunch'] as $item) {
                         $items[] = $item['pattern'];
+                        $hasRoutes = true;
                     }
                     $trace[] = implode(', ', $items);
                 }
             }
+
+            if (! $hasRoutes) {
+                $trace[] = '<none>';
+            }
+
+            $fullTrace[] = implode('', $trace);
         }
 
-        return implode('; ', $trace);
+        return implode('; ', $fullTrace);
     }
 
     /**
@@ -402,19 +413,14 @@ trait RoutesSet
     {
         $this->compileRegexpForBunches();
 
-        file_put_contents(
-            $filePath,
-            '<?php return ' .
-            var_export(
-                [
-                    0 => $this->staticRoutes,
-                    1 => $this->paramRoutes,
-                    2 => $this->routeNames,
-                    3 => $this->cachedRegExps,
-                    4 => $this->cachedParameters,
-                    5 => $this->regExpsWereCompiled
-                ],
-                true) . ';');
+        file_put_contents($filePath, '<?php return ' . var_export([
+            0 => $this->staticRoutes,
+            1 => $this->paramRoutes,
+            2 => $this->routeNames,
+            3 => $this->cachedRegExps,
+            4 => $this->cachedParameters,
+            5 => $this->regExpsWereCompiled
+        ], true) . ';');
     }
 
     /**

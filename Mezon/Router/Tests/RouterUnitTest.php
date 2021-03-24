@@ -39,27 +39,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Testing action #1.
-     */
-    public function actionA1(): string
-    {
-        return 'action #1';
-    }
-
-    /**
-     * Testing action #2.
-     */
-    public function actionA2(): string
-    {
-        return 'action #2';
-    }
-
-    public function actionDoubleWord(): string
-    {
-        return 'action double word';
-    }
-
-    /**
      * Data provider for the test
      *
      * @return array
@@ -103,62 +82,6 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
 
         // assertions
         $this->assertEquals($expectedResult, $content);
-    }
-
-    /**
-     * Data provider for the test testClassAction
-     *
-     * @return array test data
-     */
-    public function classActionDataProvider(): array
-    {
-        $testData = [];
-
-        foreach ([
-            'GET',
-            'POST'
-        ] as $requestMethod) {
-            $testData[] = [
-                $requestMethod,
-                '/a1/',
-                'action #1'
-            ];
-
-            $testData[] = [
-                $requestMethod,
-                '/a2/',
-                'action #2'
-            ];
-
-            $testData[] = [
-                $requestMethod,
-                '/double-word/',
-                'action double word'
-            ];
-        }
-
-        return $testData;
-    }
-
-    /**
-     * Method tests class actions
-     *
-     * @param string $requestMethod
-     *            request method
-     * @param string $route
-     *            requesting route
-     * @param string $expectedResult
-     *            expected result of route processing
-     * @dataProvider classActionDataProvider
-     */
-    public function testClassAction(string $requestMethod, string $route, string $expectedResult): void
-    {
-        RouterUnitTest::setRequestMethod($requestMethod);
-
-        $router = new \Mezon\Router\Router();
-        $router->fetchActions($this);
-        $result = $router->callRoute($route);
-        $this->assertEquals($expectedResult, $result);
     }
 
     /**
