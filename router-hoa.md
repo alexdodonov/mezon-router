@@ -141,7 +141,7 @@ $dispatcher->dispatch($router);
 
 # What's next?
 
-More articles can be found in my [Twitter](https://twitter.com/mezonphp)
+More articles can be found in my [Twitter](https://twitter.com/mezonphp), [Medium](https://medium.com/@gdvever), [Dev.to](https://dev.to/alexdodonov)
 
 # What is mezon/router?
 
