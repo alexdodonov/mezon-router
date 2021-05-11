@@ -131,7 +131,11 @@ $router->start();
 ```
 # What's next?
 
-More articles can be found in my [Twitter](https://twitter.com/mezonphp)
+More articles can be found in my 
+
+- [Twitter](https://twitter.com/mezonphp)
+- [dev.to blog](https://dev.to/alexdodonov)
+- [Medium blog](https://gdvever.medium.com/)
 
 # What is mezon/router?
 
