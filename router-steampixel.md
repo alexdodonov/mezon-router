@@ -6,9 +6,7 @@ As usual we have two cases:
 2. php script is launching, initiating all internal components (and router is one of them) and then starting processing requests. This case can be organized via for example react-php. It differs from the previous case because we can spend reasonable time to pre-compile routes for faster processing.
 
 # The first case
-
 ```php
-// static routes
 RouteGenerator::generateSteampixelStaticRoutes(1000);
 \Steampixel\Route::run('/static/0');
 
@@ -21,7 +19,6 @@ RouteGenerator::generateSteampixelStaticRoutes(1000);
 ```
 
 ```php
-// non-static routes
 RouteGenerator::generateSteampixelNonStaticRoutes(1000);
 \Steampixel\Route::run('/param/0/1');
 
@@ -34,9 +31,7 @@ RouteGenerator::generateSteampixelNonStaticRoutes(1000);
 ```
 
 # The second case
-
 ```php
-// static routes
 RouteGenerator::generateSteampixelNonStaticRoutes(1000);
 \Steampixel\Route::run('/static/0');
 
@@ -47,7 +42,6 @@ RouteGenerator::generateSteampixelNonStaticRoutes(1000);
 ```
 
 ```php
-// non-static routes
 RouteGenerator::generateSteampixelNonStaticRoutes(1000);
 \Steampixel\Route::run('/param/0/1');
 
@@ -61,20 +55,6 @@ RouteGenerator::generateSteampixelNonStaticRoutes(1000);
 
 ## The first case + static routes
 ```
-+---------------------------+------------+-----+------+-----+------------+--------------+--------------+--------------+--------------+-------------+--------+--------+
-| benchmark                 | subject    | set | revs | its | mem_peak   | best         | mean         | mode         | worst        | stdev       | rstdev | diff   |
-+---------------------------+------------+-----+------+-----+------------+--------------+--------------+--------------+--------------+-------------+--------+--------+
-| CoffeeReactParamBench     | benchParam | 0   | 10   | 10  | 2,194,328b | 7,760.800μs  | 8,367.330μs  | 7,971.543μs  | 10,153.900μs | 778.770μs   | 9.31%  | 7.57x  |
-| DVKReactParamBench        | benchParam | 0   | 100  | 10  | 2,441,688b | 13,716.880μs | 15,382.193μs | 15,478.981μs | 17,333.080μs | 991.996μs   | 6.45%  | 13.91x |
-| HoaReactParamBench        | benchParam | 0   | 100  | 10  | 3,294,616b | 3,582.400μs  | 4,080.933μs  | 4,197.178μs  | 4,528.640μs  | 325.111μs   | 7.97%  | 3.69x  |
-| MezonReactParamBench      | benchParam | 0   | 100  | 10  | 3,061,904b | 1,019.620μs  | 1,105.630μs  | 1,059.608μs  | 1,265.810μs  | 76.777μs    | 6.94%  | 1.00x  |
-| PeceeReactParamBench      | benchParam | 0   | 10   | 10  | 4,487,512b | 43,167.500μs | 45,641.740μs | 45,183.376μs | 51,542.400μs | 2,227.952μs | 4.88%  | 41.28x |
-| SteampixelReactParamBench | benchParam | 0   | 10   | 10  | 2,256,032b | 17,826.400μs | 18,485.750μs | 18,245.010μs | 20,641.000μs | 777.997μs   | 4.21%  | 16.72x |
-+---------------------------+------------+-----+------+-----+------------+--------------+--------------+--------------+--------------+-------------+--------+--------+
-```
-
-## The first case + non-static routes
-```
 +------------------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+--------+
 | benchmark                          | subject     | set | revs | its | mem_peak   | best          | mean          | mode          | worst         | stdev       | rstdev | diff   |
 +------------------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+--------+
@@ -87,8 +67,36 @@ RouteGenerator::generateSteampixelNonStaticRoutes(1000);
 +------------------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+--------+
 ```
 
+## The first case + non-static routes
+```
++---------------------------+------------+-----+------+-----+------------+--------------+--------------+--------------+--------------+-------------+--------+--------+
+| benchmark                 | subject    | set | revs | its | mem_peak   | best         | mean         | mode         | worst        | stdev       | rstdev | diff   |
++---------------------------+------------+-----+------+-----+------------+--------------+--------------+--------------+--------------+-------------+--------+--------+
+| CoffeeReactParamBench     | benchParam | 0   | 10   | 10  | 2,194,328b | 7,760.800μs  | 8,367.330μs  | 7,971.543μs  | 10,153.900μs | 778.770μs   | 9.31%  | 7.57x  |
+| DVKReactParamBench        | benchParam | 0   | 100  | 10  | 2,441,688b | 13,716.880μs | 15,382.193μs | 15,478.981μs | 17,333.080μs | 991.996μs   | 6.45%  | 13.91x |
+| HoaReactParamBench        | benchParam | 0   | 100  | 10  | 3,294,616b | 3,582.400μs  | 4,080.933μs  | 4,197.178μs  | 4,528.640μs  | 325.111μs   | 7.97%  | 3.69x  |
+| MezonReactParamBench      | benchParam | 0   | 100  | 10  | 3,061,904b | 1,019.620μs  | 1,105.630μs  | 1,059.608μs  | 1,265.810μs  | 76.777μs    | 6.94%  | 1.00x  |
+| PeceeReactParamBench      | benchParam | 0   | 10   | 10  | 4,487,512b | 43,167.500μs | 45,641.740μs | 45,183.376μs | 51,542.400μs | 2,227.952μs | 4.88%  | 41.28x |
+| SteampixelReactParamBench | benchParam | 0   | 10   | 10  | 2,256,032b | 17,826.400μs | 18,485.750μs | 18,245.010μs | 20,641.000μs | 777.997μs   | 4.21%  | 16.72x |
++---------------------------+------------+-----+------+-----+------------+--------------+--------------+--------------+--------------+-------------+--------+--------+
+```
+
 ## The second case + static routes
 
+```
++----------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+------------+
+| benchmark                  | subject     | set | revs | its | mem_peak   | best          | mean          | mode          | worst         | stdev       | rstdev | diff       |
++----------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+------------+
+| CoffeeReactStaticBench     | benchStatic | 0   | 10   | 10  | 2,194,360b | 7,992.400μs   | 8,278.480μs   | 8,161.593μs   | 9,130.000μs   | 317.905μs   | 3.84%  | 416.02x    |
+| DVKReactStaticBench        | benchStatic | 0   | 100  | 10  | 2,437,296b | 10,202.950μs  | 10,691.660μs  | 10,478.296μs  | 12,547.980μs  | 638.242μs   | 5.97%  | 537.30x    |
+| HoaReactStaticBench        | benchStatic | 0   | 100  | 10  | 2,826,400b | 3,585.590μs   | 3,725.367μs   | 3,616.349μs   | 4,167.740μs   | 189.042μs   | 5.07%  | 187.21x    |
+| MezonReactStaticBench      | benchStatic | 0   | 100  | 10  | 1,840,624b | 18.730μs      | 19.899μs      | 19.241μs      | 22.630μs      | 1.208μs     | 6.07%  | 1.00x      |
+| PeceeReactStaticBench      | benchStatic | 0   | 10   | 10  | 4,106,416b | 18,972.800μs  | 19,696.340μs  | 19,639.540μs  | 20,493.800μs  | 425.149μs   | 2.16%  | 989.82x    |
+| SteampixelReactParamBench  | benchStatic | 0   | 10   | 10  | 2,602,624b | 235,412.100μs | 239,436.830μs | 237,784.100μs | 252,016.100μs | 4,582.392μs | 1.91%  | 221.61x   |
++----------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+------------+
+```
+
+## The second case + non-static routes
 ```
 +-----------------------------------+------------+-----+------+-----+--------------+---------------+---------------+---------------+---------------+--------------+--------+-------+
 | benchmark                         | subject    | set | revs | its | mem_peak     | best          | mean          | mode          | worst         | stdev        | rstdev | diff  |
@@ -101,26 +109,9 @@ RouteGenerator::generateSteampixelNonStaticRoutes(1000);
 | SteampixelSingleRequestParamBench | benchParam | 0   | 10   | 10  | 2,598,760b   | 219,314.600μs | 232,375.440μs | 226,123.319μs | 268,318.200μs | 14,198.405μs | 6.11%  | 7.86x |
 +-----------------------------------+------------+-----+------+-----+--------------+---------------+---------------+---------------+---------------+--------------+--------+-------+
 ```
-## The second case + non-static routes
-```
-+----------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+------------+
-| benchmark                  | subject     | set | revs | its | mem_peak   | best          | mean          | mode          | worst         | stdev       | rstdev | diff       |
-+----------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+------------+
-| CoffeeReactStaticBench     | benchStatic | 0   | 10   | 10  | 2,194,360b | 7,992.400μs   | 8,278.480μs   | 8,161.593μs   | 9,130.000μs   | 317.905μs   | 3.84%  | 416.02x    |
-| DVKReactStaticBench        | benchStatic | 0   | 100  | 10  | 2,437,296b | 10,202.950μs  | 10,691.660μs  | 10,478.296μs  | 12,547.980μs  | 638.242μs   | 5.97%  | 537.30x    |
-| HoaReactStaticBench        | benchStatic | 0   | 100  | 10  | 2,826,400b | 3,585.590μs   | 3,725.367μs   | 3,616.349μs   | 4,167.740μs   | 189.042μs   | 5.07%  | 187.21x    |
-| MezonReactStaticBench      | benchStatic | 0   | 100  | 10  | 1,840,624b | 18.730μs      | 19.899μs      | 19.241μs      | 22.630μs      | 1.208μs     | 6.07%  | 1.00x      |
-| PeceeReactStaticBench      | benchStatic | 0   | 10   | 10  | 4,106,416b | 18,972.800μs  | 19,696.340μs  | 19,639.540μs  | 20,493.800μs  | 425.149μs   | 2.16%  | 989.82x    |
-| SteampixelReactParamBench | benchParam | 0   | 10   | 10  | 2,602,624b | 235,412.100μs | 239,436.830μs | 237,784.100μs | 252,016.100μs | 4,582.392μs | 1.91%  | 221.61x |
-+----------------------------+-------------+-----+------+-----+------------+---------------+---------------+---------------+---------------+-------------+--------+------------+
-```
 # What's next?
 
-More articles can be found in my 
-
-- [Twitter](https://twitter.com/mezonphp)
-- [dev.to blog](https://dev.to/alexdodonov)
-- [Medium blog](https://gdvever.medium.com/)
+More articles can be found in my [Twitter](https://twitter.com/mezonphp)
 
 # What is mezon/router?
 
