@@ -85,14 +85,6 @@ class           MySite
     }
 
     /**
-     * Contacts page
-     */
-    public function actionContacts()
-    {
-        return 'This is the "Contacts" page';
-    }
-
-    /**
      * FAQ page
      */
     public function actionFaq()
