@@ -11,6 +11,10 @@
 
 [@sinakuhestani](https://github.com/sinakuhestani) - have provided a better way for processing universal route. Plus some bug fixes.
 
+[@lolix-notepad](https://github.com/) - documentation fixes.
+
+[@Elijha](https://github.com/Elijha) - documentation fixes.
+
 Once again thank you people for your contributions )
 
 ## Installation
