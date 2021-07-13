@@ -17,6 +17,10 @@
 
 Once again thank you people for your contributions )
 
+## FAQ
+
+Use [this service](https://stackoverflow.com/questions/tagged/mezon) for asking questions
+
 ## Installation
 
 Just print in console
