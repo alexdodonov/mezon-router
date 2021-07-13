@@ -31,6 +31,7 @@
 		}
 	},
 	"scripts": {
-		"test": "php ./vendor/phpunit/phpunit/phpunit"
+		"test": "php ./vendor/phpunit/phpunit/phpunit",
+		"debug": "php ./vendor/phpunit/phpunit/phpunit --filter testRealLifeExample1"
 	}
 }

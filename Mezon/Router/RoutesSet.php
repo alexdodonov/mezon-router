@@ -68,21 +68,20 @@ trait RoutesSet
             $bunch['regexp'] = '';
             $hashTable = [];
             $items = [];
-            $previousIndex = 0;
 
             foreach ($bunch['bunch'] as $route) {
                 $vars = $this->_getParameterNames($route['pattern']);
                 $routeMatcher = $this->_getRouteMatcherRegExPattern($route['pattern']);
                 $currentIndex = count($vars) + 1;
                 if (isset($hashTable[$currentIndex])) {
-                    $items[] = $routeMatcher . $this->getRegExpAppendix($previousIndex - $currentIndex);
-                    $currentIndex = $previousIndex + 1;
+                    $maxIndex = max(array_keys($hashTable));
+                    $items[] = $routeMatcher . $this->getRegExpAppendix($maxIndex - $currentIndex);
+                    $currentIndex = $maxIndex + 1;
                     $hashTable[$currentIndex] = $route;
                 } else {
                     $items[] = $routeMatcher;
                     $hashTable[$currentIndex] = $route;
                 }
-                $previousIndex = $currentIndex;
             }
 
             $bunch['regexp'] = '~^(?|' . implode('|', $items) . ')$~';
