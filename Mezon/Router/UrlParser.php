@@ -61,10 +61,7 @@ trait UrlParser
         // parsing routes
         $compiledRouterPattern = $routerPattern;
         foreach ($this->types as $typeClass) {
-            $compiledRouterPattern = preg_replace(
-                '/' . $typeClass::searchRegExp() . '/',
-                '(' . $typeClass::parserRegExp() . ')',
-                $compiledRouterPattern);
+            $compiledRouterPattern = preg_replace('/' . $typeClass::searchRegExp() . '/', '(' . $typeClass::parserRegExp() . ')', $compiledRouterPattern);
         }
 
         // final setup + save in cache
@@ -191,7 +188,7 @@ trait UrlParser
      */
     private function methodDoesNotExists($processor, ?string $functionName): bool
     {
-        return isset($processor[0]) && method_exists($processor[0], $functionName) === false;
+        return $functionName === null || (isset($processor[0]) && method_exists($processor[0], $functionName) === false);
     }
 
     /**
@@ -202,11 +199,11 @@ trait UrlParser
      * @param ?string $functionName
      *            callback method
      * @return bool
+     * @psalm-suppress InvalidArrayAccess
      */
     private function canBeCalled($processor, ?string $functionName): bool
     {
-        return is_callable($processor) &&
-            (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName));
+        return is_callable($processor) && ($functionName !== null && (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName)));
     }
 
     /**
