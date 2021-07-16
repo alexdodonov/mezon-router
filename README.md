@@ -1,6 +1,6 @@
 # Routing
 
-[![Build Status](https://travis-ci.com/alexdodonov/mezon-router.svg?branch=master)](https://travis-ci.com/alexdodonov/mezon-router) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/?branch=master) [![codecov](https://codecov.io/gh/alexdodonov/mezon-router/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdodonov/mezon-router) [![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/mezonphp)
+[![Open Collective](https://img.shields.io/badge/Open%20Collective-sponsor-7eadf1?logo=open%20collective&logoColor=7eadf1&labelColor=555555)](https://opencollective.com/mezon-router)  [![Build Status](https://travis-ci.com/alexdodonov/mezon-router.svg?branch=master)](https://travis-ci.com/alexdodonov/mezon-router) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/?branch=master) [![codecov](https://codecov.io/gh/alexdodonov/mezon-router/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdodonov/mezon-router) [![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/mezonphp)
 
 ## Intro
 [Mezon Framework](https://github.com/alexdodonov/mezon) provides simple routing class for your needs. It is already used in [Web Application](https://github.com/alexdodonov/mezon-common-application), [Service](https://github.com/alexdodonov/mezon-service), [CRUD Service](https://github.com/alexdodonov/mezon-crud-service)
@@ -16,6 +16,8 @@
 [@Elijha](https://github.com/Elijha) - documentation fixes.
 
 Once again thank you people for your contributions )
+
+Use [this link](https://opencollective.com/mezon-router) if you also want to support our project
 
 ## FAQ
 
