@@ -153,7 +153,7 @@ $router->match('GET', '/param/199/1');
 +----------------------------+-------------+-----+------+-----+-------------+---------------+---------------+---------------+---------------+--------------+--------+------------+
 ```
 
-As you can see almost in all cases Mezon Router is faster than Teto router.
+As you can see almost in all cases Mezon Router is faster than Leaf router.
 
 # What's next?
 
