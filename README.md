@@ -55,6 +55,7 @@ More information can be found here:
 ## What is "First case" and "Second case"?
 
 1. **First case** - http server accepts request, launches php script, wich handles this request, and then all script data uploads from memory. All following requests are processed in the same way. In this case very critical to launch script as soon as possible and we do not have time for long pre-compilations and preparations. Because all of it will be lost after the script will finish working;
+
 2. **Second case** - php script is launching, initiating all internal components (and router is one of them) and then starting processing requests. This case can be organized via for example react-php. It differs from the previous case because we can spend reasonable time to pre-compile routes for faster
 
 In this table you can see requests per second. The bigger numbers mean better )
@@ -235,9 +236,9 @@ $router->addRoute('/catalogue/[a:cat_name]/', function($route, $variables){});
 
 Here:
 
-i - any integer number
-a - any [a-z0-9A-Z_\/\-\.\@]+ string
-il - comma separated list of integer ids
+i - any integer number  
+a - any [a-z0-9A-Z_\/\-\.\@]+ string  
+il - comma separated list of integer ids  
 s - any string
 
 Parameter name must consist of the following chars: [a-zA-Z0-9_\-] 
