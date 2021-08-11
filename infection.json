@@ -1,0 +1,19 @@
+{
+	"source": {
+		"directories": [
+			"./Mezon/Router"
+		],
+		"excludes": [
+			"./Mezon/Router/Tests"
+		]
+	},
+	"phpUnit": {
+		"customPath": ".\/vendor\/phpunit\/phpunit\/phpunit"
+	},
+	"logs": {
+		"text": ".\/tmp\/infection.txt"
+	},
+	"mutators": {
+		"@default": true
+	}
+}

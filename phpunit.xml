@@ -9,20 +9,18 @@
 	</php>
 
 	<testsuites>
-		<testsuite name="All Tests">
-			<directory suffix="UnitTest.php">
-				./Mezon/Router/Tests
-			</directory>
+		<testsuite name="unit">
+			<directory suffix="UnitTest.php">./Mezon/Router/Tests</directory>
 		</testsuite>
 	</testsuites>
 
 	<filter>
-		<whitelist addUncoveredFilesFromWhitelist="false">
-			<directory>./</directory>
+		<whitelist>
+			<directory>./Mezon/Router</directory>
 			<exclude>
-				<directory suffix="Test.php">./</directory>
-				<directory>vendor</directory>
-				<file>autoloader.php</file>
+				<directory suffix="UnitTest.php">./Mezon/Router/Tests</directory>
+				<directory>./vendor</directory>
+				<file>autoload.php</file>
 			</exclude>
 		</whitelist>
 	</filter>
