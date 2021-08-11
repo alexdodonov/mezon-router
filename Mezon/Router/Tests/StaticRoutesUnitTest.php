@@ -1,6 +1,10 @@
 <?php
 namespace Mezon\Router\Tests;
 
+/**
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -92,7 +96,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     public function testArrayRoutes(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/part1/part2/', function ($route) {
+        $router->addRoute('/part1/part2/', function (string $route): string {
             return $route;
         }, 'GET');
 
@@ -112,7 +116,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $this->setRequestUri('/catalog/item/');
 
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/item/', function ($route) {
+        $router->addRoute('/catalog/item/', function (string $route): string {
             return $route;
         }, 'GET');
 
@@ -131,7 +135,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $this->setRequestUri('/');
 
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', function ($route) {
+        $router->addRoute('/index/', function (string $route): string {
             return $route;
         }, 'GET');
 
@@ -151,7 +155,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $this->setRequestUri('/');
 
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/index/', function ($route) {
+        $router->addRoute('/index/', function (string $route): string {
             return $route;
         }, [
             'GET',
@@ -299,7 +303,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = $method;
 
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/', function ($route) {
+        $router->addRoute('/catalog/', function (string $route): string {
             return $route;
         }, $method);
 
@@ -318,9 +322,9 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $router->addRoute('/searching-static-route/', function (string $route) {
             return $route;
         });
-            $router->addRoute('/searching-param-route/[i:id]/', function (string $route) {
-                return $route;
-            });
+        $router->addRoute('/searching-param-route/[i:id]/', function (string $route) {
+            return $route;
+        });
 
         // test body and assertions
         $this->assertTrue($router->routeExists('searching-static-route'));

@@ -3,6 +3,10 @@ namespace Mezon\Router\Tests;
 
 use Mezon\Router\Router;
 
+/**
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class RouterUnitTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -69,9 +73,15 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
     /**
      * Testing router with different handlers
      *
+     * @param string $url
+     *            url
+     * @param callable $handler
+     *            handler
+     * @param string $expectedResult
+     *            expected result
      * @dataProvider differentHandlersDataProvider
      */
-    public function testDifferentHandlers(string $url, $handler, string $expectedResult): void
+    public function testDifferentHandlers(string $url, callable $handler, string $expectedResult): void
     {
         // setup
         $router = new Router();
@@ -126,7 +136,7 @@ class RouterUnitTest extends \PHPUnit\Framework\TestCase
      */
     protected function errorHandler(): void
     {
-        $this->addToAssertionCount(1);
+        $this->assertTrue(true);
     }
 
     /**

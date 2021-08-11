@@ -4,6 +4,10 @@ namespace Mezon\Router\Tests;
 use PHPUnit\Framework\TestCase;
 use Mezon\Router\Router;
 
+/**
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class MiddlewareUnitTest extends TestCase
 {
 
@@ -62,46 +66,54 @@ class MiddlewareUnitTest extends TestCase
         $route = '/route/[i:id]';
         $router = new Router();
 
-        $router->addRoute($route, function (string $route, $parameters) {
+        $router->addRoute($route, function (string $route, array $parameters): array {
             return $parameters;
         });
 
-        $router->registerMiddleware($route, function (string $route, array $parameters) {
-            $parameters['_second'] = $parameters['id'];
-            $parameters['id'] += 9;
+        $router->registerMiddleware(
+            $route,
+            function (string $route, array $parameters) {
+                $parameters['_second'] = $parameters['id'];
+                $parameters['id'] += 9;
 
-            return [
-                $route,
-                $parameters
-            ];
-        });
+                return [
+                    $route,
+                    $parameters
+                ];
+            });
 
         // This middleware is broken, don't parse the result
-        $router->registerMiddleware($route, function (string $route, array $parameters) {
-            $parameters['_dont_set_this'] = true;
+        $router->registerMiddleware(
+            $route,
+            function (string $route, array $parameters) {
+                $parameters['_dont_set_this'] = true;
 
-            return null;
-        });
+                return null;
+            });
 
-        $router->registerMiddleware($route, function (string $route, array $parameters) {
-            $parameters['_third'] = $parameters['id'];
-            $parameters['id'] *= 2;
+        $router->registerMiddleware(
+            $route,
+            function (string $route, array $parameters) {
+                $parameters['_third'] = $parameters['id'];
+                $parameters['id'] *= 2;
 
-            return [
-                $route,
-                $parameters
-            ];
-        });
+                return [
+                    $route,
+                    $parameters
+                ];
+            });
 
-        $router->registerMiddleware('*', function (string $route, array $parameters) {
-            $parameters['_first'] = $parameters['id'];
-            $parameters['id'] *= 2;
+        $router->registerMiddleware(
+            '*',
+            function (string $route, array $parameters) {
+                $parameters['_first'] = $parameters['id'];
+                $parameters['id'] *= 2;
 
-            return [
-                $route,
-                $parameters
-            ];
-        });
+                return [
+                    $route,
+                    $parameters
+                ];
+            });
 
         // test body
         $result = $router->callRoute('/route/1');

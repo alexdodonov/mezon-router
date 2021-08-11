@@ -3,6 +3,9 @@ namespace Mezon\Router\Tests;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class ReverseRouteUnitTest extends TestCase
 {
 

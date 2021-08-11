@@ -1,6 +1,10 @@
 <?php
 namespace Mezon\Router\Tests;
 
+/**
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class UniversalRouteUnitTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -46,7 +50,7 @@ class UniversalRouteUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function universalRouteDataProvider(): array
     {
-        $setup = function () {
+        $setup = function (): array {
             return [
                 [
                     '/hello/[s:name]/',

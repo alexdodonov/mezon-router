@@ -1,6 +1,9 @@
 <?php
 namespace Mezon\Router\Tests;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 {
 

@@ -91,6 +91,8 @@ trait RoutesSet
 
     /**
      * Were regexps compiled?
+     * 
+     * @var bool
      */
     private $regExpsWereCompiled = false;
 
@@ -183,9 +185,9 @@ trait RoutesSet
     }
 
     /**
-     * Method clears router data.
+     * Method clears router data
      */
-    public function clear()
+    public function clear(): void
     {
         $this->routeNames = [];
 
@@ -251,8 +253,10 @@ trait RoutesSet
 
     /**
      * Method rturns all available routes
+     *
+     * @return string trace
      */
-    public function getAllRoutesTrace()
+    public function getAllRoutesTrace(): string
     {
         $fullTrace = [];
 
@@ -412,14 +416,19 @@ trait RoutesSet
     {
         $this->compileRegexpForBunches();
 
-        file_put_contents($filePath, '<?php return ' . var_export([
-            0 => $this->staticRoutes,
-            1 => $this->paramRoutes,
-            2 => $this->routeNames,
-            3 => $this->cachedRegExps,
-            4 => $this->cachedParameters,
-            5 => $this->regExpsWereCompiled
-        ], true) . ';');
+        file_put_contents(
+            $filePath,
+            '<?php return ' .
+            var_export(
+                [
+                    0 => $this->staticRoutes,
+                    1 => $this->paramRoutes,
+                    2 => $this->routeNames,
+                    3 => $this->cachedRegExps,
+                    4 => $this->cachedParameters,
+                    5 => $this->regExpsWereCompiled
+                ],
+                true) . ';');
     }
 
     /**

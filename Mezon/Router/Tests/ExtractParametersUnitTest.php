@@ -3,6 +3,10 @@ namespace Mezon\Router\Tests;
 
 use Mezon\Router\Router;
 
+/**
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -24,7 +28,7 @@ class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
     {
         // setup
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:foo]/', function () {
+        $router->addRoute('/catalog/[i:foo]/', function (): void {
             // do nothing
         });
 
@@ -41,9 +45,11 @@ class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
     public function testValidExtractedParameter(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[a:cat_id]/', function ($route, $parameters) {
-            return $parameters['cat_id'];
-        });
+        $router->addRoute(
+            '/catalog/[a:cat_id]/',
+            function (string $route, array $parameters): string {
+                return $parameters['cat_id'];
+            });
 
         $result = $router->callRoute('/catalog/foo/');
 
@@ -58,7 +64,7 @@ class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
         $router = new \Mezon\Router\Router();
         $router->addRoute(
             '/catalog/[a:cat_id]/[i:item_id]',
-            function ($route, $parameters) {
+            function (string $route, array $parameters): string {
                 return $parameters['cat_id'] . $parameters['item_id'];
             });
 
@@ -73,10 +79,10 @@ class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
     public function testValidRouteParameter(): void
     {
         $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/all/', function ($route) {
+        $router->addRoute('/catalog/all/', function (string $route): string {
             return $route;
         });
-        $router->addRoute('/catalog/[i:cat_id]', function ($route) {
+        $router->addRoute('/catalog/[i:cat_id]', function (string $route): string {
             return $route;
         });
 

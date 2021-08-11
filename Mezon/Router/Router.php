@@ -56,7 +56,8 @@ class Router
      *
      * @param object $object
      *            Object to be processed
-     * @param
+     * @param array $map
+     *            map
      */
     public function fetchActions(object $object, array $map = []): void
     {
@@ -88,7 +89,8 @@ class Router
      */
     public function noProcessorFoundErrorHandler(string $route)
     {
-        throw (new \Exception('The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace()));
+        throw (new \Exception(
+            'The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace()));
     }
 
     /**
@@ -96,8 +98,10 @@ class Router
      *
      * @param callable $function
      *            Error handler
+     *            
+     * @return callable old error handler
      */
-    public function setNoProcessorFoundErrorHandler(callable $function)
+    public function setNoProcessorFoundErrorHandler(callable $function): callable
     {
         $oldErrorHandler = $this->invalidRouteErrorHandler;
 
@@ -111,6 +115,7 @@ class Router
      *
      * @param mixed $route
      *            Route
+     * @return mixed value returned by route handler
      */
     public function callRoute($route)
     {

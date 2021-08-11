@@ -4,6 +4,9 @@ namespace Mezon\Router\Tests;
 use PHPUnit\Framework\TestCase;
 use Mezon\Router\Router;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class AddRouteUnitTest extends TestCase
 {
 

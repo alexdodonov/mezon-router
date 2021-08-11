@@ -4,6 +4,9 @@ namespace Mezon\Router\Tests;
 use Mezon\Router\Router;
 use Mezon\Router\Types\DateRouterType;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
 {
 
