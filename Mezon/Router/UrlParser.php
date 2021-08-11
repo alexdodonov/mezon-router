@@ -61,7 +61,10 @@ trait UrlParser
         // parsing routes
         $compiledRouterPattern = $routerPattern;
         foreach ($this->types as $typeClass) {
-            $compiledRouterPattern = preg_replace('/' . $typeClass::searchRegExp() . '/', '(' . $typeClass::parserRegExp() . ')', $compiledRouterPattern);
+            $compiledRouterPattern = preg_replace(
+                '/' . $typeClass::searchRegExp() . '/',
+                '(' . $typeClass::parserRegExp() . ')',
+                $compiledRouterPattern);
         }
 
         // final setup + save in cache
@@ -203,7 +206,9 @@ trait UrlParser
      */
     private function canBeCalled($processor, ?string $functionName): bool
     {
-        return is_callable($processor) && ($functionName !== null && (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName)));
+        return is_callable($processor) &&
+            ($functionName !== null &&
+            (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName)));
     }
 
     /**
