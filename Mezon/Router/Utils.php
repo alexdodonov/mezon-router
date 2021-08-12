@@ -54,7 +54,7 @@ class Utils
             $route = $_SERVER['REQUEST_URI'];
         }
 
-        if ($route == '/') {
+        if ($route === '/') {
             $route = 'index';
         }
 
