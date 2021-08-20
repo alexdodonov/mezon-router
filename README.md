@@ -19,10 +19,8 @@ Use [this link](https://opencollective.com/mezon-router) if you also want to sup
 <table>
   <tr>
     <td align="center"><a href="https://github.com/jaumarar"><img src="https://avatars.githubusercontent.com/u/16009441?v=4" width="100px;" alt=""/><br /><sub><b>Jaume</b></sub></a> </td>
-
-	<td align="center"><a href="https://github.com/lolix-notepad"><img src="https://avatars.githubusercontent.com/u/75387306?v=4" width="100px;" alt=""/><br /><sub><b>Lolix</b></sub></a></td>
-
-	<td align="center"><a href="https://github.com/Elijha"><img src="https://avatars.githubusercontent.com/u/1055673?v=4" width="100px;" alt=""/><br /><sub><b>Jamie Smith</b></sub></a></td>
+    <td align="center"><a href="https://github.com/lolix-notepad"><img src="https://avatars.githubusercontent.com/u/75387306?v=4" width="100px;" alt=""/><br /><sub><b>Lolix</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Elijha"><img src="https://avatars.githubusercontent.com/u/1055673?v=4" width="100px;" alt=""/><br /><sub><b>Jamie Smith</b></sub></a></td>
   </tr>
 </table>
 <!-- markdownlint-enable -->
