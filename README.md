@@ -7,6 +7,15 @@
 
 ## Contributors
 
+Mezon becomes better because of the [contributors](https://github.com/alexdodonov/mezon-router/graphs/contributors). Thank them too. 
+
+Once again thank you people for your contributions )
+
+Use [this link](https://opencollective.com/mezon-router) if you also want to support our project
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
     <td align="center"><a href="https://github.com/jaumarar"><img src="https://avatars.githubusercontent.com/u/16009441?v=4" width="100px;" alt=""/><br /><sub><b>Jaume</b></sub></a> </td>
@@ -16,21 +25,9 @@
 	<td align="center"><a href="https://github.com/Elijha"><img src="https://avatars.githubusercontent.com/u/1055673?v=4" width="100px;" alt=""/><br /><sub><b>Jamie Smith</b></sub></a></td>
   </tr>
 </table>
-
-Mezon becomes better because of the [contributors](https://github.com/alexdodonov/mezon-router/graphs/contributors). Thank them too. 
-
-Once again thank you people for your contributions )
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/muhammaddicky"><img src="https://avatars0.githubusercontent.com/u/25713287?v=4" width="100px;" alt=""/><br /><sub><b>Jaume</b></sub></a></td>
-  </tr>
-</table>
-
-Use [this link](https://opencollective.com/mezon-router) if you also want to support our project
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## FAQ
 
