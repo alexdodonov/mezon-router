@@ -7,15 +7,28 @@
 
 ## Contributors
 
-[@jaumarar](https://github.com/jaumarar) - have implemented multiple middleware for routes. Global middleware is also made by him.
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/jaumarar"><img src="https://avatars.githubusercontent.com/u/16009441?v=4" width="100px;" alt=""/><br /><sub><b>Jaume</b></sub></a> </td>
 
-[@sinakuhestani](https://github.com/sinakuhestani) - have provided a better way for processing universal route. Plus some bug fixes.
+	<td align="center"><a href="https://github.com/lolix-notepad"><img src="https://avatars.githubusercontent.com/u/75387306?v=4" width="100px;" alt=""/><br /><sub><b>Lolix</b></sub></a></td>
 
-[@lolix-notepad](https://github.com/) - documentation fixes.
+	<td align="center"><a href="https://github.com/Elijha"><img src="https://avatars.githubusercontent.com/u/1055673?v=4" width="100px;" alt=""/><br /><sub><b>Jamie Smith</b></sub></a></td>
+  </tr>
+</table>
 
-[@Elijha](https://github.com/Elijha) - documentation fixes.
+Mezon becomes better because of the [contributors](https://github.com/alexdodonov/mezon-router/graphs/contributors). Thank them too. 
 
 Once again thank you people for your contributions )
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/muhammaddicky"><img src="https://avatars0.githubusercontent.com/u/25713287?v=4" width="100px;" alt=""/><br /><sub><b>Jaume</b></sub></a></td>
+  </tr>
+</table>
 
 Use [this link](https://opencollective.com/mezon-router) if you also want to support our project
 
