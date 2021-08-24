@@ -93,7 +93,7 @@ Router supports simple routes like in the example above - example.com/contacts/
 Each Application object implicitly creates routes for it's 'action[action-name]' methods, where 'action-name' will be stored as a route. Here is small (as usual)) ) example:
 
 ```PHP
-class           MySite
+class MySite
 {
     /**
      * Main page
@@ -181,7 +181,7 @@ We just need to create it explicitly.
 We can also use simple functions for route creation:
 
 ```PHP
-function        sitemap()
+function sitemap()
 {
     return 'Some fake sitemap';
 }
