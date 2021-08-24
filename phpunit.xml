@@ -12,6 +12,10 @@
 		<testsuite name="unit">
 			<directory suffix="UnitTest.php">./Mezon/Router/Tests</directory>
 		</testsuite>
+		<testsuite name="all">
+			<directory suffix="UnitTest.php">./Mezon/Router/Tests</directory>
+			<directory suffix="UnitTest.php">./vendor/mezon</directory>
+		</testsuite>
 	</testsuites>
 
 	<filter>

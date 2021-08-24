@@ -149,7 +149,7 @@ trait UrlParser
 
                 $this->parameters = [];
                 foreach ($names as $i => $name) {
-                    $this->parameters[$name] = $matches[$i + 1];
+                    $this->parameters[$name] = $matches[(int) $i + 1];
                 }
 
                 $this->calledRoute = $routeData['pattern'];

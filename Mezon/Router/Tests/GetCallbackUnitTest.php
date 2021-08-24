@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 use Mezon\Router\Router;
 
 /**
+ *
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class GetCallbackUnitTest extends TestCase
@@ -55,7 +56,11 @@ class GetCallbackUnitTest extends TestCase
         $callback = $router->getCallback($url);
 
         // assertions
-        $this->assertEquals('route result', $callback());
+        if (is_callable($callback)) {
+            $this->assertEquals('route result', $callback());
+        } else {
+            $this->fail();
+        }
     }
 
     /**

@@ -62,7 +62,7 @@ trait RoutesSet
      *
      * @param array $bunch
      */
-    protected function compileRegexpForBunch(array &$bunch): void
+    private function compileRegexpForBunch(array &$bunch): void
     {
         if (! empty($bunch['bunch'])) {
             $bunch['regexp'] = '';
@@ -99,7 +99,7 @@ trait RoutesSet
     /**
      * Method compiles all regeps for all routes
      */
-    protected function compileRegexpForBunches(): void
+    private function compileRegexpForBunches(): void
     {
         if (! $this->regExpsWereCompiled) {
             foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
@@ -437,6 +437,7 @@ trait RoutesSet
      * @param string $filePath
      *            file path to cache
      * @codeCoverageIgnore
+     * @psalm-suppress UnresolvableInclude
      */
     public function loadFromDisk(string $filePath = './cache/cache.php'): void
     {

@@ -31,7 +31,7 @@ class Router
      *
      * @return string Request method
      */
-    protected function getRequestMethod(): string
+    private function getRequestMethod(): string
     {
         return $_SERVER['REQUEST_METHOD'] ?? 'GET';
     }
@@ -87,7 +87,7 @@ class Router
      * @param string $route
      *            Route
      */
-    public function noProcessorFoundErrorHandler(string $route)
+    public function noProcessorFoundErrorHandler(string $route): void
     {
         throw (new \Exception(
             'The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace()));
@@ -160,10 +160,11 @@ class Router
             return $result;
         }
 
-        if (($result = $this->getUniversalRouteProcessor($route)) !== false) {
+        if (($result = $this->getUniversalRouteProcessor()) !== false) {
             return $result;
         }
 
         call_user_func($this->invalidRouteErrorHandler, $route); // @codeCoverageIgnoreStart
+        return false;
     } // @codeCoverageIgnoreEnd
 }
