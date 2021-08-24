@@ -48,7 +48,7 @@ The mezon/router is
 - 25 times faster than klein/klein router
 - 7 to 15 times faster than Symfony router
 - 30 to 50 times faster than Laravel router
-- 1,5 times faster than nikic/fast-route
+- 1.5 times faster than nikic/fast-route
 
 More benchmarks can be found [here](https://github.com/alexdodonov/mezon-router-benchmark)
 
