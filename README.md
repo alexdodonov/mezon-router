@@ -295,7 +295,7 @@ $router->loadFromDisk('./cache/cache.php');
 
 But these methods have limitations - they can not dump and load closures because of obvious reasons
 
-You can also worm cache without dumping:
+You can also warm cache without dumping:
 
 ```php
 $router->warmCache();
