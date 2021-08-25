@@ -3,15 +3,15 @@
 [![Open Collective](https://img.shields.io/badge/Open%20Collective-sponsor-7eadf1?logo=open%20collective&logoColor=7eadf1&labelColor=555555)](https://opencollective.com/mezon-router)  [![Build Status](https://travis-ci.com/alexdodonov/mezon-router.svg?branch=master)](https://travis-ci.com/alexdodonov/mezon-router) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alexdodonov/mezon-router/?branch=master) [![codecov](https://codecov.io/gh/alexdodonov/mezon-router/branch/master/graph/badge.svg)](https://codecov.io/gh/alexdodonov/mezon-router) [![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/mezonphp)
 
 ## Intro
-[Mezon Framework](https://github.com/alexdodonov/mezon) provides simple routing class for your needs. It is already used in [Web Application](https://github.com/alexdodonov/mezon-common-application), [Service](https://github.com/alexdodonov/mezon-service), [CRUD Service](https://github.com/alexdodonov/mezon-crud-service)
+[Mezon Framework](https://github.com/alexdodonov/mezon) provides simple routing class for your needs. It is already used in [Web Application](https://github.com/alexdodonov/mezon-common-application), [Service](https://github.com/alexdodonov/mezon-service), [CRUD Service](https://github.com/alexdodonov/mezon-crud-service).
 
 ## Contributors
 
 Mezon becomes better because of the [contributors](https://github.com/alexdodonov/mezon-router/graphs/contributors). Thank them too. 
 
-Once again thank you people for your contributions )
+Once again thank you people for your contributions.
 
-Use [this link](https://opencollective.com/mezon-router) if you also want to support our project
+Use [this link](https://opencollective.com/mezon-router) if you also want to support our project.
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -29,7 +29,7 @@ Use [this link](https://opencollective.com/mezon-router) if you also want to sup
 
 ## FAQ
 
-Use [this service](https://stackoverflow.com/questions/tagged/mezon) for asking questions
+Use [this service](https://stackoverflow.com/questions/tagged/mezon) for asking questions.
 
 ## Installation
 
@@ -39,7 +39,7 @@ Just print in console
 composer require mezon/router
 ```
 
-And that's all )
+And that's all.
 
 ## Reasons to use
 
@@ -50,7 +50,7 @@ The mezon/router is
 - 30 to 50 times faster than Laravel router
 - 1.5 times faster than nikic/fast-route
 
-More benchmarks can be found [here](https://github.com/alexdodonov/mezon-router-benchmark)
+More benchmarks can be found [here](https://github.com/alexdodonov/mezon-router-benchmark).
 
 # Learn more
 
@@ -62,11 +62,11 @@ More information can be found here:
 
 ## What is "First case" and "Second case"?
 
-1. **First case** - http server accepts request, launches php script, wich handles this request, and then all script data uploads from memory. All following requests are processed in the same way. In this case very critical to launch script as soon as possible and we do not have time for long pre-compilations and preparations. Because all of it will be lost after the script will finish working
+1. **First case** - http server accepts request, launches php script, wich handles this request, and then all script data uploads from memory. All following requests are processed in the same way. In this case very critical to launch script as soon as possible and we do not have time for long pre-compilations and preparations. Because all of it will be lost after the script will finish working.
 
-2. **Second case** - php script is launching, initiating all internal components (and router is one of them) and then starting processing requests. This case can be organized via for example react-php. It differs from the previous case because we can spend reasonable time to pre-compile routes for faster
+2. **Second case** - php script is launching, initiating all internal components (and router is one of them) and then starting processing requests. This case can be organized via for example react-php. It differs from the previous case because we can spend reasonable time to pre-compile routes for faster.
 
-In this table you can see requests per second. The bigger numbers mean better )
+In this table you can see requests per second. The bigger numbers mean better.
 
 ![results](https://github.com/alexdodonov/mezon-router/blob/doc/images/table-1.2.8.jpg?raw=true)
 
@@ -80,7 +80,7 @@ In this table you can see requests per second. The bigger numbers mean better )
 
 [mezon and yii2 router comparison](doc/yii2.md)
 
-# I'll be very glad if you'll press "STAR" button )
+# I'll be very glad if you'll press "STAR" button
 
 
 
@@ -199,7 +199,7 @@ var_dump($callback());
 
 ## Supported request methods
 
-Mezon Router supports: GET, POST, PUT, DELETE, OPTION
+Mezon Router supports: GET, POST, PUT, DELETE, OPTION.
 
 To get the list of these methods you can use method getListOfSupportedRequestMethods:
 
@@ -293,7 +293,7 @@ And after that you can load routes:
 $router->loadFromDisk('./cache/cache.php');
 ```
 
-But these methods have limitations - they can not dump and load closures because of obvious reasons
+But these methods have limitations - they can not dump and load closures because of obvious reasons.
 
 You can also warm cache without dumping:
 
@@ -304,12 +304,12 @@ $router->warmCache();
 ## Middleware and parameters modification
 
 Types of middlewares that you can add which will be called before the route handler will be executed. This middleware can transform common parameters $route and $parameters into something different.
-- Multiple global middlewares that will be **called in order of attachment**
-- Multiple route specific middlewares that **will be called in order of attachment**
+- Multiple global middlewares that will be **called in order of attachment**.
+- Multiple route specific middlewares that **will be called in order of attachment**.
 
 Order of execution of the middlewares
-1. Global middlewares ``$router->addRoute('*', ...)``
-2. Before calling route callback ``$router->addRoute('/example', ...)`` all those matching the route will be executed
+1. Global middlewares ``$router->addRoute('*', ...)``.
+2. Before calling route callback ``$router->addRoute('/example', ...)`` all those matching the route will be executed.
 
 Let's look at a simple example:
 
@@ -323,7 +323,7 @@ $router->addRoute('/user/[i:id]', function(string $route, array $parameters){
 });
 ```
 
-Now let's watch an example with all the possibilities 
+Now let's watch an example with all the possibilities. 
 
 ```php
 $router = new Router();
@@ -401,7 +401,7 @@ $router->registerMiddleware('/user/[i:id]', function(string $route, array $param
 });
 ```
 
-The best thing about it - if you don't use PSR-7 in your project, then you don't "pay" for it )
+The best thing about it - if you don't use PSR-7 in your project, then you don't "pay" for it.
 
 ## Custom types
 
