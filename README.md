@@ -90,7 +90,7 @@ Router allows you to map URLs on your php code and call when ever it needs to be
 
 Router supports simple routes like in the example above - example.com/contacts/
 
-Each Application object implicitly creates routes for it's 'action[action-name]' methods, where 'action-name' will be stored as a route. Here is small (as usual) example:
+Each Application object implicitly creates routes for its 'action[action-name]' methods, where 'action-name' will be stored as a route. Here is small (as usual) example:
 
 ```PHP
 class MySite
@@ -144,7 +144,7 @@ $router = new \Mezon\Router\Router();
 $router->fetchActions($mySite = new MySite());
 ```
 
-will create router object and loads information about it's actions and create routes. Strictly it will create two routes, because the class MySite has only two methods wich start with 'action[Suffix]'. Method 'someOtherPage' will not be converted into route automatically. By default this method will create routes wich handle both POST and GET request methods.
+will create router object and loads information about its actions and create routes. Strictly it will create two routes, because the class MySite has only two methods wich start with 'action[Suffix]'. Method 'someOtherPage' will not be converted into route automatically. By default this method will create routes wich handle both POST and GET request methods.
 
 Then just call to run callback by URL:
 
@@ -231,7 +231,7 @@ $router->addRoute('/*/', function(){});
 $router->addRoute('/index/', function(){});
 ```
 
-route /contacts/ will be processed by it's own handler, and all other routes (even /index/) will be processed by the '*' handler.
+route /contacts/ will be processed by its own handler, and all other routes (even /index/) will be processed by the '*' handler.
 
 ## Route variables
 
