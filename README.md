@@ -243,11 +243,10 @@ $router->addRoute('/catalogue/[a:cat_name]/', function($route, $variables){});
 ```
 
 Here:
-
-i - any integer number  
-a - any [a-z0-9A-Z_\/\-\.\@]+ string  
-il - comma separated list of integer ids  
-s - any string
+- i - any integer number  
+- a - any [a-z0-9A-Z_\/\-\.\@]+ string  
+- il - comma separated list of integer ids  
+- s - any string
 
 Parameter name must consist of the following chars: [a-zA-Z0-9_\-] 
 
