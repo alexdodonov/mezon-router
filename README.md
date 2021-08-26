@@ -199,7 +199,13 @@ var_dump($callback());
 
 ## Supported request methods
 
-Mezon Router supports: GET, POST, PUT, DELETE, OPTION
+Mezon Router supports: 
+- GET
+- POST
+- PUT
+- DELETE
+- OPTION
+- PATCH
 
 To get the list of these methods you can use method getListOfSupportedRequestMethods:
 
