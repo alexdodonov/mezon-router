@@ -3,7 +3,7 @@ namespace Mezon\Router;
 
 use Mezon\Router\Types\BaseType;
 
-trait UrlParser
+trait SimpleUrlParser
 {
 
     /**
@@ -19,20 +19,6 @@ trait UrlParser
      * @var string
      */
     protected $calledRoute = '';
-
-    /**
-     * Cache for regular expressions
-     *
-     * @var array
-     */
-    private $cachedRegExps = [];
-
-    /**
-     * Cached parameters for route
-     *
-     * @var array
-     */
-    private $cachedParameters = [];
 
     /**
      * Middleware for routes processing
@@ -51,15 +37,9 @@ trait UrlParser
      */
     private function _getRouteMatcherRegExPattern(string $routerPattern): string
     {
-        $key = $routerPattern;
-
-        // try read from cache
-        if (isset($this->cachedRegExps[$key])) {
-            return $this->cachedRegExps[$key];
-        }
-
         // parsing routes
         $compiledRouterPattern = $routerPattern;
+
         foreach ($this->types as $typeClass) {
             $compiledRouterPattern = preg_replace(
                 '/' . $typeClass::searchRegExp() . '/',
@@ -67,10 +47,7 @@ trait UrlParser
                 $compiledRouterPattern);
         }
 
-        // final setup + save in cache
-        $this->cachedRegExps[$key] = $compiledRouterPattern;
-
-        return $compiledRouterPattern;
+        return str_replace('/', '\/', $compiledRouterPattern);
     }
 
     /**
@@ -82,10 +59,6 @@ trait UrlParser
      */
     private function _getParameterNames(string $routerPattern): array
     {
-        if (isset($this->cachedParameters[$routerPattern])) {
-            return $this->cachedParameters[$routerPattern];
-        }
-
         $regExPattern = [];
 
         foreach (array_keys($this->types) as $typeName) {
@@ -103,27 +76,7 @@ trait UrlParser
             $return[] = $name;
         }
 
-        $this->cachedParameters[$routerPattern] = $return;
-
         return $return;
-    }
-
-    /**
-     * Method warms cache
-     */
-    public function warmCache(): void
-    {
-        foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            foreach ($this->paramRoutes[$requestMethod] as $bunch) {
-                foreach ($bunch['bunch'] as $route) {
-                    $this->_getRouteMatcherRegExPattern($route['pattern']);
-
-                    $this->_getParameterNames($route['pattern']);
-                }
-            }
-        }
-
-        $this->compileRegexpForBunches();
     }
 
     /**
@@ -137,24 +90,22 @@ trait UrlParser
      */
     protected function getDynamicRouteProcessor(string $route, string $requestMethod = '')
     {
-        $bunches = $this->paramRoutes[$requestMethod == '' ? $_SERVER['REQUEST_METHOD'] : $requestMethod];
+        $routes = $this->paramRoutes[$requestMethod == '' ? $_SERVER['REQUEST_METHOD'] : $requestMethod];
 
-        foreach ($bunches as $bunch) {
+        foreach ($routes as $item) {
             $matches = [];
 
-            if (preg_match($bunch['regexp'], $route, $matches)) {
-                $routeData = $bunch['bunch'][count($matches)];
-
-                $names = $this->_getParameterNames($routeData['pattern']);
+            if (preg_match('/^'.$this->_getRouteMatcherRegExPattern($item['pattern']).'$/', $route, $matches)) {
+                $names = $this->_getParameterNames($item['pattern']);
 
                 $this->parameters = [];
                 foreach ($names as $i => $name) {
                     $this->parameters[$name] = $matches[(int) $i + 1];
                 }
 
-                $this->calledRoute = $routeData['pattern'];
+                $this->calledRoute = $item['pattern'];
 
-                return $routeData['callback'];
+                return $item['callback'];
             }
         }
 

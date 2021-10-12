@@ -2,22 +2,22 @@
 namespace Mezon\Router;
 
 /**
- * Class Router
+ * Class SimpleRouter
  *
  * @package Mezon
  * @subpackage Router
  * @author Dodonov A.A.
- * @version v.1.0 (2019/08/15)
- * @copyright Copyright (c) 2019, aeon.org
+ * @version v.1.0 (2021/09/27)
+ * @copyright Copyright (c) 2021, aeon.org
  */
 
 /**
- * Router class
+ * Simple router class
  */
-class Router implements RouterInterface
+class SimpleRouter implements RouterInterface
 {
 
-    use RoutesSet, UrlParser, RouteTypes;
+    use SimpleRoutesSet, SimpleUrlParser, RouteTypes;
 
     /**
      * Method wich handles invalid route error
@@ -117,10 +117,6 @@ class Router implements RouterInterface
      */
     public function callRoute($route)
     {
-        if (! $this->regExpsWereCompiled) {
-            $this->compileRegexpForBunches();
-        }
-
         $route = Utils::prepareRoute($route);
         $requestMethod = $this->getRequestMethod();
         $this->validateRequestMethod($requestMethod);
@@ -146,8 +142,6 @@ class Router implements RouterInterface
      */
     public function getCallback($route)
     {
-        $this->compileRegexpForBunches();
-
         $route = Utils::prepareRoute($route);
 
         if (($result = $this->getStaticRouteProcessor($route)) !== false) {

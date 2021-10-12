@@ -1,10 +1,14 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Simple;
+
+use PHPUnit\Framework\TestCase;
+use Mezon\Router\SimpleRouter;
 
 /**
+ *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
+class DynamicRoutesInvalidCasesUnitTest extends TestCase
 {
 
     /**
@@ -24,7 +28,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
     public function testGettingUnexistingParameter(): void
     {
         // setup
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[i:foo]/', function () {
             // do nothing
         });
@@ -44,7 +48,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
     {
         // setup
         $_SERVER['REQUEST_METHOD'] = 'HEAD';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[i:foo]/', function () {
             // do nothing
         });
@@ -62,10 +66,12 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
     public function testInValidIdListParams(): void
     {
         // setup
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[il:cat_id]/', [
             $this,
-            function () {return 1;}
+            function () {
+                return 1;
+            }
         ]);
 
         // assertion
@@ -84,10 +90,12 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
 
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[i:cat_id]', [
             $this,
-            function () {return 1;}
+            function () {
+                return 1;
+            }
         ]);
 
         try {
@@ -109,10 +117,12 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = 'PUT';
 
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[i:cat_id]', [
             $this,
-            function () {return 1;}
+            function () {
+                return 1;
+            }
         ]);
 
         try {
@@ -134,10 +144,12 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[i:item_id]', [
             $this,
-            function () {return 1;}
+            function () {
+                return 1;
+            }
         ]);
 
         try {
@@ -178,7 +190,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
     public function testNotMatchingRoutes(string $route, string $calling): void
     {
         // setup
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute($route, function () {
             // do nothing
         });
@@ -195,10 +207,12 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testInvalidType(): void
     {
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[unexisting-type:i]/item/', [
             $this,
-            function () {return 1;}
+            function () {
+                return 1;
+            }
         ]);
 
         try {
@@ -214,11 +228,15 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidInvalidTypes(): void
     {
-        $router = new \Mezon\Router\Router();
-        $router->addRoute('/catalog/[i:cat_id]/item/[unexisting-type-trace:item_id]/', [
-            $this,
-            function () {return 1;}
-        ]);
+        $router = new SimpleRouter();
+        $router->addRoute(
+            '/catalog/[i:cat_id]/item/[unexisting-type-trace:item_id]/',
+            [
+                $this,
+                function () {
+                    return 1;
+                }
+            ]);
 
         try {
             $router->callRoute('/catalog/1024/item/2048/');
@@ -242,7 +260,7 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
     public function testUnexistingRoute(): void
     {
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/existing-route/', [
             $this,
             'helloWorldOutput'
@@ -258,51 +276,50 @@ class DynamicRoutesInvalidCasesUnitTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNotFalse(strpos($exception, $msg), 'Valid error handling expected');
     }
-    
-    
+
     /**
      * Testing invalid integer data types behaviour.
      */
     public function testInValidIntegerParams(): void
     {
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[i:cat_id]/', [
             $this,
             'helloWorldOutput'
         ]);
-        
+
         try {
             $router->callRoute('/catalog/a1024/');
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
-        
+
         $msg = "The processor was not found for the route catalog/a1024";
-        
+
         $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
     }
-    
+
     /**
      * Testing invalid alnum data types behaviour.
      */
     public function testInValidAlnumParams(): void
     {
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/[a:cat_id]/', [
             $this,
             'helloWorldOutput'
         ]);
-        
+
         try {
             $router->callRoute('/catalog/~foo/');
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
-        
+
         $msg = "The processor was not found for the route catalog/~foo";
-        
+
         $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
     }
 }

@@ -1,13 +1,10 @@
 <?php
-namespace Mezon\Router\Tests;
-
-use PHPUnit\Framework\TestCase;
-use Mezon\Router\Router;
+namespace Mezon\Router\Tests\Base;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class AddRouteUnitTest extends TestCase
+abstract class AddRouteUnitTestClass extends BaseRouterUnitTestClass
 {
 
     /**
@@ -26,9 +23,9 @@ class AddRouteUnitTest extends TestCase
     public function testAddGetRoute(): void
     {
         // setup
-        $router = new Router();
+        $router = $this->getRouter();
         $route = 'route';
-        RouterUnitTest::setRequestMethod('GET');
+        RouterUnitTestUtils::setRequestMethod('GET');
 
         // test body
         $router->addGetRoute($route, $this, 'actionRoute');
@@ -43,9 +40,9 @@ class AddRouteUnitTest extends TestCase
     public function testAddPostRoute(): void
     {
         // setup
-        $router = new Router();
+        $router = $this->getRouter();
         $route = 'route';
-        RouterUnitTest::setRequestMethod('POST');
+        RouterUnitTestUtils::setRequestMethod('POST');
 
         // test body
         $router->addPostRoute($route, $this, 'actionRoute');

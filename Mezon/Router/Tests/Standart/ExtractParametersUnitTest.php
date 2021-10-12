@@ -1,20 +1,21 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Standart;
 
 use Mezon\Router\Router;
+use PHPUnit\Framework\TestCase;
 
 /**
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
+class ExtractParametersUnitTest extends TestCase
 {
 
     /**
      * Default setup
      *
      * {@inheritdoc}
-     * @see \PHPUnit\Framework\TestCase::setUp()
+     * @see TestCase::setUp()
      */
     public function setUp(): void
     {
@@ -27,7 +28,7 @@ class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
     public function testValidatingParameter(): void
     {
         // setup
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
         $router->addRoute('/catalog/[i:foo]/', function (): void {
             // do nothing
         });
@@ -44,7 +45,7 @@ class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidExtractedParameter(): void
     {
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
         $router->addRoute(
             '/catalog/[a:cat_id]/',
             function (string $route, array $parameters): string {
@@ -61,7 +62,7 @@ class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidExtractedParameters(): void
     {
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
         $router->addRoute(
             '/catalog/[a:cat_id]/[i:item_id]',
             function (string $route, array $parameters): string {
@@ -78,7 +79,7 @@ class ExtractParametersUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidRouteParameter(): void
     {
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
         $router->addRoute('/catalog/all/', function (string $route): string {
             return $route;
         });

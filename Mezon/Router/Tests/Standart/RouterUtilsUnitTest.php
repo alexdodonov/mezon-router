@@ -1,10 +1,12 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Standart;
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class RouterUtilsUnitTest extends \PHPUnit\Framework\TestCase
+class RouterUtilsUnitTest extends TestCase
 {
 
     /**

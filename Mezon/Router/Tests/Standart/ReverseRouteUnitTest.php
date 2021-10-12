@@ -1,7 +1,8 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Standart;
 
 use PHPUnit\Framework\TestCase;
+use Mezon\Router\Router;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor
@@ -58,7 +59,7 @@ class ReverseRouteUnitTest extends TestCase
     public function testReverseRouteByName(string $route, array $parameters, string $extectedResult): void
     {
         // setup
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
         $router->addRoute($route, function () {
             return 'named route result';
         }, 'GET', 'named-route');
@@ -76,7 +77,7 @@ class ReverseRouteUnitTest extends TestCase
     public function testFetchUnexistingRouteByName(): void
     {
         // setup
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
 
         // assertions
         $this->expectException(\Exception::class);

@@ -1,20 +1,21 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Standart;
 
 use Mezon\Router\Router;
 use Mezon\Router\Types\DateRouterType;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
+class DynamicRoutesUnitTest extends TestCase
 {
 
     /**
      * Default setup
      *
      * {@inheritdoc}
-     * @see \PHPUnit\Framework\TestCase::setUp()
+     * @see TestCase::setUp()
      */
     public function setUp(): void
     {
@@ -158,7 +159,7 @@ class DynamicRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         // setup
         $_SERVER['REQUEST_METHOD'] = $method;
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
         $router->addType('date', DateRouterType::class);
         if (is_string($pattern)) {
             $router->addRoute($pattern, function () {

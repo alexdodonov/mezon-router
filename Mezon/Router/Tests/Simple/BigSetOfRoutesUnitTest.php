@@ -1,8 +1,9 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Simple;
 
 use PHPUnit\Framework\TestCase;
-use Mezon\Router\Router;
+use Mezon\Router\Tests\Base\RouterUnitTestUtils;
+use Mezon\Router\SimpleRouter;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor
@@ -37,8 +38,8 @@ class BigSetOfRoutesUnitTest extends TestCase
     public function testBigSetOfRoutes(int $amount): void
     {
         // setup
-        RouterUnitTest::setRequestMethod('GET');
-        $router = new Router();
+        RouterUnitTestUtils::setRequestMethod('GET');
+        $router = new SimpleRouter();
         for ($i = 1; $i <= $amount; $i ++) {
             $router->addRoute('/param/[i:id]/' . $i, function () use ($i): int {
                 return $i;

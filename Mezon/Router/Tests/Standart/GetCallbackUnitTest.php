@@ -1,8 +1,9 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Standart;
 
 use PHPUnit\Framework\TestCase;
 use Mezon\Router\Router;
+use Mezon\Router\Tests\Base\RouterUnitTestUtils;
 
 /**
  *
@@ -46,7 +47,7 @@ class GetCallbackUnitTest extends TestCase
     public function testGetCallback(string $route, string $url): void
     {
         // setup
-        RouterUnitTest::setRequestMethod('GET');
+        RouterUnitTestUtils::setRequestMethod('GET');
         $router = new Router();
         $router->addRoute($route, function () {
             return 'route result';

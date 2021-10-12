@@ -1,5 +1,8 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Standart;
+
+use Mezon\Router\Tests\Utils;
+use Mezon\Router\Router;
 
 /**
  *
@@ -106,7 +109,7 @@ class UniversalRouteUnitTest extends \PHPUnit\Framework\TestCase
     public function testUniversalRoute(array $routes, string $uri, string $result): void
     {
         // setup
-        $router = new \Mezon\Router\Router();
+        $router = new Router();
 
         foreach ($routes as $route) {
             $router->addRoute($route[0], $route[1]);

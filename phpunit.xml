@@ -22,7 +22,7 @@
 		<whitelist>
 			<directory>./Mezon/Router</directory>
 			<exclude>
-				<directory suffix="UnitTest.php">./Mezon/Router/Tests</directory>
+				<directory>./Mezon/Router/Tests/*</directory>
 				<directory>./vendor</directory>
 				<file>autoload.php</file>
 			</exclude>

@@ -1,11 +1,16 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Simple;
+
+use Mezon\Router\Tests\Base\RouterUnitTestUtils;
+use PHPUnit\Framework\TestCase;
+use Mezon\Router\Tests\Utils;
+use Mezon\Router\SimpleRouter;
 
 /**
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
+class StaticRoutesUnitTest extends TestCase
 {
 
     const HELLO_WORLD = 'Hello world!';
@@ -50,7 +55,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         // setup
         $_GET['r'] = 'unexisting-route-method';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/unexisting-route-method/', [
             $this,
             'unexistingMethod'
@@ -80,7 +85,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         // setup
         $_GET['r'] = 'trash';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/trash/', []);
 
         // assertions
@@ -95,7 +100,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testArrayRoutes(): void
     {
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/part1/part2/', function (string $route): string {
             return $route;
         }, 'GET');
@@ -115,7 +120,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         $this->setRequestUri('/catalog/item/');
 
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/item/', function (string $route): string {
             return $route;
         }, 'GET');
@@ -134,7 +139,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         $this->setRequestUri('/');
 
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/index/', function (string $route): string {
             return $route;
         }, 'GET');
@@ -154,7 +159,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         // setup
         $this->setRequestUri('/');
 
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/index/', function (string $route): string {
             return $route;
         }, [
@@ -179,10 +184,10 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testDeleteRequestForUnExistingStaticRoute(): void
     {
-        $_SERVER['REQUEST_METHOD'] = RouterUnitTest::DELETE_REQUEST_METHOD;
+        $_SERVER['REQUEST_METHOD'] = RouterUnitTestUtils::DELETE_REQUEST_METHOD;
 
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/static-delete-unexisting/', [
             $this,
             'helloWorldOutput'
@@ -207,7 +212,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = 'PUT';
 
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/static-put-unexisting/', [
             $this,
             'helloWorldOutput'
@@ -232,7 +237,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $exception = '';
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/static-post-unexisting/', [
             $this,
             'helloWorldOutput'
@@ -258,7 +263,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         $result = [];
 
-        foreach (\Mezon\Router\Router::getListOfSupportedRequestMethods() as $method) {
+        foreach (SimpleRouter::getListOfSupportedRequestMethods() as $method) {
             $result[] = [
                 $method
             ];
@@ -276,14 +281,14 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
      */
     public function testClearMethod(string $method): void
     {
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/route-to-clear/', function () use ($method) {
             return $method;
         }, $method);
         $router->clear();
 
         try {
-            RouterUnitTest::setRequestMethod($method);
+            RouterUnitTestUtils::setRequestMethod($method);
             $router->callRoute('/route-to-clear/');
             $flag = 'not cleared';
         } catch (\Exception $e) {
@@ -302,7 +307,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     {
         $_SERVER['REQUEST_METHOD'] = $method;
 
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/catalog/', function (string $route): string {
             return $route;
         }, $method);
@@ -318,7 +323,7 @@ class StaticRoutesUnitTest extends \PHPUnit\Framework\TestCase
     public function testRouteExists(): void
     {
         // setup
-        $router = new \Mezon\Router\Router();
+        $router = new SimpleRouter();
         $router->addRoute('/searching-static-route/', function (string $route) {
             return $route;
         });

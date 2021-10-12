@@ -1,15 +1,15 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Simple;
 
-use Mezon\Router\Router;
 use Mezon\Router\RouterInterface;
+use Mezon\Router\SimpleRouter;
 use Mezon\Router\Tests\Base\RouterUnitTestClass;
 
 /**
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class RouterUnitTest extends RouterUnitTestClass
+class AddRouteUnitTest extends RouterUnitTestClass
 {
 
     /**
@@ -19,6 +19,6 @@ class RouterUnitTest extends RouterUnitTestClass
      */
     protected function getRouter(): RouterInterface
     {
-        return new Router();
+        return new SimpleRouter();
     }
 }

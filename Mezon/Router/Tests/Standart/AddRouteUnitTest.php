@@ -1,15 +1,15 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Standart;
 
-use Mezon\Router\Router;
 use Mezon\Router\RouterInterface;
 use Mezon\Router\Tests\Base\RouterUnitTestClass;
+use Mezon\Router\Router;
 
 /**
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class RouterUnitTest extends RouterUnitTestClass
+class AddRouteUnitTest extends RouterUnitTestClass
 {
 
     /**

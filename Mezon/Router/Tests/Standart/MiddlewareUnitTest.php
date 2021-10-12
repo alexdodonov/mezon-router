@@ -1,5 +1,5 @@
 <?php
-namespace Mezon\Router\Tests;
+namespace Mezon\Router\Tests\Standart;
 
 use PHPUnit\Framework\TestCase;
 use Mezon\Router\Router;
