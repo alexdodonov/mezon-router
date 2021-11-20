@@ -44,9 +44,10 @@ class Utils
     /**
      * Method prepares route for the next processing
      *
-     * @param mixed $route
-     *            Route
-     * @return string Trimmed route
+     * @param string[]|string $route
+     *            route
+     * @return string trimmed route
+     * @psalm-suppress MixedArgumentTypeCoercion, MixedAssignment
      */
     public static function prepareRoute($route): string
     {
@@ -62,15 +63,17 @@ class Utils
             $route = implode('/', $route);
         }
 
+        /** @var string $route */
         return trim($route, '/');
     }
 
     /**
      * Method compiles callable description
      *
-     * @param mixed $processor
-     *            Object to be descripted
-     * @return string Description
+     * @param string|mixed|array{0:string, 1:string} $processor
+     *            object to be descripted
+     * @return string description
+     * @psalm-suppress MixedOperand, MixedArrayAccess, MixedArgument, MissingParamType
      */
     public static function getCallableDescription($processor): string
     {
