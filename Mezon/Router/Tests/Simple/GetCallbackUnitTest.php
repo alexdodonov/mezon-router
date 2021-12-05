@@ -1,8 +1,8 @@
 <?php
+declare(strict_types = 1);
 namespace Mezon\Router\Tests\Simple;
 
 use PHPUnit\Framework\TestCase;
-use Mezon\Router\Router;
 use Mezon\Router\Tests\Base\RouterUnitTestUtils;
 use Mezon\Router\SimpleRouter;
 

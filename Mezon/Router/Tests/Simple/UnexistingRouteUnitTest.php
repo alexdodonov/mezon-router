@@ -3,21 +3,20 @@ declare(strict_types = 1);
 namespace Mezon\Router\Tests\Simple;
 
 use Mezon\Router\RouterInterface;
-use Mezon\Router\Tests\Base\UniversalRouteTestClass;
-use Mezon\Router\Tests\Base\BaseRouterUnitTestClass;
 use Mezon\Router\SimpleRouter;
+use Mezon\Router\Tests\Base\UnexistingRouteTestClass;
 
 /**
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class UniversalRouteUnitTest extends UniversalRouteTestClass
+class UnexistingRouteUnitTest extends UnexistingRouteTestClass
 {
 
     /**
      *
      * {@inheritdoc}
-     * @see BaseRouterUnitTestClass::getRouter()
+     * @see UnexistingRouteTestClass::getRouter()
      */
     protected function getRouter(): RouterInterface
     {

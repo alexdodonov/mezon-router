@@ -1,38 +1,19 @@
 <?php
+declare(strict_types = 1);
 namespace Mezon\Router;
 
+/**
+ * Trait SimpleRoutesSet
+ *
+ * @package Router
+ * @author Dodonov A.A.
+ * @version v.1.0 (2021/09/27)
+ * @copyright Copyright (c) 2021, aeon.org
+ */
 trait SimpleRoutesSet
 {
 
-    // TODO Exclude duplicates
-
-    /**
-     * List of static routes for all supported request methods
-     *
-     * @var array
-     */
-    protected $staticRoutes = [
-        'GET' => [],
-        'POST' => [],
-        'PUT' => [],
-        'DELETE' => [],
-        'OPTION' => [],
-        'PATCH' => []
-    ];
-
-    /**
-     * List of non static routes
-     *
-     * @var array
-     */
-    protected $paramRoutes = [
-        'GET' => [],
-        'POST' => [],
-        'PUT' => [],
-        'DELETE' => [],
-        'OPTION' => [],
-        'PATCH' => []
-    ];
+    use StaticRoutes, ParamRoutes, RoutesSetBase;
 
     /**
      * Method adds param router
@@ -41,7 +22,7 @@ trait SimpleRoutesSet
      *            request method
      * @param string $route
      *            route
-     * @param mixed $callback
+     * @param array{0: string, 1:string}|callable|string $callback
      *            callback method
      */
     protected function addParamRoute(string $requestMethod, string $route, $callback): void
@@ -57,59 +38,6 @@ trait SimpleRoutesSet
     }
 
     /**
-     * Route names
-     *
-     * @var array
-     */
-    private $routeNames = [];
-
-    /**
-     * Method validates request method
-     *
-     * @param string $requestMethod
-     *            HTTP request method
-     */
-    protected function validateRequestMethod(string $requestMethod): void
-    {
-        if (isset($this->staticRoutes[$requestMethod]) === false) {
-            throw (new \Exception('Unsupported request method: "' . $requestMethod . '"'));
-        }
-    }
-
-    /**
-     * Method returns a list of supported request methods
-     *
-     * @return array list of supported request methods
-     */
-    public static function getListOfSupportedRequestMethods(): array
-    {
-        // TODO move to the base trait common with RoutesSet
-        return [
-            'GET',
-            'POST',
-            'PUT',
-            'DELETE',
-            'OPTION',
-            'PATCH'
-        ];
-    }
-
-    /**
-     * Method clears router data
-     */
-    public function clear(): void
-    {
-        $this->routeNames = [];
-
-        foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            $this->staticRoutes[$requestMethod] = [];
-            $this->paramRoutes[$requestMethod] = [];
-        }
-
-        $this->middleware = [];
-    }
-
-    /**
      * Method returns true if the param router exists
      *
      * @param string $route
@@ -117,8 +45,9 @@ trait SimpleRoutesSet
      * @param string $requestMethod
      *            HTTP request method
      * @return bool true if the param router exists, false otherwise
+     * @psalm-suppress PossiblyUndefinedArrayOffset
      */
-    private function paramRouteExists(string $route, string $requestMethod): bool
+    protected function paramRouteExists(string $route, string $requestMethod): bool
     {
         foreach ($this->paramRoutes[$requestMethod] as $item) {
             if ($item['pattern'] === $route) {
@@ -130,39 +59,45 @@ trait SimpleRoutesSet
     }
 
     /**
-     * Method returns true if the router exists
+     * Method dumps all routes and their names on disk
      *
-     * @param string $route
-     *            checking route
-     * @return bool true if the router exists, false otherwise
+     * @param string $filePath
+     *            file path to cache
+     * @codeCoverageIgnore
      */
-    public function routeExists(string $route): bool
+    public function dumpOnDisk(string $filePath = './cache/cache.php'): void
     {
-        $route = trim($route, '/');
+        file_put_contents($filePath, '<?php return ' . var_export([
+            0 => $this->staticRoutes,
+            1 => $this->paramRoutes,
+            2 => $this->routeNames
+        ], true) . ';');
+    }
 
-        foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
-            if (isset($this->staticRoutes[$requestMethod][$route])) {
-                return true;
-            } else {
-                if ($this->paramRouteExists($route, $requestMethod)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    /**
+     * Method loads routes from disk
+     *
+     * @param string $filePath
+     *            file path to cache
+     * @codeCoverageIgnore
+     * @psalm-suppress UnresolvableInclude, MixedArrayAccess, MixedAssignment
+     */
+    public function loadFromDisk(string $filePath = './cache/cache.php'): void
+    {
+        list ($this->staticRoutes, $this->paramRoutes, $this->routeNames) = require ($filePath);
     }
 
     /**
      * Method rturns all available routes
      *
      * @return string trace
+     * @psalm-suppress PossiblyUndefinedArrayOffset
      */
     public function getAllRoutesTrace(): string
     {
         $fullTrace = [];
 
-        foreach (self::getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
             $trace = [
                 $requestMethod . ' : '
             ];
@@ -189,153 +124,5 @@ trait SimpleRoutesSet
         }
 
         return implode('; ', $fullTrace);
-    }
-
-    /**
-     * Method adds route and it's handler
-     *
-     * $callback function may have two parameters - $route and $parameters. Where $route is a called route,
-     * and $parameters is associative array (parameter name => parameter value) with URL parameters
-     *
-     * @param string $route
-     *            Route
-     * @param mixed $callback
-     *            Collback wich will be processing route call.
-     * @param string|array $requestMethod
-     *            Request type
-     * @param string $routeName
-     *            name of the route
-     */
-    public function addRoute(string $route, $callback, $requestMethod = 'GET', string $routeName = ''): void
-    {
-        $route = Utils::prepareRoute($route);
-
-        if (is_array($requestMethod)) {
-            foreach ($requestMethod as $r) {
-                $this->addRoute($route, $callback, $r, $routeName);
-            }
-        } else {
-            $this->validateRequestMethod($requestMethod);
-
-            if (strpos($route, '[') === false) {
-                $this->staticRoutes[$requestMethod][$route] = $callback;
-            } else {
-                $this->addParamRoute($requestMethod, $route, $callback);
-            }
-            // register route name
-            $this->registerRouteName($routeName, $route);
-        }
-    }
-
-    /**
-     * Additing route for GET request
-     *
-     * @param string $route
-     *            route
-     * @param object $object
-     *            callback object
-     * @param string $method
-     *            callback method
-     */
-    public function addGetRoute(string $route, object $object, string $method): void
-    {
-        $this->addRoute($route, [
-            $object,
-            $method
-        ], 'GET');
-    }
-
-    /**
-     * Additing route for GET request
-     *
-     * @param string $route
-     *            route
-     * @param object $object
-     *            callback object
-     * @param string $method
-     *            callback method
-     */
-    public function addPostRoute(string $route, object $object, string $method): void
-    {
-        $this->addRoute($route, [
-            $object,
-            $method
-        ], 'POST');
-    }
-
-    /**
-     * Method registers name of the route
-     *
-     * @param string $routeName
-     *            route's name
-     * @param string $route
-     *            route
-     */
-    protected function registerRouteName(string $routeName, string $route): void
-    {
-        if ($routeName != '') {
-            $this->routeNames[$routeName] = $route;
-        }
-    }
-
-    /**
-     * Validating that route name exists
-     *
-     * @param string $routeName
-     * @return bool
-     */
-    protected function routeNameExists(string $routeName): bool
-    {
-        return isset($this->routeNames[$routeName]);
-    }
-
-    /**
-     * Getting route by name
-     *
-     * @param string $routeName
-     *            route's name
-     * @return string route
-     */
-    public function getRouteByName(string $routeName): string
-    {
-        if ($this->routeNameExists($routeName) === false) {
-            throw (new \Exception('Route with name ' . $routeName . ' does not exist'));
-        }
-
-        return $this->routeNames[$routeName];
-    }
-
-    /**
-     * Method dumps all routes and their names on disk
-     *
-     * @param string $filePath
-     *            file path to cache
-     * @codeCoverageIgnore
-     */
-    public function dumpOnDisk(string $filePath = './cache/cache.php'): void
-    {
-        file_put_contents(
-            $filePath,
-            '<?php return ' .
-            var_export(
-                [
-                    0 => $this->staticRoutes,
-                    1 => $this->paramRoutes,
-                    2 => $this->routeNames
-                ],
-                true) . ';');
-    }
-
-    /**
-     * Method loads routes from disk
-     *
-     * @param string $filePath
-     *            file path to cache
-     * @codeCoverageIgnore
-     * @psalm-suppress UnresolvableInclude
-     */
-    public function loadFromDisk(string $filePath = './cache/cache.php'): void
-    {
-        list ($this->staticRoutes, $this->paramRoutes, $this->routeNames, $this->cachedRegExps, $this->cachedParameters) = require ($filePath);
     }
 }

@@ -1,11 +1,11 @@
 <?php
+declare(strict_types = 1);
 namespace Mezon\Router;
 
 /**
  * Class SimpleRouter
  *
- * @package Mezon
- * @subpackage Router
+ * @package Router
  * @author Dodonov A.A.
  * @version v.1.0 (2021/09/27)
  * @copyright Copyright (c) 2021, aeon.org
@@ -17,24 +17,7 @@ namespace Mezon\Router;
 class SimpleRouter implements RouterInterface
 {
 
-    use SimpleRoutesSet, SimpleUrlParser, RouteTypes;
-
-    /**
-     * Method wich handles invalid route error
-     *
-     * @var callable
-     */
-    private $invalidRouteErrorHandler;
-
-    /**
-     * Method returns request method
-     *
-     * @return string Request method
-     */
-    private function getRequestMethod(): string
-    {
-        return $_SERVER['REQUEST_METHOD'] ?? 'GET';
-    }
+    use SimpleRoutesSet, SimpleUrlParser, RouteTypes, InvalidRouteErrorHandler;
 
     /**
      * Constructor
@@ -43,11 +26,6 @@ class SimpleRouter implements RouterInterface
     {
         $_SERVER['REQUEST_METHOD'] = $this->getRequestMethod();
 
-        $this->invalidRouteErrorHandler = [
-            $this,
-            'noProcessorFoundErrorHandler'
-        ];
-
         $this->initDefaultTypes();
     }
 
@@ -55,7 +33,7 @@ class SimpleRouter implements RouterInterface
      * Method fetches actions from the objects and creates GetRoutes for them
      *
      * @param object $object
-     *            Object to be processed
+     *            object to be processed
      * @param array $map
      *            map
      */
@@ -68,6 +46,7 @@ class SimpleRouter implements RouterInterface
                 $route = Utils::convertMethodNameToRoute($method);
 
                 $key = str_replace('action', '', $method);
+                /** @var string[] $requestMethods */
                 $requestMethods = array_key_exists($key, $map) ? $map[$key] : [
                     'GET',
                     'POST'
@@ -82,44 +61,16 @@ class SimpleRouter implements RouterInterface
     }
 
     /**
-     * Method processes no processor found error
-     *
-     * @param string $route
-     *            Route
-     */
-    public function noProcessorFoundErrorHandler(string $route): void
-    {
-        throw (new \Exception(
-            'The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace()));
-    }
-
-    /**
-     * Method sets InvalidRouteErrorHandler function
-     *
-     * @param callable $function
-     *            Error handler
-     *            
-     * @return callable old error handler
-     */
-    public function setNoProcessorFoundErrorHandler(callable $function): callable
-    {
-        $oldErrorHandler = $this->invalidRouteErrorHandler;
-
-        $this->invalidRouteErrorHandler = $function;
-
-        return $oldErrorHandler;
-    }
-
-    /**
      *
      * {@inheritdoc}
-     * @see \Mezon\Router\RouterInterface::callRoute()
+     * @see RouterInterface::callRoute()
+     * @psalm-suppress MixedAssignment
      */
     public function callRoute($route)
     {
         $route = Utils::prepareRoute($route);
         $requestMethod = $this->getRequestMethod();
-        $this->validateRequestMethod($requestMethod);
+        SuppportedRequestMethods::validateRequestMethod($requestMethod);
 
         if (($result = $this->findStaticRouteProcessor($route)) !== false) {
             return $result;
@@ -130,15 +81,15 @@ class SimpleRouter implements RouterInterface
         if (($result = $this->findUniversalRouteProcessor($route)) !== false) {
             return $result;
         }
-        call_user_func($this->invalidRouteErrorHandler, $route);
+        call_user_func($this->getNoProcessorErrorHandler(), $route);
     }
 
     /**
      * Method returns call back by it's router
      *
-     * @param array|string $route
+     * @param string[]|string $route
      *            route
-     * @return array|callable|bool route callback
+     * @return array{0: string, 1: string}|callable|false|string route callback
      */
     public function getCallback($route)
     {
@@ -156,7 +107,7 @@ class SimpleRouter implements RouterInterface
             return $result;
         }
 
-        call_user_func($this->invalidRouteErrorHandler, $route); // @codeCoverageIgnoreStart
+        call_user_func($this->getNoProcessorErrorHandler(), $route); // @codeCoverageIgnoreStart
         return false;
     } // @codeCoverageIgnoreEnd
 }

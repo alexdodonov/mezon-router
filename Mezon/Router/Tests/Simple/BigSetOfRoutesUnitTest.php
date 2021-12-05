@@ -1,55 +1,26 @@
 <?php
+declare(strict_types = 1);
 namespace Mezon\Router\Tests\Simple;
 
-use PHPUnit\Framework\TestCase;
-use Mezon\Router\Tests\Base\RouterUnitTestUtils;
+use Mezon\Router\RouterInterface;
+use Mezon\Router\Tests\Base\BigSetOfRoutesTestClass;
 use Mezon\Router\SimpleRouter;
+use Mezon\Router\Tests\Base\BaseRouterUnitTestClass;
 
 /**
+ *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-class BigSetOfRoutesUnitTest extends TestCase
+class BigSetOfRoutesUnitTest extends BigSetOfRoutesTestClass
 {
 
     /**
-     * Method provides testing data
      *
-     * @return array testing data
+     * {@inheritdoc}
+     * @see BaseRouterUnitTestClass::getRouter()
      */
-    public function bigSetOfRoutesDataProvider(): array
+    protected function getRouter(): RouterInterface
     {
-        return [
-            [
-                99
-            ],
-            [
-                101
-            ]
-        ];
-    }
-
-    /**
-     * Testing method
-     *
-     * @param int $amount
-     *            amount of routes
-     * @dataProvider bigSetOfRoutesDataProvider
-     */
-    public function testBigSetOfRoutes(int $amount): void
-    {
-        // setup
-        RouterUnitTestUtils::setRequestMethod('GET');
-        $router = new SimpleRouter();
-        for ($i = 1; $i <= $amount; $i ++) {
-            $router->addRoute('/param/[i:id]/' . $i, function () use ($i): int {
-                return $i;
-            });
-        }
-
-        // test body
-        $result = $router->callRoute('/param/1/' . $amount);
-
-        // assertions
-        $this->assertEquals($amount, $result);
+        return new SimpleRouter();
     }
 }

@@ -1,5 +1,15 @@
 <?php
+declare(strict_types = 1);
 namespace Mezon\Router;
+
+/**
+ * Trait RouteTypes
+ *
+ * @package Router
+ * @author Dodonov A.A.
+ * @version v.1.0 (2019/08/15)
+ * @copyright Copyright (c) 2019, aeon.org
+ */
 
 /**
  * Default types for router - integer, string, command, list if ids
@@ -12,7 +22,7 @@ trait RouteTypes
     /**
      * Supported types of URL parameters
      *
-     * @var array
+     * @var array<string, string>
      */
     private $types = [];
 

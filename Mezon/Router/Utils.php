@@ -1,11 +1,11 @@
 <?php
+declare(strict_types = 1);
 namespace Mezon\Router;
 
 /**
  * Class Utils
  *
  * @package Router
- * @subpackage Utils
  * @author Dodonov A.A.
  * @version v.1.0 (2020/01/17)
  * @copyright Copyright (c) 2020, aeon.org

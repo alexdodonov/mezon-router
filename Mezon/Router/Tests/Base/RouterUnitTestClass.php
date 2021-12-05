@@ -1,7 +1,9 @@
 <?php
+declare(strict_types = 1);
 namespace Mezon\Router\Tests\Base;
 
 use Mezon\Router\RouterInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  *
@@ -32,7 +34,7 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
      * Default setup
      *
      * {@inheritdoc}
-     * @see \PHPUnit\Framework\TestCase::setUp()
+     * @see TestCase::setUp()
      */
     public function setUp(): void
     {
@@ -93,6 +95,7 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
         $router->addRoute($url, $handler);
 
         // test body
+        /** @var string $content */
         $content = $router->callRoute($url);
 
         // assertions
@@ -120,18 +123,22 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
         }, RouterUnitTestUtils::DELETE_REQUEST_METHOD);
 
         RouterUnitTestUtils::setRequestMethod('POST');
+        /** @var string $result */
         $result = $router->callRoute($route);
         $this->assertEquals($result, 'POST');
 
         RouterUnitTestUtils::setRequestMethod('GET');
+        /** @var string $result */
         $result = $router->callRoute($route);
         $this->assertEquals($result, 'GET');
 
         RouterUnitTestUtils::setRequestMethod('PUT');
+        /** @var string $result */
         $result = $router->callRoute($route);
         $this->assertEquals($result, 'PUT');
 
         RouterUnitTestUtils::setRequestMethod(RouterUnitTestUtils::DELETE_REQUEST_METHOD);
+        /** @var string $result */
         $result = $router->callRoute($route);
         $this->assertEquals($result, RouterUnitTestUtils::DELETE_REQUEST_METHOD);
     }
@@ -151,7 +158,7 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
     {
         // setup
         $router = $this->getRouter();
-        $router->setNoProcessorFoundErrorHandler(function () {
+        $router->setNoProcessorFoundErrorHandler(function (): void {
             $this->errorHandler();
         });
 
@@ -170,6 +177,7 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
         $router->addGetRoute('/route/', $this, 'helloWorldOutput');
 
         // test body
+        /** @var string $result */
         $result = $router->callRoute('/route/');
 
         // assertions
@@ -187,6 +195,7 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         // test body
+        /** @var string $result */
         $result = $router->callRoute('/route/');
 
         // assertions

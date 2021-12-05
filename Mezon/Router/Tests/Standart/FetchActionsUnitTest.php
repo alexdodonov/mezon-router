@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 namespace Mezon\Router\Tests\Standart;
 
 use PHPUnit\Framework\TestCase;
@@ -6,6 +7,7 @@ use Mezon\Router\Router;
 use Mezon\Router\Tests\Base\RouterUnitTestUtils;
 
 /**
+ *
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class FetchActionsUnitTest extends TestCase
@@ -115,20 +117,20 @@ class FetchActionsUnitTest extends TestCase
         ]);
 
         // assertions #1
-        RouterUnitTestUtils::setRequestMethod('GET');
-        $this->assertEquals('action #1', $router->callRoute('a1'));
-
-        // assertions #2
         RouterUnitTestUtils::setRequestMethod('POST');
         $this->assertEquals('action #2', $router->callRoute('a2'));
 
-        // assertions #3
+        // assertions #2
         RouterUnitTestUtils::setRequestMethod('GET');
         $this->assertEquals('action double word', $router->callRoute('double-word'));
 
-        // assertions #4
+        // assertions #3
         RouterUnitTestUtils::setRequestMethod('POST');
         $this->assertEquals('action double word', $router->callRoute('double-word'));
+
+        // assertions #4
+        RouterUnitTestUtils::setRequestMethod('GET');
+        $this->assertEquals('action #1', $router->callRoute('a1'));
 
         // assertions #5
         RouterUnitTestUtils::setRequestMethod('POST');
@@ -136,11 +138,16 @@ class FetchActionsUnitTest extends TestCase
         $router->callRoute('a1');
 
         // assertions #6
+        RouterUnitTestUtils::setRequestMethod('POST');
+        $this->expectException(\Exception::class);
+        $router->callRoute('a1');
+
+        // assertions #7
         RouterUnitTestUtils::setRequestMethod('GET');
         $this->expectException(\Exception::class);
         $router->callRoute('a2');
 
-        // assertions #7
+        // assertions #8
         RouterUnitTestUtils::setRequestMethod('DELETE');
         $this->expectException(\Exception::class);
         $router->callRoute('double-word');
