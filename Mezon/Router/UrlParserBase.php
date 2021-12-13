@@ -84,25 +84,20 @@ trait UrlParserBase
      */
     protected function executeHandler($processor, string $route)
     {
-        if ($this->isFunction($processor)) {
+        if (is_callable($processor)) {
             return call_user_func_array($processor, $this->getMiddlewareResult($route));
         }
 
         $functionName = $processor[1] ?? null;
 
-        if ($this->canBeCalled($processor, $functionName)) {
-            // passing route path and parameters
-            return call_user_func_array($processor, $this->getMiddlewareResult($route));
-        } else {
-            $callableDescription = Utils::getCallableDescription($processor);
+        $callableDescription = Utils::getCallableDescription($processor);
 
-            if ($this->methodDoesNotExists($processor, $functionName)) {
-                throw (new \Exception("'$callableDescription' does not exists"));
-            } else {
-                // @codeCoverageIgnoreStart
-                throw (new \Exception("'$callableDescription' must be callable entity"));
-                // @codeCoverageIgnoreEnd
-            }
+        if ($this->methodDoesNotExists($processor, $functionName)) {
+            throw (new \Exception("'$callableDescription' does not exists"));
+        } else {
+            // @codeCoverageIgnoreStart
+            throw (new \Exception("'$callableDescription' must be callable entity"));
+            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -197,33 +192,6 @@ trait UrlParserBase
     private function methodDoesNotExists($processor, ?string $functionName): bool
     {
         return $functionName === null || (isset($processor[0]) && is_object($processor[0]) && method_exists($processor[0], $functionName) === false);
-    }
-
-    /**
-     * Checking that handler can be called
-     *
-     * @param object|array|callable|string $processor
-     *            callback object
-     * @param ?string $functionName
-     *            callback method
-     * @return bool
-     * @psalm-suppress InvalidArrayAccess
-     */
-    private function canBeCalled($processor, ?string $functionName): bool
-    {
-        return is_callable($processor) && ($functionName !== null && is_object($processor[0]) && (method_exists($processor[0], $functionName) || isset($processor[0]->$functionName)));
-    }
-
-    /**
-     * Checking that processor can be called as function
-     *
-     * @param mixed $processor
-     *            route processor
-     * @return bool true if the $processor can be called as function
-     */
-    private function isFunction($processor): bool
-    {
-        return is_callable($processor) && is_array($processor) === false;
     }
 
     /**

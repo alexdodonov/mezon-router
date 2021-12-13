@@ -17,8 +17,6 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
 
     const HELLO_STATIC_WORLD = 'Hello static world!';
 
-    const HELLO_STATIC_WORLD_METHOD = '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput';
-
     use Utils;
 
     /**
@@ -76,28 +74,6 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     public function subArray(): string
     {
         return 'subArrayResult';
-    }
-
-    /**
-     * Testing completely not callable trash
-     * 
-     * @psalm-suppress InvalidArgument
-     */
-    public function testNotCallableTrash(): void
-    {
-        // setup
-        $_GET['r'] = 'trash';
-        $router = $this->getRouter();
-        $router->addRoute('/trash/', [
-            $this,
-            function (): void {}
-        ]);
-
-        // assertions
-        $this->expectException(\TypeError::class);
-
-        // test body
-        $router->callRoute('/trash/');
     }
 
     /**
