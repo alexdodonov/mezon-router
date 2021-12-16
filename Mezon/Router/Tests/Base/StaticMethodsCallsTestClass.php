@@ -54,7 +54,7 @@ abstract class StaticMethodsCallsTestClass extends BaseRouterUnitTestClass
     /**
      * Testing static method calls
      *
-     * @param callable|string|array $callback
+     * @param array{0: object|string, 1: string}|callable|string $callback
      *            callback
      * @dataProvider staticMethodCallDataProvider
      */
