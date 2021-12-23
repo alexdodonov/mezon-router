@@ -15,6 +15,7 @@ abstract class UnexistingRouteTestClass extends BaseRouterUnitTestClass
     public function testUnexistingRouteException(): void
     {
         // setup
+        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = $this->getRouter();
         $router->addGetRoute('r1', $this, 'r1');
         $router->addPostRoute('r1', $this, 'r1');
