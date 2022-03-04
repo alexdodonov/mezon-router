@@ -320,4 +320,25 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
         $this->assertTrue($router->routeExists('searching-param-route/[i:id]'));
         $this->assertFalse($router->routeExists('not-searching-route'));
     }
+
+    /**
+     * Testing invalid request method
+     */
+    public function testInvalidRequestMethodException(): void
+    {
+        // assertions
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(- 1);
+        $this->expectExceptionMessage('Unsupported request method : INVALID');
+
+        // setup
+        $router = $this->getRouter();
+        $router->addRoute('/searching-static-route/', function (string $route) {
+            return $route;
+        });
+        $_SERVER['REQUEST_METHOD'] = 'INVALID';
+
+        // test body
+        $router->findStaticRouteProcessor('/searching-static-route/');
+    }
 }

@@ -146,4 +146,13 @@ interface RouterInterface
      *            name of the class wich represents custom type
      */
     public function addType(string $typeName, string $className): void;
+
+    /**
+     * Method searches route processor
+     *
+     * @param string $route
+     *            route
+     * @return mixed|false result of the router processor
+     */
+    public function findStaticRouteProcessor(string $route);
 }

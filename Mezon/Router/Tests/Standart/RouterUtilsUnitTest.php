@@ -5,6 +5,7 @@ namespace Mezon\Router\Tests\Standart;
 use PHPUnit\Framework\TestCase;
 
 /**
+ *
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class RouterUtilsUnitTest extends TestCase
@@ -35,6 +36,12 @@ class RouterUtilsUnitTest extends TestCase
                     'static-method-name'
                 ],
                 'class-name::static-method-name'
+            ],
+            [
+                [
+                    'string-processor'
+                ],
+                'a:1:{i:0;s:16:"string-processor";}'
             ]
         ];
     }

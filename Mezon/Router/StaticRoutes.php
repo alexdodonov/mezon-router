@@ -82,8 +82,7 @@ trait StaticRoutes
             return false;
         }
     }
-    
-    
+
     /**
      * Method searches route processor
      *
@@ -94,14 +93,14 @@ trait StaticRoutes
     public function findStaticRouteProcessor(string $route)
     {
         $processor = $this->getStaticRouteProcessor($route);
-        
+
         if ($processor === false) {
             return false;
         }
-        
+
         return $this->executeHandler($processor, $route);
     }
-    
+
     /**
      * Method searches universal route processor
      *
@@ -112,11 +111,11 @@ trait StaticRoutes
     public function findUniversalRouteProcessor(string $route)
     {
         $processor = $this->getUniversalRouteProcessor();
-        
+
         if ($processor === false) {
             return false;
         }
-        
+
         return $this->executeHandler($processor, $route);
     }
 }
