@@ -8,7 +8,7 @@ namespace Mezon\Router;
  * @package Router
  * @author Dodonov A.A.
  * @version v.1.0 (2020/01/17)
- * @copyright Copyright (c) 2020, aeon.org
+ * @copyright Copyright (c) 2020, http://aeon.su
  */
 
 /**
@@ -63,6 +63,8 @@ class Utils
             $route = implode('/', $route);
         }
 
+        $route = urldecode($route);
+
         /** @var string $route */
         return trim($route, '/');
     }
@@ -70,7 +72,8 @@ class Utils
     /**
      * Method compiles callable description
      *
-     * @param string|mixed|array{0:string, 1:string} $processor
+     * @param
+     *            string|mixed|array{0:string, 1:string} $processor
      *            object to be descripted
      * @return string description
      * @psalm-suppress MixedOperand, MixedArrayAccess, MixedArgument, MissingParamType

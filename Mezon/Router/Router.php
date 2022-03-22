@@ -8,7 +8,7 @@ namespace Mezon\Router;
  * @package Router
  * @author Dodonov A.A.
  * @version v.1.0 (2019/08/15)
- * @copyright Copyright (c) 2019, aeon.org
+ * @copyright Copyright (c) 2019, http://aeon.su
  */
 
 /**

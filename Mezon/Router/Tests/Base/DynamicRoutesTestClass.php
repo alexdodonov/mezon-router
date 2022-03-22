@@ -55,20 +55,12 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
             // #2
             [
                 [
-                    DynamicRoutesTestClass::TYPES_ROUTE_CATALOG_INT_BAR
-                ],
-                '/catalog/+1/',
-                1
-            ],
-            // #3
-            [
-                [
                     DynamicRoutesTestClass::TYPES_ROUTE_CATALOG_FIX_POINT_BAR
                 ],
                 '/catalog/1.1/',
                 1.1
             ],
-            // #4
+            // #3
             [
                 [
                     DynamicRoutesTestClass::TYPES_ROUTE_CATALOG_FIX_POINT_BAR
@@ -76,15 +68,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
                 '/catalog/-1.1/',
                 - 1.1
             ],
-            // #5
-            [
-                [
-                    DynamicRoutesTestClass::TYPES_ROUTE_CATALOG_FIX_POINT_BAR
-                ],
-                '/catalog/+1.1/',
-                1.1
-            ],
-            // #6
+            // #4
             [
                 [
                     '/[a:bar]/'
@@ -92,7 +76,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
                 '/.-@/',
                 '.-@'
             ],
-            // #7
+            // #5
             [
                 [
                     '/[s:bar]/'
@@ -100,7 +84,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
                 '/, ;:/',
                 ', ;:'
             ],
-            // #8
+            // #6
             [
                 [
                     '/[fp:number]/',
@@ -109,7 +93,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
                 '/abc/',
                 'abc'
             ],
-            // #9
+            // #7, list of integers
             [
                 [
                     '/catalog/[il:bar]/'
@@ -117,7 +101,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
                 '/catalog/123,456,789/',
                 '123,456,789'
             ],
-            // #10
+            // #8, string
             [
                 [
                     '/catalog/[s:bar]/'
@@ -125,7 +109,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
                 '/catalog/123&456/',
                 '123&456'
             ],
-            // #11, parameter name chars testing
+            // #9, parameter name chars testing
             [
                 [
                     '/[s:Aa_x-0]/'
@@ -134,7 +118,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
                 'abc123',
                 'Aa_x-0'
             ],
-            // #12, date type testing 1
+            // #10, date type testing 1
             [
                 [
                     '/[date:dfield]/'
@@ -143,7 +127,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
                 '2020-02-02',
                 'dfield'
             ],
-            // #13, date type testing 2
+            // #11, date type testing 2
             [
                 [
                     '/posts-[date:dfield]/'

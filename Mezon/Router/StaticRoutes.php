@@ -8,7 +8,7 @@ namespace Mezon\Router;
  * @package Router
  * @author Dodonov A.A.
  * @version v.1.0 (2021/09/27)
- * @copyright Copyright (c) 2021, aeon.org
+ * @copyright Copyright (c) 2021, http://aeon.su
  */
 trait StaticRoutes
 {
