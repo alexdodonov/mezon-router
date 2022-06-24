@@ -87,7 +87,7 @@ trait RoutesSet
     private function compileRegexpForBunches(): void
     {
         if (! $this->regExpsWereCompiled) {
-            foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
+            foreach (SupportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
                 foreach ($this->paramRoutes[$requestMethod] as &$bunch) {
                     $this->compileRegexpForBunch($bunch);
                 }
@@ -210,11 +210,11 @@ trait RoutesSet
      * @return string trace
      * @psalm-suppress PossiblyUndefinedArrayOffset
      */
-    public function getAllRoutesTrace(): string
+    protected function getAllRoutesTrace(): string
     {
         $fullTrace = [];
 
-        foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (SupportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
             $trace = [
                 $requestMethod . ' : '
             ];

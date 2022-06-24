@@ -4,7 +4,7 @@ namespace Mezon\Router\Tests\Base;
 
 use Mezon\Router\Types\DateRouterType;
 use PHPUnit\Framework\TestCase;
-use Mezon\Router\SuppportedRequestMethods;
+use Mezon\Router\SupportedRequestMethods;
 
 /**
  *
@@ -140,7 +140,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
 
         $return = [];
 
-        foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $method) {
+        foreach (SupportedRequestMethods::getListOfSupportedRequestMethods() as $method) {
             $tmp = array_merge($data);
 
             foreach ($tmp as $item) {

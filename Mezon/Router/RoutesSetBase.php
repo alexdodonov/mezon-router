@@ -35,7 +35,7 @@ trait RoutesSetBase
     {
         $route = trim($route, '/');
 
-        foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (SupportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
             if (isset($this->staticRoutes[$requestMethod][$route])) {
                 return true;
             } else {
@@ -62,18 +62,23 @@ trait RoutesSetBase
     {}
 
     /**
+     * Method clears middleware
+     */
+    protected abstract function clearMiddleware(): void;
+
+    /**
      * Method clears router data
      */
     public function clear(): void
     {
         $this->routeNames = [];
 
-        foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (SupportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
             $this->staticRoutes[$requestMethod] = [];
             $this->paramRoutes[$requestMethod] = [];
         }
 
-        $this->middleware = [];
+        $this->clearMiddleware();
 
         $this->clearOtherData();
     }
@@ -97,7 +102,8 @@ trait RoutesSetBase
     /**
      * Validating that route name exists
      *
-     * @param string $routeName route name
+     * @param string $routeName
+     *            route name
      * @return bool true if the route exists, false otherwise
      */
     protected function routeNameExists(string $routeName): bool
@@ -180,7 +186,7 @@ trait RoutesSetBase
                 $this->addRoute($route, $callback, $r, $routeName);
             }
         } else {
-            SuppportedRequestMethods::validateRequestMethod($requestMethod);
+            SupportedRequestMethods::validateRequestMethod($requestMethod);
 
             if (strpos($route, '[') === false) {
                 $this->staticRoutes[$requestMethod][$route] = $callback;

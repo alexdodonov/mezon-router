@@ -16,7 +16,7 @@ namespace Mezon\Router;
  *
  * @author gdever
  */
-class SuppportedRequestMethods
+class SupportedRequestMethods
 {
 
     /**
@@ -45,7 +45,7 @@ class SuppportedRequestMethods
     public static function validateRequestMethod(string $requestMethod): void
     {
         if (!in_array($requestMethod, static::getListOfSupportedRequestMethods())) {
-            throw (new \Exception('Unsupported request method: "' . $requestMethod . '"'));
+            throw (new \Exception('Unsupported request method: "' . $requestMethod . '"', -1));
         }
     }
 }

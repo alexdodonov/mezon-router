@@ -18,13 +18,6 @@ trait UrlParser
     use UrlParserBase;
 
     /**
-     * Called route
-     *
-     * @var string
-     */
-    protected $calledRoute = '';
-
-    /**
      * Cache for regular expressions
      *
      * @var string[]
@@ -59,7 +52,10 @@ trait UrlParser
         // parsing routes
         $compiledRouterPattern = $routerPattern;
         foreach ($this->types as $typeClass) {
-            $compiledRouterPattern = preg_replace('/' . $typeClass::searchRegExp() . '/', '(' . $typeClass::parserRegExp() . ')', $compiledRouterPattern);
+            $compiledRouterPattern = preg_replace(
+                '/' . $typeClass::searchRegExp() . '/',
+                '(' . $typeClass::parserRegExp() . ')',
+                $compiledRouterPattern);
         }
 
         // final setup + save in cache
@@ -108,7 +104,7 @@ trait UrlParser
      */
     public function warmCache(): void
     {
-        foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (SupportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
             /** @var array{bunch: array} $bunch */
             foreach ($this->paramRoutes[$requestMethod] as $bunch) {
                 /** @var array{pattern: string} $route */
@@ -130,7 +126,7 @@ trait UrlParser
      *            route
      * @param string $requestMethod
      *            request method
-     * @return array{0: string, 1:string}|callable|false route's handler or false in case the handler was not found
+     * @return array{0: string, 1:string}|callable|string|false route's handler or false in case the handler was not found
      */
     protected function getDynamicRouteProcessor(string $route, string $requestMethod = '')
     {
@@ -152,7 +148,7 @@ trait UrlParser
                     $this->parameters[$name] = $matches[(int) $i + 1];
                 }
 
-                $this->calledRoute = $routeData['pattern'];
+                $this->setCalledRoute($routeData['pattern']);
 
                 return $routeData['callback'];
             }

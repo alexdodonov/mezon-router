@@ -14,50 +14,47 @@ trait UrlParserBase
 {
 
     /**
-     * Middleware for routes processing
+     * Parsed parameters of the calling router
      *
-     * @var array<string, callable[]>
+     * @var mixed[]
      */
-    protected $middleware = [];
+    protected $parameters = [];
 
     /**
-     * Method registeres middleware for the router
+     * Method returns parameters
      *
-     * @param callable $middleware
-     *            middleware
+     * @return mixed[]
      */
-    public function registerMiddleware(string $router, callable $middleware): void
+    protected function getParameters(): array
     {
-        $routerTrimmed = trim($router, '/');
-
-        if (! isset($this->middleware[$routerTrimmed])) {
-            $this->middleware[$routerTrimmed] = [];
-        }
-
-        $this->middleware[$routerTrimmed][] = $middleware;
+        return $this->parameters;
     }
 
     /**
-     * Parsed parameters of the calling router
+     * Method sets parameters
      *
-     * @var string[]
+     * @param mixed[] $parameters
+     *            parameters
      */
-    protected $parameters = [];
+    protected function setParameters(array $parameters): void
+    {
+        $this->parameters = $parameters;
+    }
 
     /**
      * Method returns route parameter
      *
      * @param string $name
      *            route parameter
-     * @return string route parameter
+     * @return mixed route parameter
      */
-    public function getParam(string $name): string
+    public function getParam(string $name)
     {
-        if (! isset($this->parameters[$name])) {
+        if (! isset($this->getParameters()[$name])) {
             throw (new \Exception('Parameter ' . $name . ' was not found in route', - 1));
         }
 
-        return $this->parameters[$name];
+        return $this->getParameters()[$name];
     }
 
     /**
@@ -69,7 +66,33 @@ trait UrlParserBase
      */
     public function hasParam(string $name): bool
     {
-        return isset($this->parameters[$name]);
+        return isset($this->getParameters()[$name]);
+    }
+
+    /**
+     * Method searches dynamic route processor
+     *
+     * @param string $route
+     *            route
+     * @param string $requestMethod
+     *            request method
+     * @return array{0: string, 1:string}|callable|string|false route's handler or false in case the handler was not found
+     */
+    abstract protected function getDynamicRouteProcessor(string $route, string $requestMethod = '');
+
+    /**
+     * Checking that method exists
+     *
+     * @param mixed $processor
+     *            callback object
+     * @param ?string $functionName
+     *            callback method
+     * @return bool true if method does not exists
+     */
+    private function methodDoesNotExists($processor, ?string $functionName): bool
+    {
+        return $functionName === null ||
+            (isset($processor[0]) && is_object($processor[0]) && method_exists($processor[0], $functionName) === false);
     }
 
     /**
@@ -99,108 +122,5 @@ trait UrlParserBase
             throw (new \Exception("'$callableDescription' must be callable entity"));
             // @codeCoverageIgnoreEnd
         }
-    }
-
-    /**
-     * Method returns middleware processing result
-     *
-     * @param string $route
-     *            processed route
-     * @return array middleware result
-     */
-    private function getMiddlewareResult(string $route): array
-    {
-        $middleWares = [];
-
-        if (isset($this->middleware['*'])) {
-            $middleWares = $this->middleware['*'];
-        }
-
-        if ($this->calledRoute !== '*' && isset($this->middleware[$this->calledRoute])) {
-            $middleWares = array_merge($middleWares, $this->middleware[$this->calledRoute]);
-        }
-
-        $result = [
-            $route,
-            $this->parameters
-        ];
-
-        if (! count($middleWares)) {
-            return $result;
-        }
-
-        /** @var callable $middleWare */
-        foreach ($middleWares as $middleWare) {
-            /** @var array{0: string, 1: string[]}|null $result */
-            $result = call_user_func($middleWare, $route, $this->parameters);
-
-            if (is_array($result)) {
-                if (array_key_exists(0, $result)) {
-                    $route = $result[0];
-                }
-
-                if (array_key_exists(1, $result)) {
-                    $this->parameters = $result[1];
-                }
-            }
-        }
-
-        return [
-            $route,
-            $this->parameters
-        ];
-    }
-
-    /**
-     * Method searches dynamic route processor
-     *
-     * @param string $route
-     *            route
-     * @param string $requestMethod
-     *            request method
-     * @return array{0: string, 1:string}|callable|string|false route's handler or false in case the handler was not found
-     */
-    abstract protected function getDynamicRouteProcessor(string $route, string $requestMethod = '');
-
-    /**
-     * Method searches dynamic route processor
-     *
-     * @param string $route
-     *            route
-     * @return mixed|false result of the router's call or false if any error occured
-     */
-    public function findDynamicRouteProcessor(string $route)
-    {
-        $processor = $this->getDynamicRouteProcessor($route);
-
-        if ($processor === false) {
-            return false;
-        }
-
-        return $this->executeHandler($processor, $route);
-    }
-
-    /**
-     * Checking that method exists
-     *
-     * @param mixed $processor
-     *            callback object
-     * @param ?string $functionName
-     *            callback method
-     * @return bool true if method does not exists
-     */
-    private function methodDoesNotExists($processor, ?string $functionName): bool
-    {
-        return $functionName === null || (isset($processor[0]) && is_object($processor[0]) && method_exists($processor[0], $functionName) === false);
-    }
-
-    /**
-     * Method returns request method
-     *
-     * @return string request method
-     */
-    private function getRequestMethod(): string
-    {
-        return isset($_SERVER['REQUEST_METHOD']) ? (string) $_SERVER['REQUEST_METHOD'] : 'GET';
     }
 }

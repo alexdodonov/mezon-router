@@ -18,13 +18,6 @@ trait SimpleUrlParser
     use UrlParserBase;
 
     /**
-     * Called route
-     *
-     * @var string
-     */
-    protected $calledRoute = '';
-
-    /**
      * Method compiles route pattern string in regex string.
      * For example [i:id]/some-str in ([\[0-9\]])/some-str
      *
@@ -38,7 +31,10 @@ trait SimpleUrlParser
         $compiledRouterPattern = $routerPattern;
 
         foreach ($this->types as $typeClass) {
-            $compiledRouterPattern = preg_replace('/' . $typeClass::searchRegExp() . '/', '(' . $typeClass::parserRegExp() . ')', $compiledRouterPattern);
+            $compiledRouterPattern = preg_replace(
+                '/' . $typeClass::searchRegExp() . '/',
+                '(' . $typeClass::parserRegExp() . ')',
+                $compiledRouterPattern);
         }
 
         return str_replace('/', '\/', $compiledRouterPattern);
@@ -98,7 +94,7 @@ trait SimpleUrlParser
                     $this->parameters[$name] = $matches[(int) $i + 1];
                 }
 
-                $this->calledRoute = $item['pattern'];
+                $this->setCalledRoute($item['pattern']);
 
                 return $item['callback'];
             }

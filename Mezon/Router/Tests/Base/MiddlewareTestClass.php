@@ -76,7 +76,7 @@ abstract class MiddlewareTestClass extends BaseRouterUnitTestClass
          * @psalm-param string $route route
          * @psalm-param array{id: int} $parameters parameters
          */
-        function (string $route, array $parameters) {
+        function (string $route, array $parameters): array {
             $parameters['_second'] = $parameters['id'];
             $parameters['id'] += 9;
 
@@ -99,7 +99,7 @@ abstract class MiddlewareTestClass extends BaseRouterUnitTestClass
          *            route
          * @psalm-param array{id: int} $parameters parameters
          */
-        function (string $route, array $parameters) {
+        function (string $route, array $parameters): array {
             $parameters['_third'] = $parameters['id'];
             $parameters['id'] *= 2;
 
@@ -113,11 +113,12 @@ abstract class MiddlewareTestClass extends BaseRouterUnitTestClass
          *
          * @psalm-param string $route
          *            route
-         * @psalm-param array{id: int} $parameters parameters
+         * @psalm-param int $id parameter
          */
-        function (string $route, array $parameters) {
-            $parameters['_first'] = $parameters['id'];
-            $parameters['id'] *= 2;
+        function (string $route, int $id): array {
+            $parameters = [];
+            $parameters['_first'] = $id;
+            $parameters['id'] = $id * 2;
 
             return [
                 $route,
@@ -135,5 +136,35 @@ abstract class MiddlewareTestClass extends BaseRouterUnitTestClass
         $this->assertEquals(2, $result['_second']);
         $this->assertEquals(11, $result['_third']);
         $this->assertTrue(empty($result['_dont_set_this']));
+    }
+    
+    /**
+     * Testing method
+     */
+    public function testReturnScalar() : void
+    {
+        // setup
+        $route = '/route/[i:id]';
+        $router = $this->getRouter();
+
+        $router->addRoute($route, function (int $id): int {
+            return $id;
+        });
+        $router->registerMiddleware('*', /**
+        *
+        * @psalm-param string $route
+        *            route
+        * @psalm-param int $id parameter
+        */
+        function (string $route, int $id): int {
+            return $id;
+        });
+
+        // test body
+        /** @var array<string, mixed> $result */
+        $result = $router->callRoute('/route/1');
+
+        // assertions
+        $this->assertEquals(1, $result);
     }
 }

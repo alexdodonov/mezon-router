@@ -36,8 +36,13 @@
 		"test": "php ./vendor/phpunit/phpunit/phpunit --order-by=random",
 		"debug": "php ./vendor/phpunit/phpunit/phpunit --filter StaticMethodsCallsUnitTest --order-by=random",
 		"psalm": "php ./vendor/vimeo/psalm/psalm --show-info=true --no-cache",
-		"infection": "php ./vendor/infection/infection/bin/infection --min-msi=78",
+		"infection": "php ./vendor/infection/infection/bin/infection --min-msi=82",
 		"psalm-self": "php ./vendor/vimeo/psalm/psalm --config=psalm-self.xml --show-info=true --no-cache",
 		"test-unit": "php ./vendor/phpunit/phpunit/phpunit --testsuite unit --order-by=random"
+	},
+	"config": {
+		"allow-plugins": {
+			"infection/extension-installer": true
+		}
 	}
 }

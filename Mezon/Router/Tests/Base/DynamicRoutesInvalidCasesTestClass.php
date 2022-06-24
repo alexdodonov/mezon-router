@@ -84,6 +84,7 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
      */
     public function testDeleteRequestForUnExistingDynamicRoute(): void
     {
+        // setup
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
 
         $exception = '';
@@ -92,12 +93,14 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
             return 1;
         });
 
+        // test body
         try {
             $router->callRoute('/catalog/1025/');
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
+        // assertions
         $msg = "The processor was not found for the route catalog/1025";
 
         $this->assertNotFalse(strpos($exception, $msg));
@@ -108,6 +111,7 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
      */
     public function testPutRequestForUnExistingDynamicRoute(): void
     {
+        // setup
         $_SERVER['REQUEST_METHOD'] = 'PUT';
 
         $exception = '';
@@ -116,12 +120,14 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
             return 1;
         });
 
+        // test body
         try {
             $router->callRoute('/catalog/1024/');
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
+        // assertions
         $msg = "The processor was not found for the route catalog/1024";
 
         $this->assertNotFalse(strpos($exception, $msg));
@@ -132,6 +138,7 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
      */
     public function testPostRequestForUnExistingDynamicRoute(): void
     {
+        // setup
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $exception = '';
@@ -140,12 +147,14 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
             return 1;
         });
 
+        // test body
         try {
             $router->callRoute('/catalog/1024/');
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
+        // assertions
         $msg = "The processor was not found for the route catalog/1024";
 
         $this->assertNotFalse(strpos($exception, $msg));
@@ -195,11 +204,13 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
      */
     public function testInvalidType(): void
     {
+        // setup
         $router = $this->getRouter();
         $router->addRoute('/catalog/[unexisting-type:i]/item/', function () {
             return 1;
         });
 
+        // test body and assertions
         try {
             $router->callRoute('/catalog/1024/item/');
             $this->assertFalse(true, 'Exception expected');
@@ -213,11 +224,13 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
      */
     public function testValidInvalidTypes(): void
     {
+        // setup
         $router = $this->getRouter();
         $router->addRoute('/catalog/[i:cat_id]/item/[unexisting-type-trace:item_id]/', function () {
             return 1;
         });
 
+        // test body and assertions
         try {
             $router->callRoute('/catalog/1024/item/2048/');
             $this->assertFalse(true, 'Exception expected');
@@ -239,6 +252,7 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
      */
     public function testUnexistingRoute(): void
     {
+        // setup
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/existing-route/', [
@@ -246,12 +260,14 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
             'helloWorldOutput'
         ]);
 
+        // test body
         try {
             $router->callRoute('/unexisting-route/');
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
+        // assertions
         $msg = "The processor was not found for the route";
 
         $this->assertNotFalse(strpos($exception, $msg), 'Valid error handling expected');
@@ -262,6 +278,7 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
      */
     public function testInValidIntegerParams(): void
     {
+        // setup
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/catalog/[i:cat_id]/', [
@@ -269,12 +286,14 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
             'helloWorldOutput'
         ]);
 
+        // test body
         try {
             $router->callRoute('/catalog/a1024/');
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
+        // assertions
         $msg = "The processor was not found for the route catalog/a1024";
 
         $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');
@@ -285,6 +304,7 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
      */
     public function testInValidAlnumParams(): void
     {
+        // setup
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/catalog/[a:cat_id]/', [
@@ -292,12 +312,14 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
             'helloWorldOutput'
         ]);
 
+        // test body
         try {
             $router->callRoute('/catalog/~foo/');
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }
 
+        // assertions
         $msg = "The processor was not found for the route catalog/~foo";
 
         $this->assertNotFalse(strpos($exception, $msg), 'Invalid error response');

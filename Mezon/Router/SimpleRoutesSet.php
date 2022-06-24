@@ -93,11 +93,11 @@ trait SimpleRoutesSet
      * @return string trace
      * @psalm-suppress PossiblyUndefinedArrayOffset
      */
-    public function getAllRoutesTrace(): string
+    protected function getAllRoutesTrace(): string
     {
         $fullTrace = [];
 
-        foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
+        foreach (SupportedRequestMethods::getListOfSupportedRequestMethods() as $requestMethod) {
             $trace = [
                 $requestMethod . ' : '
             ];

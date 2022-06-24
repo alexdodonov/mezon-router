@@ -34,7 +34,9 @@ trait InvalidRouteErrorHandler
      */
     public function noProcessorFoundErrorHandler(string $route): void
     {
-        throw (new \Exception('The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace(), -1));
+        throw (new \Exception(
+            'The processor was not found for the route ' . $route . ' in ' . $this->getAllRoutesTrace(),
+            - 1));
     }
 
     /**
@@ -70,4 +72,12 @@ trait InvalidRouteErrorHandler
 
         return $this->invalidRouteErrorHandler;
     }
+
+    /**
+     * Method rturns all available routes
+     *
+     * @return string trace
+     * @psalm-suppress PossiblyUndefinedArrayOffset
+     */
+    protected abstract function getAllRoutesTrace(): string;
 }

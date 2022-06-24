@@ -28,6 +28,14 @@ trait StaticRoutes
     ];
 
     /**
+     * Method sets $calledRoute
+     *
+     * @param string $calledRoute
+     *            called router
+     */
+    protected abstract function setCalledRoute(string $calledRoute): void;
+
+    /**
      * Method returns static routes handlers for the specified request methods
      *
      * @param string $requestMethod
@@ -38,9 +46,7 @@ trait StaticRoutes
     {
         $requestMethod = (string) $_SERVER['REQUEST_METHOD'];
 
-        if (! isset($this->staticRoutes[$requestMethod])) {
-            throw (new \Exception('Unsupported request method : ' . $requestMethod, - 1));
-        }
+        SupportedRequestMethods::validateRequestMethod($requestMethod);
 
         return $this->staticRoutes[$requestMethod];
     }
@@ -57,7 +63,7 @@ trait StaticRoutes
         $processors = $this->getStaticRoutes((string) $_SERVER['REQUEST_METHOD']);
 
         if (isset($processors[$route])) {
-            $this->calledRoute = $route;
+            $this->setCalledRoute($route);
 
             return $processors[$route];
         } else {
@@ -75,47 +81,11 @@ trait StaticRoutes
         $processors = $this->getStaticRoutes((string) $_SERVER['REQUEST_METHOD']);
 
         if (isset($processors['*'])) {
-            $this->calledRoute = '*';
+            $this->setCalledRoute('*');
 
             return $processors['*'];
         } else {
             return false;
         }
-    }
-
-    /**
-     * Method searches route processor
-     *
-     * @param string $route
-     *            route
-     * @return mixed|false result of the router processor
-     */
-    public function findStaticRouteProcessor(string $route)
-    {
-        $processor = $this->getStaticRouteProcessor($route);
-
-        if ($processor === false) {
-            return false;
-        }
-
-        return $this->executeHandler($processor, $route);
-    }
-
-    /**
-     * Method searches universal route processor
-     *
-     * @param string $route
-     *            route
-     * @return mixed|false result of the router processor
-     */
-    public function findUniversalRouteProcessor(string $route)
-    {
-        $processor = $this->getUniversalRouteProcessor();
-
-        if ($processor === false) {
-            return false;
-        }
-
-        return $this->executeHandler($processor, $route);
     }
 }

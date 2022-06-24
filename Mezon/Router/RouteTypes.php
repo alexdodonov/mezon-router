@@ -24,7 +24,16 @@ trait RouteTypes
      *
      * @var array<string, string>
      */
-    private $types = [];
+    // TODO make it private and cache the result of working of this client code:
+    // foreach ($this->types as $typeClass) {
+    // $compiledRouterPattern = preg_replace('/' . $typeClass::searchRegExp() . '/', '(' . $typeClass::parserRegExp() . ')', $compiledRouterPattern);
+    // }
+    // foreach (array_keys($this->types) as $typeName) {
+    // $regExPattern[] = $typeName;
+    // }
+    // it will let to speedup _getRouteMatcherRegExPattern and _getParameterNames
+    // plus removing duplicate code
+    protected $types = [];
 
     /**
      * Init types

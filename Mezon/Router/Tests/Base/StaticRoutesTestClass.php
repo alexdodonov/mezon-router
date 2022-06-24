@@ -4,7 +4,7 @@ namespace Mezon\Router\Tests\Base;
 
 use Mezon\Router\Tests\Utils;
 use PHPUnit\Framework\TestCase;
-use Mezon\Router\SuppportedRequestMethods;
+use Mezon\Router\SupportedRequestMethods;
 
 /**
  *
@@ -248,7 +248,7 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     {
         $result = [];
 
-        foreach (SuppportedRequestMethods::getListOfSupportedRequestMethods() as $method) {
+        foreach (SupportedRequestMethods::getListOfSupportedRequestMethods() as $method) {
             $result[] = [
                 $method
             ];
@@ -329,7 +329,7 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
         // assertions
         $this->expectException(\Exception::class);
         $this->expectExceptionCode(- 1);
-        $this->expectExceptionMessage('Unsupported request method : INVALID');
+        $this->expectExceptionMessage('Unsupported request method: "INVALID"');
 
         // setup
         $router = $this->getRouter();
@@ -339,6 +339,6 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
         $_SERVER['REQUEST_METHOD'] = 'INVALID';
 
         // test body
-        $router->findStaticRouteProcessor('/searching-static-route/');
+        $router->callRoute('/searching-static-route/');
     }
 }
