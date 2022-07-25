@@ -86,7 +86,7 @@ trait SimpleUrlParser
         foreach ($routes as $item) {
             $matches = [];
 
-            if (preg_match('/^' . $this->_getRouteMatcherRegExPattern($item['pattern']) . '$/', $route, $matches)) {
+            if (preg_match('/^' . $this->_getRouteMatcherRegExPattern($item['pattern']) . '$/u', $route, $matches)) {
                 $names = $this->_getParameterNames($item['pattern']);
 
                 $this->parameters = [];

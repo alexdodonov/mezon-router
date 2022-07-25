@@ -35,13 +35,24 @@ abstract class NonAsciiCharsUnitTestClass extends BaseRouterUnitTestClass
         $this->assertEquals(1, $router->callRoute(urlencode('кириллический-урл')));
     }
 
-/**
- * Testing getting non-ASCII char route
- */
-    // public function testGetNonAsciiCharRoute(): void
-    // {
-    // setup
-    // test body
-    // assertions
-    // }
+    /**
+     * Testing method
+     */
+    public function testNonAsciiParams(): void
+    {
+        // setup
+        $router = $this->getRouter();
+        RouterUnitTestUtils::setRequestMethod('GET');
+
+        // test body
+        $router->addRoute(
+            'кириллический-урл/[s:non-ascii-param]',
+            function (string $route, array $params): string {
+                return $params['non-ascii-param'];
+            },
+            'GET');
+
+        // assertions
+        $this->assertEquals('ни разу не ASCII - 日本語', $router->callRoute(urlencode('кириллический-урл/ни разу не ASCII - 日本語')));
+    }
 }

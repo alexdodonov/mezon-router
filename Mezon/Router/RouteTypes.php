@@ -43,8 +43,8 @@ trait RouteTypes
         $this->types['i'] = '\Mezon\Router\Types\IntegerRouterType';
         $this->types['a'] = '\Mezon\Router\Types\CommandRouterType';
         $this->types['il'] = '\Mezon\Router\Types\IntegerListRouterType';
-        $this->types['s'] = '\Mezon\Router\Types\StringRouterType';
         $this->types['fp'] = '\Mezon\Router\Types\FixPointNumberRouterType';
+        $this->types['s'] = '\Mezon\Router\Types\StringRouterType';
     }
 
     /**

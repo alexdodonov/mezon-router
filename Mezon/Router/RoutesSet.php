@@ -69,7 +69,7 @@ trait RoutesSet
                 }
             }
 
-            $bunch['regexp'] = '~^(?|' . implode('|', $items) . ')$~';
+            $bunch['regexp'] = '~^(?|' . implode('|', $items) . ')$~u';
             $bunch['bunch'] = $hashTable;
         }
     }

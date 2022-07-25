@@ -34,7 +34,7 @@
 	},
 	"scripts": {
 		"test": "php ./vendor/phpunit/phpunit/phpunit --order-by=random",
-		"debug": "php ./vendor/phpunit/phpunit/phpunit --filter StaticMethodsCallsUnitTest --order-by=random",
+		"debug": "php ./vendor/phpunit/phpunit/phpunit --filter testRealLifeExample1 --order-by=random",
 		"psalm": "php ./vendor/vimeo/psalm/psalm --show-info=true --no-cache",
 		"infection": "php ./vendor/infection/infection/bin/infection --min-msi=82",
 		"psalm-self": "php ./vendor/vimeo/psalm/psalm --config=psalm-self.xml --show-info=true --no-cache",
