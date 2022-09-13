@@ -36,7 +36,7 @@ abstract class NonAsciiCharsUnitTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing method
+     * Testing callig non-ASCII char route
      */
     public function testNonAsciiParams(): void
     {

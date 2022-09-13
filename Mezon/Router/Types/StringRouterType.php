@@ -26,7 +26,6 @@ class StringRouterType
      */
     public static function parserRegExp(): string
     {
-        //return '[a-z0-9A-Z_\-.@%&:;,\s]+';
-        return '[^/][\x{0}-\x{10FFFF}][^/]+';
+        return '[\x{0}-\x{10FFFF}][^/]+';
     }
 }

@@ -166,39 +166,4 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
         RouterUnitTestUtils::setRequestMethod('POST');
         $router->callRoute('/unexisting/');
     }
-
-    /**
-     * Testing addGetMethod method
-     */
-    public function testAddGetRoute(): void
-    {
-        // setup
-        $router = $this->getRouter();
-        $router->addGetRoute('/route/', $this, 'helloWorldOutput');
-
-        // test body
-        /** @var string $result */
-        $result = $router->callRoute('/route/');
-
-        // assertions
-        $this->assertEquals('Hello world!', $result);
-    }
-
-    /**
-     * Testing addPostMethod method
-     */
-    public function testAddPostRoute(): void
-    {
-        // setup
-        $router = $this->getRouter();
-        $router->addPostRoute('/route/', $this, 'helloWorldOutput');
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-
-        // test body
-        /** @var string $result */
-        $result = $router->callRoute('/route/');
-
-        // assertions
-        $this->assertEquals('Hello world!', $result);
-    }
 }
