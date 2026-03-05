@@ -14,13 +14,13 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
 {
 
     /**
-     * Default setup
      *
      * {@inheritdoc}
-     * @see TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
+        // TODO в трейт
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
@@ -29,11 +29,12 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
     const TYPES_ROUTE_CATALOG_FIX_POINT_BAR = '/catalog/[fp:bar]/';
 
     /**
-     * Data provider for the testTypes
+     * Data provider for the testTypes.
      *
-     * @return array test data
+     * @return array test data.
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function typesDataProvider(): array
+    public static function typesDataProvider(): array
     {
         $data = [
             // #0
@@ -168,6 +169,7 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
      * @param string $paramName
      *            name of the validating parameter
      * @dataProvider typesDataProvider
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testTypes(string $method, array $pattern, string $route, $expected, string $paramName = 'bar'): void
     {
@@ -189,7 +191,9 @@ abstract class DynamicRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing multyple routes
+     * Testing multyple routes.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testMultyple(): void
     {

@@ -8,7 +8,7 @@ use Mezon\Router\SimpleRouter;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class GetCallbackUnitTest extends TestCase
 {
@@ -18,7 +18,7 @@ class GetCallbackUnitTest extends TestCase
      *
      * @return array testing dataset
      */
-    public function getCallbackDataProvider(): array
+    public static function getCallbackDataProvider(): array
     {
         return [
             [

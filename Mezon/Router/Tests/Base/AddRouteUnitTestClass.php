@@ -3,7 +3,7 @@ declare(strict_types = 1);
 namespace Mezon\Router\Tests\Base;
 
 /**
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 abstract class AddRouteUnitTestClass extends BaseRouterUnitTestClass
 {
@@ -19,7 +19,9 @@ abstract class AddRouteUnitTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing method addGetRoute
+     * Testing method addGetRoute.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testAddGetRoute(): void
     {
@@ -36,7 +38,9 @@ abstract class AddRouteUnitTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing method addPostRoute
+     * Testing method addPostRoute.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testAddPostRoute(): void
     {

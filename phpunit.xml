@@ -1,38 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/7.0/phpunit.xsd"
+	xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/10.5/phpunit.xsd"
 	backupGlobals="false" colors="true" bootstrap='./vendor/autoload.php'
-	stopOnError="true" stopOnFailure="true">
+	stopOnError="true" stopOnFailure="true" displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerWarnings="true" executionOrder="random" displayDetailsOnPhpunitDeprecations="true">
 	<php>
 		<ini name="error_reporting" value="-1" />
 	</php>
 
 	<testsuites>
-		<testsuite name="unit">
-			<directory suffix="UnitTest.php">./Mezon/Router/Tests</directory>
-		</testsuite>
-		<testsuite name="all">
-			<directory suffix="UnitTest.php">./Mezon/Router/Tests</directory>
-			<directory suffix="UnitTest.php">./vendor/mezon</directory>
+		<testsuite name="self">
+			<directory suffix="UnitTest.php">./Mezon</directory>
 		</testsuite>
 	</testsuites>
 
-	<filter>
-		<whitelist>
-			<directory>./Mezon/Router</directory>
-			<exclude>
-				<directory>./Mezon/Router/Tests/*</directory>
-				<directory>./vendor</directory>
-				<file>autoload.php</file>
-			</exclude>
-		</whitelist>
-	</filter>
+	<source>
+        <include>
+            <directory>./Mezon</directory>
+        </include>
+        <exclude>
+        	<directory>./Mezon/*/Tests</directory>
+        </exclude>
+    </source>
 
-	<logging>
-		<log type="coverage-html"
-			target="./tmp/coverage-phpunit.html"></log>
-		<log type="coverage-text" target="php://stdout"
-			showOnlySummary="true"></log>
-	</logging>
+	<coverage>
+        <report>
+            <html outputDirectory="./Tmp"/>
+            <clover outputFile="./Tmp/coverage.xml"/>
+            <text outputFile="php://stdout" showOnlySummary="true"/>
+        </report>
+    </coverage>
 </phpunit>

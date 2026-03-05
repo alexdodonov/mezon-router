@@ -9,7 +9,7 @@ use Mezon\Router\Tests\Base\StaticMethodsCallsTestClass;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class StaticMethodsCallsUnitTest extends StaticMethodsCallsTestClass
 {

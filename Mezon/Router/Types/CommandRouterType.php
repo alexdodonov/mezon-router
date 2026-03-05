@@ -5,6 +5,7 @@ namespace Mezon\Router\Types;
  * Default command type for router
  *
  * @author gdever
+ * @psalm-suppress UnusedClass
  */
 class CommandRouterType
 {

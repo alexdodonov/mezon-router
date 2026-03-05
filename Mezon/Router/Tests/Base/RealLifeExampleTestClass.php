@@ -6,24 +6,26 @@ use PHPUnit\Framework\TestCase;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 abstract class RealLifeExampleTestClass extends BaseRouterUnitTestClass
 {
 
     /**
-     * Default setup
      *
      * {@inheritdoc}
-     * @see TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
+        // TODO в трейт
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
     /**
-     * Testing real life example
+     * Testing real life example.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testRealLifeExample(): void
     {

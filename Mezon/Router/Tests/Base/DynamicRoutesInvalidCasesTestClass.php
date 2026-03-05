@@ -12,18 +12,20 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 {
 
     /**
-     * Default setup
      *
      * {@inheritdoc}
-     * @see TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
+        // TODO в трейт
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
     /**
-     * Testing getParam for unexisting param
+     * Testing getParam for unexisting param.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testGettingUnexistingParameter(): void
     {
@@ -42,7 +44,9 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
     }
 
     /**
-     * Testing exception throwing for unexisting request method
+     * Testing exception throwing for unexisting request method.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testExceptionForUnexistingRequestMethod(): void
     {
@@ -62,6 +66,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 
     /**
      * Testing invalid id list data types behaviour.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testInValidIdListParams(): void
     {
@@ -81,6 +87,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 
     /**
      * Testing dynamic routes for DELETE requests.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testDeleteRequestForUnExistingDynamicRoute(): void
     {
@@ -108,6 +116,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 
     /**
      * Testing dynamic routes for PUT requests.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testPutRequestForUnExistingDynamicRoute(): void
     {
@@ -135,6 +145,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 
     /**
      * Testing dynamic routes for POST requests.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testPostRequestForUnExistingDynamicRoute(): void
     {
@@ -161,11 +173,12 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
     }
 
     /**
-     * Data provider for the testNotMatchingRoutes
+     * Data provider for the testNotMatchingRoutes.
      *
-     * @return array testing data
+     * @return array testing data.
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function invalidCasesDataProvider(): array
+    public static function invalidCasesDataProvider(): array
     {
         return [
             [
@@ -180,9 +193,10 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
     }
 
     /**
-     * Testing that all invalid cases will be covered
+     * Testing that all invalid cases will be covered.
      *
      * @dataProvider invalidCasesDataProvider
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testNotMatchingRoutes(string $route, string $calling): void
     {
@@ -201,6 +215,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 
     /**
      * Testing invalid data types behaviour.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testInvalidType(): void
     {
@@ -221,6 +237,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 
     /**
      * Testing invalid data types behaviour.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testValidInvalidTypes(): void
     {
@@ -240,15 +258,9 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
     }
 
     /**
-     * Function simply returns string.
-     */
-    public function helloWorldOutput(): string
-    {
-        return 'Hello world!';
-    }
-
-    /**
-     * Testing unexisting route behaviour
+     * Testing unexisting route behaviour.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testUnexistingRoute(): void
     {
@@ -256,8 +268,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/existing-route/', [
-            $this,
-            'helloWorldOutput'
+            new HelloWorld(),
+            'helloWorld'
         ]);
 
         // test body
@@ -275,6 +287,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 
     /**
      * Testing invalid integer data types behaviour.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testInValidIntegerParams(): void
     {
@@ -282,8 +296,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/catalog/[i:cat_id]/', [
-            $this,
-            'helloWorldOutput'
+            new HelloWorld(),
+            'helloWorld'
         ]);
 
         // test body
@@ -301,6 +315,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
 
     /**
      * Testing invalid alnum data types behaviour.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testInValidAlnumParams(): void
     {
@@ -308,8 +324,8 @@ abstract class DynamicRoutesInvalidCasesTestClass extends BaseRouterUnitTestClas
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/catalog/[a:cat_id]/', [
-            $this,
-            'helloWorldOutput'
+            new HelloWorld(),
+            'helloWorld'
         ]);
 
         // test body

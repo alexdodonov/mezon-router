@@ -5,6 +5,7 @@ namespace Mezon\Router\Types;
  * Fix point number type for router
  *
  * @author gdever
+ * @psalm-suppress UnusedClass
  */
 class FixPointNumberRouterType
 {

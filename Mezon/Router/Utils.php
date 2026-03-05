@@ -51,8 +51,8 @@ class Utils
      */
     public static function prepareRoute($route): string
     {
-        if (is_array($route) && $route[0] === '') {
-            $route = (string)$_SERVER['REQUEST_URI'];
+        if (is_array($route) && $route[0] === '' && isset($_SERVER['REQUEST_URI'])) {
+            $route = $_SERVER['REQUEST_URI'];
         }
 
         if ($route === '/') {

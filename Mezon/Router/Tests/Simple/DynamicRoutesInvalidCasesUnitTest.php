@@ -8,7 +8,7 @@ use Mezon\Router\Tests\Base\DynamicRoutesInvalidCasesTestClass;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class DynamicRoutesInvalidCasesUnitTest extends DynamicRoutesInvalidCasesTestClass
 {

@@ -5,6 +5,7 @@ namespace Mezon\Router\Types;
  * Default integer list type for router
  *
  * @author gdever
+ * @psalm-suppress UnusedClass
  */
 class IntegerListRouterType
 {

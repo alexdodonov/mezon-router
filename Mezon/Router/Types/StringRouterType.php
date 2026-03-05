@@ -5,6 +5,7 @@ namespace Mezon\Router\Types;
  * Default string type for router
  *
  * @author gdever
+ * @psalm-suppress UnusedClass
  */
 class StringRouterType
 {

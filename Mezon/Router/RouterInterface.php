@@ -72,8 +72,9 @@ interface RouterInterface
      *
      * @param callable $function
      *            error handler
-     *            
+     * 
      * @return ?callable old error handler
+     * @psalm-suppress PossiblyUnusedReturnValue
      */
     public function setNoProcessorFoundErrorHandler(callable $function): ?callable;
 

@@ -6,24 +6,26 @@ use PHPUnit\Framework\TestCase;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 abstract class AmbigousRoutesTestClass extends BaseRouterUnitTestClass
 {
 
     /**
-     * Default setup
      *
      * {@inheritdoc}
-     * @see TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
+        // TODO в трейт
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
     /**
-     * Testing ambigous routes
+     * Testing ambigous routes.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testAmbigousRoutes(): void
     {
@@ -45,7 +47,9 @@ abstract class AmbigousRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing route with date
+     * Testing route with date.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testDateRoute(): void
     {

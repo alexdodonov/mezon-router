@@ -132,7 +132,7 @@ trait UrlParser
     {
         $bunches = $this->paramRoutes[$requestMethod == '' ? $this->getRequestMethod() : $requestMethod];
 
-        /** @var array{bunch: string[], regexp: string} $bunch */
+        /** @var array{bunch: string[], regexp: non-empty-string} $bunch */
         foreach ($bunches as $bunch) {
             $matches = [];
 
@@ -144,7 +144,6 @@ trait UrlParser
 
                 $this->parameters = [];
                 foreach ($names as $i => $name) {
-                    /** @var string[] $matches */
                     $this->parameters[$name] = $matches[(int) $i + 1];
                 }
 

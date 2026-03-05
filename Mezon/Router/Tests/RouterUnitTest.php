@@ -8,7 +8,7 @@ use Mezon\Router\Tests\Base\RouterUnitTestClass;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class RouterUnitTest extends RouterUnitTestClass
 {

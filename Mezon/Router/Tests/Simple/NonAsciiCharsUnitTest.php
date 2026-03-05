@@ -8,7 +8,7 @@ use Mezon\Router\Tests\Base\NonAsciiCharsUnitTestClass;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class NonAsciiCharsUnitTest extends NonAsciiCharsUnitTestClass
 {

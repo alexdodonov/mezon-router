@@ -10,11 +10,12 @@ abstract class BigSetOfRoutesTestClass extends StaticRoutesTestClass
 {
 
     /**
-     * Method provides testing data
+     * Method provides testing data.
      *
-     * @return array testing data
+     * @return array testing data.
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function bigSetOfRoutesDataProvider(): array
+    public static function bigSetOfRoutesDataProvider(): array
     {
         return [
             [
@@ -27,11 +28,12 @@ abstract class BigSetOfRoutesTestClass extends StaticRoutesTestClass
     }
 
     /**
-     * Testing method
+     * Testing method.
      *
      * @param int $amount
-     *            amount of routes
+     *            amount of routes.
      * @dataProvider bigSetOfRoutesDataProvider
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testBigSetOfRoutes(int $amount): void
     {

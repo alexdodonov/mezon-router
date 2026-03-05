@@ -9,7 +9,7 @@ use Mezon\Router\Tests\Base\BaseRouterUnitTestClass;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class ReverseRouteUnitTest extends ReverseRouteTestClass
 {

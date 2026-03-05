@@ -13,8 +13,9 @@ abstract class ReverseRouteTestClass extends BaseRouterUnitTestClass
      * Data provider for the test testReverseRouteByName
      *
      * @return array test data
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function reverseRouteByNameDataProvider(): array
+    public static function reverseRouteByNameDataProvider(): array
     {
         return [
             [
@@ -54,6 +55,7 @@ abstract class ReverseRouteTestClass extends BaseRouterUnitTestClass
      * @param string $extectedResult
      *            quite obviuous to describe it here )
      * @dataProvider reverseRouteByNameDataProvider
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testReverseRouteByName(string $route, array $parameters, string $extectedResult): void
     {
@@ -64,7 +66,6 @@ abstract class ReverseRouteTestClass extends BaseRouterUnitTestClass
         }, 'GET', 'named-route');
 
         // test body
-        /** @var string $url */
         $url = $router->reverse('named-route', $parameters);
 
         // assertions
@@ -72,7 +73,9 @@ abstract class ReverseRouteTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Trying to fetch unexisting route by name
+     * Trying to fetch unexisting route by name.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testFetchUnexistingRouteByName(): void
     {

@@ -12,22 +12,23 @@ abstract class BoolResultTestClass extends BaseRouterUnitTestClass
 {
 
     /**
-     * Default setup
      *
      * {@inheritdoc}
-     * @see TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
+        // TODO в трейт
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
     /**
-     * Data provider for the test testBoolResult
+     * Data provider for the test testBoolResult.
      *
-     * @return array testing data
+     * @return array testing data.
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function boolResultDataProvider(): array
+    public static function boolResultDataProvider(): array
     {
         return [
             [
@@ -46,13 +47,14 @@ abstract class BoolResultTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing bool return values for route handlers, checking that false return value works correctly
+     * Testing bool return values for route handlers, checking that false return value works correctly.
      *
      * @param callable $handler
-     *            route handler
+     *            route handler.
      * @param bool $expected
-     *            expected result
+     *            expected result.
      * @dataProvider boolResultDataProvider
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testBoolResult(callable $handler, bool $expected): void
     {

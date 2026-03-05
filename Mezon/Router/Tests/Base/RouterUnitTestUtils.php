@@ -12,6 +12,7 @@ class RouterUnitTestUtils
      *
      * @param string $requestMethod
      *            request method
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public static function setRequestMethod(string $requestMethod): void
     {

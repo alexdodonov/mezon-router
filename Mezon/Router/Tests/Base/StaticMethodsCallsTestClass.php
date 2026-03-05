@@ -16,6 +16,7 @@ abstract class StaticMethodsCallsTestClass extends BaseRouterUnitTestClass
      */
     protected function setUp(): void
     {
+        // TODO в трейт
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
@@ -23,6 +24,7 @@ abstract class StaticMethodsCallsTestClass extends BaseRouterUnitTestClass
      * Static method for calling
      *
      * @return string
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public static function staticMethod(): string
     {
@@ -33,8 +35,9 @@ abstract class StaticMethodsCallsTestClass extends BaseRouterUnitTestClass
      * Testing data provider
      *
      * @return array testing data
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function staticMethodCallDataProvider(): array
+    public static function staticMethodCallDataProvider(): array
     {
         return [
             // #0, the first case
@@ -57,6 +60,7 @@ abstract class StaticMethodsCallsTestClass extends BaseRouterUnitTestClass
      * @param array{0: object|string, 1: string}|callable|string $callback
      *            callback
      * @dataProvider staticMethodCallDataProvider
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testStaticMethodCalls($callback): void
     {

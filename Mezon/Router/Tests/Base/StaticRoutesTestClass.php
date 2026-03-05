@@ -13,27 +13,7 @@ use Mezon\Router\SupportedRequestMethods;
 abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
 {
 
-    const HELLO_WORLD = 'Hello world!';
-
-    const HELLO_STATIC_WORLD = 'Hello static world!';
-
     use Utils;
-
-    /**
-     * Function simply returns string.
-     */
-    public function helloWorldOutput(): string
-    {
-        return StaticRoutesTestClass::HELLO_WORLD;
-    }
-
-    /**
-     * Function simply returns string.
-     */
-    static public function staticHelloWorldOutput(): string
-    {
-        return StaticRoutesTestClass::HELLO_STATIC_WORLD;
-    }
 
     /**
      * Default setup
@@ -47,7 +27,9 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing exception throwing if the method was not found
+     * Testing exception throwing if the method was not found.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testUnknownMethodException(): void
     {
@@ -67,9 +49,10 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Method returns some testing string
+     * Method returns some testing string.
      *
-     * @return string
+     * @return string Some string.
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function subArray(): string
     {
@@ -77,7 +60,9 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing array routes
+     * Testing array routes.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testArrayRoutes(): void
     {
@@ -96,7 +81,9 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing empty array routes
+     * Testing empty array routes.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testEmptyArrayRoutes(): void
     {
@@ -116,7 +103,9 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing empty array routes
+     * Testing empty array routes.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testIndexRoute(): void
     {
@@ -136,7 +125,9 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing empty array routes
+     * Testing empty array routes.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testMultipleRequestTypes(): void
     {
@@ -166,6 +157,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
 
     /**
      * Testing static routes for DELETE requests.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testDeleteRequestForUnExistingStaticRoute(): void
     {
@@ -174,8 +167,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/static-delete-unexisting/', [
-            $this,
-            'helloWorldOutput'
+            new HelloWorld(),
+            'helloWorld'
         ]);
 
         try {
@@ -191,6 +184,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
 
     /**
      * Testing static routes for PUT requests.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testPutRequestForUnExistingStaticRoute(): void
     {
@@ -199,8 +194,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/static-put-unexisting/', [
-            $this,
-            'helloWorldOutput'
+            new HelloWorld(),
+            'helloWorld'
         ]);
 
         try {
@@ -216,6 +211,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
 
     /**
      * Testing static routes for POST requests.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testPostRequestForUnExistingStaticRoute(): void
     {
@@ -224,8 +221,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
         $exception = '';
         $router = $this->getRouter();
         $router->addRoute('/static-post-unexisting/', [
-            $this,
-            'helloWorldOutput'
+            new HelloWorld(),
+            'helloWorld'
         ]);
 
         try {
@@ -240,11 +237,13 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Data provider
+     * Data provider.
      *
-     * @return array test data
+     * @return array test data.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function clearMethodTestDataProvider(): array
+    public static function clearMethodTestDataProvider(): array
     {
         $result = [];
 
@@ -263,6 +262,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
      * @param string $method
      *            request method
      * @dataProvider clearMethodTestDataProvider
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testClearMethod(string $method): void
     {
@@ -285,6 +286,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
      *
      * @param string $method
      * @dataProvider clearMethodTestDataProvider
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testRequestForExistingStaticRoute(string $method): void
     {
@@ -303,6 +306,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
 
     /**
      * Testing routeExists
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testRouteExists(): void
     {
@@ -323,6 +328,8 @@ abstract class StaticRoutesTestClass extends BaseRouterUnitTestClass
 
     /**
      * Testing invalid request method
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testInvalidRequestMethodException(): void
     {

@@ -3,10 +3,11 @@ declare(strict_types = 1);
 namespace Mezon\Router\Tests\Standart;
 
 use PHPUnit\Framework\TestCase;
+use Mezon\Router\Tests\Base\HelloWorld;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class RouterUtilsUnitTest extends TestCase
 {
@@ -16,8 +17,10 @@ class RouterUtilsUnitTest extends TestCase
      *
      * @return array testing data
      */
-    public function getCallableDescriptionDataProvider(): array
+    public static function getCallableDescriptionDataProvider(): array
     {
+        $handler = new HelloWorld();
+
         return [
             [
                 'string-processor',
@@ -25,10 +28,10 @@ class RouterUtilsUnitTest extends TestCase
             ],
             [
                 [
-                    $this,
-                    'getCallableDescriptionDataProvider'
+                    $handler,
+                    'helloWorld'
                 ],
-                get_class($this) . '::getCallableDescriptionDataProvider'
+                get_class($handler) . '::helloWorld'
             ],
             [
                 [

@@ -1,8 +1,9 @@
-# IDEs
-.idea
-
-# composer
-/vendor/*
-
-# phpunit
-.phpunit*
+/vendor
+.buildpath
+.phpunit.result.cache
+.project
+composer.lock
+.settings
+/Tmp
+/vendor
+.gitignore

@@ -31,6 +31,7 @@ trait InvalidRouteErrorHandler
      *
      * @param string $route
      *            route
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function noProcessorFoundErrorHandler(string $route): void
     {

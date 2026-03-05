@@ -9,7 +9,7 @@ use Mezon\Router\Tests\Base\BoolResultTestClass;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class BoolResultUnitTest extends BoolResultTestClass
 {

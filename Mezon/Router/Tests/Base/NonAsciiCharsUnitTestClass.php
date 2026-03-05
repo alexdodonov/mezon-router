@@ -10,9 +10,11 @@ abstract class NonAsciiCharsUnitTestClass extends BaseRouterUnitTestClass
 {
 
     /**
-     * Some action
+     * Some action.
      *
-     * @return int
+     * @return int Result.
+     *        
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function actionRoute(): int
     {
@@ -20,7 +22,9 @@ abstract class NonAsciiCharsUnitTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing callig non-ASCII char route
+     * Testing callig non-ASCII char route.
+     *
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testCallNonAsciiCharRoute(): void
     {
@@ -36,7 +40,9 @@ abstract class NonAsciiCharsUnitTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing callig non-ASCII char route
+     * Testing callig non-ASCII char route.
+     *
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testNonAsciiParams(): void
     {
@@ -45,12 +51,13 @@ abstract class NonAsciiCharsUnitTestClass extends BaseRouterUnitTestClass
         RouterUnitTestUtils::setRequestMethod('GET');
 
         // test body
-        $router->addRoute(
-            'кириллический-урл/[s:non-ascii-param]',
-            function (string $route, array $params): string {
-                return $params['non-ascii-param'];
-            },
-            'GET');
+        $router->addRoute('кириллический-урл/[s:non-ascii-param]', /**
+         *
+         * @psalm-param array{non-ascii-param: string} $parameters
+         */
+        function (string $route, array $parameters): string {
+            return $parameters['non-ascii-param'];
+        }, 'GET');
 
         // assertions
         $this->assertEquals('ни разу не ASCII - 日本語', $router->callRoute(urlencode('кириллический-урл/ни разу не ASCII - 日本語')));

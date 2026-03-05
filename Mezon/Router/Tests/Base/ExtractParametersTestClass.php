@@ -12,18 +12,20 @@ abstract class ExtractParametersTestClass extends BaseRouterUnitTestClass
 {
 
     /**
-     * Default setup
      *
      * {@inheritdoc}
-     * @see TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
+        // TODO в трейт
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
     /**
-     * Testing hasParam method
+     * Testing hasParam method.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testValidatingParameter(): void
     {
@@ -42,6 +44,8 @@ abstract class ExtractParametersTestClass extends BaseRouterUnitTestClass
 
     /**
      * Testing parameter extractor.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testValidExtractedParameter(): void
     {
@@ -64,6 +68,8 @@ abstract class ExtractParametersTestClass extends BaseRouterUnitTestClass
 
     /**
      * Testing parameter extractor.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testValidExtractedParameters(): void
     {
@@ -85,7 +91,9 @@ abstract class ExtractParametersTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing multyple routes
+     * Testing multyple routes.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testMultyple(): void
     {

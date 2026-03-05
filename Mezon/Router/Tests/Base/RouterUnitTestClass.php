@@ -24,6 +24,7 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
      *
      * @param string $requestMethod
      *            request method
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public static function setRequestMethod(string $requestMethod): void
     {
@@ -42,29 +43,22 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Function simply returns string.
-     */
-    public function helloWorldOutput(): string
-    {
-        return 'Hello world!';
-    }
-
-    /**
-     * Data provider for the test
+     * Data provider for the test.
      *
-     * @return array
+     * @return array test data.
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function differentHandlersDataProvider(): array
+    public static function differentHandlersDataProvider(): array
     {
         return [
             # 0, class method
             [
                 '/one-component-class-method/',
                 [
-                    $this,
-                    'helloWorldOutput'
+                    new HelloWorld(),
+                    'helloWorld'
                 ],
-                'Hello world!'
+                'Hello World!!!'
             ],
             # 1, lambda
             [
@@ -87,6 +81,7 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
      * @param string $expectedResult
      *            expected result
      * @dataProvider differentHandlersDataProvider
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testDifferentHandlers(string $url, callable $handler, string $expectedResult): void
     {
@@ -104,6 +99,8 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
 
     /**
      * Testing case when all processors exist
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testRequestMethodsConcurrency(): void
     {
@@ -153,6 +150,8 @@ abstract class RouterUnitTestClass extends BaseRouterUnitTestClass
 
     /**
      * Test validate custom error handlers.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testSetErrorHandler(): void
     {

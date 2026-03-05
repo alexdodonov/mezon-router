@@ -12,29 +12,7 @@ use PHPUnit\Framework\TestCase;
 abstract class UniversalRouteTestClass extends StaticRoutesTestClass
 {
 
-    const HELLO_WORLD = 'Hello world!';
-
-    const HELLO_STATIC_WORLD = 'Hello static world!';
-
-    const HELLO_STATIC_WORLD_METHOD = '\Mezon\Router\Tests\StaticRoutesUnitTest::staticHelloWorldOutput';
-
     use Utils;
-
-    /**
-     * Function simply returns string
-     */
-    public function helloWorldOutput(): string
-    {
-        return UniversalRouteTestClass::HELLO_WORLD;
-    }
-
-    /**
-     * Function simply returns string
-     */
-    static public function staticHelloWorldOutput(): string
-    {
-        return UniversalRouteTestClass::HELLO_STATIC_WORLD;
-    }
 
     /**
      * Default setup
@@ -51,8 +29,9 @@ abstract class UniversalRouteTestClass extends StaticRoutesTestClass
      * Method returns data sets
      *
      * @return array testing data
+     * @psalm-suppress PossiblyUnusedMethod
      */
-    public function universalRouteDataProvider(): array
+    public static function universalRouteDataProvider(): array
     {
         $setup = function (): array {
             return [
@@ -107,6 +86,7 @@ abstract class UniversalRouteTestClass extends StaticRoutesTestClass
      * @param string $result
      *            expected result
      * @dataProvider universalRouteDataProvider
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testUniversalRoute(array $routes, string $uri, string $result): void
     {

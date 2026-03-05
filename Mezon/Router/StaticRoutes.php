@@ -44,9 +44,7 @@ trait StaticRoutes
      */
     protected function getStaticRoutes(string $requestMethod): array
     {
-        $requestMethod = (string) $_SERVER['REQUEST_METHOD'];
-
-        SupportedRequestMethods::validateRequestMethod($requestMethod);
+        SupportedRequestMethods::validateRequestMethod($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
         return $this->staticRoutes[$requestMethod];
     }
@@ -60,7 +58,7 @@ trait StaticRoutes
      */
     protected function getStaticRouteProcessor(string $route)
     {
-        $processors = $this->getStaticRoutes((string) $_SERVER['REQUEST_METHOD']);
+        $processors = $this->getStaticRoutes($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
         if (isset($processors[$route])) {
             $this->setCalledRoute($route);
@@ -78,7 +76,7 @@ trait StaticRoutes
      */
     protected function getUniversalRouteProcessor()
     {
-        $processors = $this->getStaticRoutes((string) $_SERVER['REQUEST_METHOD']);
+        $processors = $this->getStaticRoutes($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
         if (isset($processors['*'])) {
             $this->setCalledRoute('*');

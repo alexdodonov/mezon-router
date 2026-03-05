@@ -12,18 +12,20 @@ abstract class MiddlewareTestClass extends BaseRouterUnitTestClass
 {
 
     /**
-     * Default setup
      *
      * {@inheritdoc}
-     * @see TestCase::setUp()
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
+        // TODO в трейт
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
     /**
-     * Testing middleware
+     * Testing middleware.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testMiddleware(): void
     {
@@ -59,7 +61,9 @@ abstract class MiddlewareTestClass extends BaseRouterUnitTestClass
     }
 
     /**
-     * Testing multiple middlewares
+     * Testing multiple middlewares.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testMultipleMiddlewaresInOrderAndOmitMalformed(): void
     {
@@ -87,6 +91,9 @@ abstract class MiddlewareTestClass extends BaseRouterUnitTestClass
         });
 
         // This middleware is broken, don't parse the result
+        /**
+         * @psalm-suppress UnusedClosureParam
+         */
         $router->registerMiddleware($route, function (string $route, array $parameters) {
             $parameters['_dont_set_this'] = true;
 
@@ -139,7 +146,9 @@ abstract class MiddlewareTestClass extends BaseRouterUnitTestClass
     }
     
     /**
-     * Testing method
+     * Testing method.
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function testReturnScalar() : void
     {

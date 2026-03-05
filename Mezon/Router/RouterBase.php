@@ -129,7 +129,7 @@ abstract class RouterBase implements RouterInterface
      */
     protected function getRequestMethod(): string
     {
-        return isset($_SERVER['REQUEST_METHOD']) ? (string) $_SERVER['REQUEST_METHOD'] : 'GET';
+        return $_SERVER['REQUEST_METHOD'] ?? 'GET';
     }
 
     /**
@@ -164,6 +164,8 @@ abstract class RouterBase implements RouterInterface
 
     /**
      * Method clears middleware
+     * 
+     * @psalm-suppress PossiblyUnusedMethod
      */
     protected function clearMiddleware(): void
     {
@@ -217,7 +219,6 @@ abstract class RouterBase implements RouterInterface
             $route
         ], $this->getParameters()));
 
-        /** @var callable $middleWare */
         foreach ($middleWares as $middleWare) {
             /** @var array|null|mixed $result */
             $result = call_user_func_array($middleWare, $this->getParameters());

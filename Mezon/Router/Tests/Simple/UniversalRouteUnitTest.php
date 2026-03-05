@@ -9,7 +9,7 @@ use Mezon\Router\SimpleRouter;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class UniversalRouteUnitTest extends UniversalRouteTestClass
 {

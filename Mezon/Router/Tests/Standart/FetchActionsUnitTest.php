@@ -8,7 +8,7 @@ use Mezon\Router\Tests\Base\RouterUnitTestUtils;
 
 /**
  *
- * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress PropertyNotSetInConstructor, UnusedClass
  */
 class FetchActionsUnitTest extends TestCase
 {
@@ -44,7 +44,7 @@ class FetchActionsUnitTest extends TestCase
      *
      * @return array test data
      */
-    public function classActionDataProvider(): array
+    public static function classActionDataProvider(): array
     {
         $testData = [];
 

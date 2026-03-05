@@ -5,6 +5,7 @@ namespace Mezon\Router\Types;
  * Default date type for router
  *
  * @author gdever
+ * @psalm-suppress UnusedClass
  */
 class DateRouterType
 {
@@ -13,6 +14,7 @@ class DateRouterType
      * Method returns regexp for searching
      *
      * @return string regexp for searching
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public static function searchRegExp(): string
     {
@@ -23,6 +25,7 @@ class DateRouterType
      * Method returns regexp for parsing
      *
      * @return string regexp for parsing
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public static function parserRegExp(): string
     {

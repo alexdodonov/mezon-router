@@ -22,15 +22,13 @@ trait SimpleRoutesSet
      *            request method
      * @param string $route
      *            route
-     * @param array{0: string, 1:string}|callable|string $callback
+     * @param
+     *            array{0: string, 1:string}|callable|string $callback
      *            callback method
+     * @psalm-suppress MissingParamType, MixedPropertyTypeCoercion
      */
     protected function addParamRoute(string $requestMethod, string $route, $callback): void
     {
-        if (empty($this->paramRoutes[$requestMethod])) {
-            $this->paramRoutes[$requestMethod] = [];
-        }
-
         $this->paramRoutes[$requestMethod][] = [
             'pattern' => $route,
             'callback' => $callback
@@ -64,6 +62,7 @@ trait SimpleRoutesSet
      * @param string $filePath
      *            file path to cache
      * @codeCoverageIgnore
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function dumpOnDisk(string $filePath = './cache/cache.php'): void
     {
@@ -80,7 +79,7 @@ trait SimpleRoutesSet
      * @param string $filePath
      *            file path to cache
      * @codeCoverageIgnore
-     * @psalm-suppress UnresolvableInclude, MixedArrayAccess, MixedAssignment
+     * @psalm-suppress UnresolvableInclude, MixedArrayAccess, MixedAssignment, PossiblyUnusedMethod
      */
     public function loadFromDisk(string $filePath = './cache/cache.php'): void
     {
@@ -88,7 +87,7 @@ trait SimpleRoutesSet
     }
 
     /**
-     * Method rturns all available routes
+     * Method returns all available routes
      *
      * @return string trace
      * @psalm-suppress PossiblyUndefinedArrayOffset
@@ -102,12 +101,11 @@ trait SimpleRoutesSet
                 $requestMethod . ' : '
             ];
             $hasRoutes = false;
-            if (! empty($this->staticRoutes[$requestMethod])) {
+            if (isset($this->staticRoutes[$requestMethod]) && count($this->staticRoutes[$requestMethod])) {
                 $trace[] = implode(', ', array_keys($this->staticRoutes[$requestMethod]));
-                $trace[] = ', ';
                 $hasRoutes = true;
             }
-            if (! empty($this->paramRoutes[$requestMethod])) {
+            if (isset($this->paramRoutes[$requestMethod]) && count($this->paramRoutes[$requestMethod])) {
                 $items = [];
                 foreach ($this->paramRoutes[$requestMethod] as $item) {
                     $items[] = $item['pattern'];
